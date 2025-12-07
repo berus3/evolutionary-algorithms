@@ -1,0 +1,13 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/combat.dir/src/combat_engine.cpp.o"
+  "CMakeFiles/combat.dir/src/combat_engine.cpp.o.d"
+  "CMakeFiles/combat.dir/src/combat_jni.cpp.o"
+  "CMakeFiles/combat.dir/src/combat_jni.cpp.o.d"
+  "libcombat.pdb"
+  "libcombat.so"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/combat.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -Dcombat_EXPORTS -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -g -fPIC -std=gnu++20 -o CMakeFiles/combat.dir/src/combat_engine.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -Dcombat_EXPORTS -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -g -fPIC -std=gnu++20 -o CMakeFiles/combat.dir/src/combat_jni.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_jni.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_jni.cpp"
+}
+]
