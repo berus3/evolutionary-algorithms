@@ -47,7 +47,7 @@ struct StatPoints {
     int focus;
 };
 
-struct Stats {
+struct Stats { // TODO: seleccionar las stats que no son estaticas durante una misma pelea
     float hp;
     float regen;
     float ad;
@@ -100,6 +100,7 @@ class Player {
       int player_id;
       StatPoints* stat_points;
       Stats* stats;
+      bool is_alive;
   public:
       Player(int id);
       ~Player();
