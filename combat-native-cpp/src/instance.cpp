@@ -169,6 +169,29 @@ float getStatCritFactor(int stat_point, Instance instance) {
     }
 }
 
+//bleed
+
+//bleed dmg
+
+//bleed ticks
+
+float getStatAp(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = 1597.9 * (1 - exp(-0.02354 * x))
+            const float L = 1597.9f;
+            const float k = 0.02354f;
+            return L * (1.0f - expf(-k * stat_point));
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
+    }
+}
+
 
 
 // TODO: Implement other stat functions similarly
