@@ -27,18 +27,18 @@ void Player::act(Team* allies, Team* enemies) {
     }
 }
 
-void Player::heal(int healing) {
-	int maxHp = getStatMaxHp(stat_points->max_hp);
-	dyn_stats->hp += healing;
-	if (dyn_stats->hp > maxHp) {
-		dyn_stats->hp = maxHp;
+void Player::heal(Player* target, int healing) {
+	int maxHp = getStatMaxHp(target->getStatPoints->max_hp);
+	target->getDynStats()->hp += healing;
+	if (target->getDynStats()->hp > maxHp) {
+		target->getDynStats()->hp = maxHp;
 	}
 }
 
 void Player::regen(){
 	if (dyn_stats->next_regen == 0) {
 		dyn_stats->next_regen = 50;
-		heal(getStatRegen(stat_points->regen));
+		heal(this, getStatRegen(stat_points->regen));
 	} else {
 		dyn_stats->next_regen--;
 	}
@@ -51,31 +51,57 @@ int Player::apply_crit(int damage) {
 	return damage;
 }
 
-int Player::reduce(Player* target, int damage_output) {
+int Player::reduce_ad(Player* target, int damage_output) {
 	int total_armor = getStatArmor(target->getStatPoints()->armor); //armor base
-	int total_armor = getStatArmor(target->getStatPoints()->armor); //armor sin mark
-	total_armor = (int)roundf(total_armor * (1 - getStatArmorPen(stat_points->armor_pen))) - getStatLethality(stat_points->lethality); //armor con lethality y 
-	float reduction = 1.0f - (100.0f / (100.0f + total_armor)) //(1-(100/(100+armor)))
-	int damage_input = (int)roundf(damage_output * reduction);
+	total_armor = (int)roundf(total_armor * (1 - getStatArmorPen(stat_points->armor_pen))) - getStatLethality(stat_points->lethality); //aplicar armor-pen y lethality
+	
+	if (target->getDynStats()->end_shield > 0)
+		total_armor += target->getDynStats()->shield_resistance;
+	
+	if (target->getDynStats()->end_mark > 0)
+		total_armor -= target->getDynStats()->mark_resistance;
+		
+	float reduction = 1.0f - (100.0f / (100.0f + total_armor)); //(1-(100/(100+armor)))
+	return (int)roundf(damage_output * reduction);
 }
 
-void Player::damage_ad(Player* player) {
-	return;
-	int damage_output = apply_crit(getStatAd(stat_points->ad) + getStatAx(stat_points->ax));
+int Player::reduce_ap(Player* target, int damage_output) {
+	int total_mr = getStatMr(target->getStatPoints()->mr); //mr base
+	total_mr = (int)roundf(total_mr * (1 - getStatMrPen(stat_points->mr_pen))) - getStatEthereal(stat_points->ethereal); //aplicar mr-pen y ethereal
 	
-	int damage_dealt = 0;
-	//aplicarle dano segun armor 
-	//si murio, marcarlo como muerto
+	if (target->getDynStats()->end_shield > 0)
+		total_mr += target->getDynStats()->shield_resistance;
 	
-	//vamp
-	int vamp_healing = (int)roundf(damage_dealt * getStatVamp(stat_points->vamp));
-		if (vamp_healing > 0)
-			heal(vamp_healing);
-	
+	if (target->getDynStats()->end_mark > 0)
+		total_mr -= target->getDynStats()->mark_resistance;
+		
+	float reduction = 1.0f - (100.0f / (100.0f + total_mr)); //(1-(100/(100+armor)))
+	return (int)roundf(damage_output * reduction);
 }
 
-void Player::damage_ap(Player* player) {
+void Player::damage_ap(Player* target, int damage_output) {
+	int damage_dealt = reduce_ap(damage_output);
+	
+	if (target->getDynStats->hp <= 0)
+		target->getDynStats->is_alive = false;
 }
+
+void Player::damage_ad(Player* target, int damage_output) {
+	int damage_dealt = reduce_ad(damage_output);
+	
+	if (target->getDynStats->hp <= 0)
+		target->getDynStats->is_alive = false;
+	
+	if (vamp_healing > 0) {
+		heal((int)roundf(damage_dealt * getStatVamp(stat_points->vamp)));
+	}
+	
+	float target_thorns = target->getStatThorns(stat_points->thorns);
+	if (target_thorns > 0) {
+		damage_ap(this, (int)roundf(damage_dealt * target_thorns)); //TODO: verificar lógica
+	}
+}
+
 
 void Player::update_effects() {
 	if (dyn_stats->end_acc == 0)
@@ -87,11 +113,12 @@ void Player::update_effects() {
 		dyn_stats->slow_ticks = 0;
 	else
 		dyn_stats->end_slow --;
+	//TODO mark y shield
 	//TODO seguir
-	
 }
 
 void Player::bleed(Player* player) {
+	
 	
 }
 
@@ -102,7 +129,9 @@ void Player::attack(Team* enemies) {
 	if ((dyn_stats->next_attack - dyn_stats->acc_ticks + dyn_stats->slow_ticks) <= 0) {
 		dyn_stats->next_attack = getStatAs(stat_points->as);
 		Player* target = selectAttackTarget(enemies);
-		damage_ad(target);		
+		int damage_output = apply_crit(getStatAd(stat_points->ad) + getStatAx(stat_points->ax)
+		damage_ad(target, damage_output);	
+		if ()	
 	} else
 		dyn_stats->next_attack--;
 }

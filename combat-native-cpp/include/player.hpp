@@ -53,10 +53,17 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int hp;
     int next_regen;
     int next_attack;
+    
     int acc_ticks;
     int slow_ticks;
     int end_acc;
     int end_slow;
+    
+    int end_shield;
+    int end_mark;
+    int shield_resistance;
+    int mark_resistance;
+    //TODO implemetar funciones para darle shield resistance y mark resistance a personajes
     //TODO implementar funciones de slow y acc (darle slow y acc a otro personaje)
 };
 
@@ -72,10 +79,10 @@ class Player {
       void regen();
       void attack(Team* enemies);
       Player* selectAttackTarget(Team* enemies);
-      void heal(int healing);
+      void heal(Player*, int healing);
       int apply_crit(int damage);
-      void damage_ad(Player* player);
-      void damage_ap(Player* player);
+      void damage_ad(Player* player, int damage_output);
+      void damage_ap(Player* player, int damage_output);
       void bleed(Player* player);
   public:
       Player(int id);
@@ -83,6 +90,8 @@ class Player {
       int getId();
       StatPoints* getStatPoints();
       void setStatPoints(StatPoints* sp);
+      DynamicStats* getDynStats();
+      void setDynStats(DynamicStats* ds);
       void act(Team* allies, Team* enemies);
       // TODO: Add methods to get/set Stats
 };
