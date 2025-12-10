@@ -769,5 +769,33 @@ float getStatTenacity(int stat_point, Instance instance) {
     }
 }
 
+int getStatAggro(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = x
+			return stat_point;
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
+    }
+}
 
+int getStatFocus(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = x
+			return stat_point;
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
+    }
+}
 // TODO: Implement other stat functions similarly
