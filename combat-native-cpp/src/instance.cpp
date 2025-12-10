@@ -124,9 +124,8 @@ float getStatCrit(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 100 * (1 - exp(-0.0693147 * x))
-            const float L = 100.0f;
             const float k = 0.0693147f;
-            return (int)roundf(L * (1.0f - expf(-k * stat_point)));
+            return (1.0f - expf(-k * stat_point));
         }
         case LINEAR:
             return (int)roundf(80.0f + stat_point * 25.0f);
@@ -579,9 +578,9 @@ float getStatShield(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
-            const float A = 2.5f;
+            const float A = 1.0f;
             const float b = 5.7f;
-            const float c = 0.073f;
+            const float c = 0.173f;
 
             float num   = expf(-b * expf(-c * stat_point)) - expf(-b);
             float denom = 1.0f - expf(-b);
@@ -596,27 +595,31 @@ float getStatShield(int stat_point) {
     }
 }
 
-int getStatShieldTicks(int stat_point) {
+//depende del ap
+float getStatMarkTicks(int stat_point) {
     switch (instance) {
         case BALANCED: {
-            // f(x) = 50 + 5 * x
-            return (int)roundf(50.0f + 5.0f * stat_point);
+            // f(x) = 0.8 + 0.117 * x^0.777
+            const float A = 0.8f;
+            const float B = 0.117f;
+            const float p = 0.777f;
+            return A + B * powf(stat_point, p);
         }
         case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+            return 80.0f + stat_point * 25.0f;
         case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+            return 120.0f + stat_point * 15.0f;
         default:
-            return (int)roundf(100.0f + stat_point * 20.0f);
+            return 100.0f + stat_point * 20.0f;
     }
 }
 
 int getStatCdShield(int stat_point) {
     switch (instance) {
         case BALANCED: {
-            // f(x) = 250 + 450 * exp(-0.038664 * x)
-            const float C = 250.0f;
-            const float D = 450.0f;
+            // f(x) = 100 + 300 * exp(-0.038664 * x)
+            const float C = 100.0f;
+            const float D = 300.0f;
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }

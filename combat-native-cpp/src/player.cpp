@@ -44,14 +44,25 @@ void Player::regen(){
 	}
 }
 
-int Player::crit_damage(int damage) {
-	float chance = 23.0f;//random entre 0 y 1;
-	return 0;
+int Player::apply_crit(int damage) {
+	if (getStatCrit(stat_points->crit) > rng::real01) {
+		damage = (int)roundf(damage * getStatCritFactor(stat_points->crit_factor));
+	}
+	return damage;
+}
+
+int Player::reduce(Player* target, int damage_output) {
+	int total_armor = getStatArmor(target->getStatPoints()->armor); //armor base
+	int total_armor = getStatArmor(target->getStatPoints()->armor); //armor sin mark
+	total_armor = (int)roundf(total_armor * (1 - getStatArmorPen(stat_points->armor_pen))) - getStatLethality(stat_points->lethality); //armor con lethality y 
+	float reduction = 1.0f - (100.0f / (100.0f + total_armor)) //(1-(100/(100+armor)))
+	int damage_input = (int)roundf(damage_output * reduction);
 }
 
 void Player::damage_ad(Player* player) {
 	return;
-	int damage_output = 2;//
+	int damage_output = apply_crit(getStatAd(stat_points->ad) + getStatAx(stat_points->ax));
+	
 	int damage_dealt = 0;
 	//aplicarle dano segun armor 
 	//si murio, marcarlo como muerto
