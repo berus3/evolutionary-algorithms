@@ -9,15 +9,12 @@ enum FightResult {
     DRAW
 };
 
-enum Instance {
-    BALANCED,
-    LINEAR,
-    UNFAIR
-};
 
 // Returns true if the fight has ended
-bool step(Team* team1, Team* team2, Instance instance);
+void chooseInstance(Instance i);
 
-FightResult fight(Team* team1, Team* team2, Instance instance);
+bool step(Team* team1, Team* team2);
+
+FightResult fight(Team* team1, Team* team2);
 
 int64_t runLoop(int64_t n);

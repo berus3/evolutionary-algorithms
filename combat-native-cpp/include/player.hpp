@@ -1,5 +1,6 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
+#include "instance.hpp"
 
 struct StatPoints {
     int max_hp;
@@ -47,50 +48,15 @@ struct StatPoints {
     int focus;
 };
 
-struct Stats { // TODO: seleccionar las stats que no son estaticas durante una misma pelea
-    float hp;
-    float regen;
-    float ad;
-    float armor;
-    float armor_pen;
-    float lethality;
-    float as;
-    float crit;
-    float crit_factor;
-    float bleed;
-    float bleed_dmg;
-    float bleed_ticks;
-    float ap;
-    float mr;
-    float mr_pen;
-    float ethereal;
-    float ah;
-    float smite;
-    float cd_smite;
-    float blast;
-    float cd_blast;
-    float heal;
-    float cd_heal;
-    float stun;
-    float cd_stun;
-    float acc;
-    float acc_ticks;
-    float cd_acc;
-    float slow;
-    float slow_ticks;
-    float cd_slow;
-    float shield;
-    float shield_ticks;
-    float cd_shield;
-    float mark;
-    float mark_ticks;
-    float cd_mark;
-    float vamp;
-    float thorns;
-    float ax;
-    float tenacity;
-    float aggro;
-    float focus;
+struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durante una misma pelea
+    int hp;
+    int next_regen;
+    int next_attack;
+    int acc_ticks;
+    int slow_ticks;
+    int end_acc;
+    int end_slow;
+    //TODO implementar funciones de slow y acc (darle slow y acc a otro personaje)
 };
 
 class Team; // forward declaration
@@ -99,7 +65,7 @@ class Player {
   private:
       int player_id;
       StatPoints* stat_points;
-      Stats* stats;
+      DynamicStats* dyn_stats;
       bool is_alive;
   public:
       Player(int id);
@@ -108,6 +74,9 @@ class Player {
       StatPoints* getStatPoints();
       void setStatPoints(StatPoints* sp);
       void act(Team* allies, Team* enemies);
+      void regen();
+      void attack(Player* player);
+      Player selectAttackTarget(Team* enemies);
       // TODO: Add methods to get/set Stats
 };
 
