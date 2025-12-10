@@ -1,10 +1,10 @@
 #include "../include/main.hpp"
 
 int main() {
-	Instance i = BALANCED;
+	chooseInstance(BALANCED);
 	int inp;
 	std::cin >> inp; 
-	float a = getStatTenacity(inp, i);
+	float a = getStatCrit(inp);
 	std::cout << a;
 	return 0;
 }

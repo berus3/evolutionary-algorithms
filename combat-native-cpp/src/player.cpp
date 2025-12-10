@@ -1,4 +1,4 @@
-#include "player.hpp"
+#include "../include/player.hpp"
 
 Player::Player(int id) { 
     this->player_id = id; 
@@ -10,10 +10,10 @@ StatPoints* Player::getStatPoints() { return stat_points; }
 void Player::setStatPoints(StatPoints* sp) { stat_points = sp; }
 void Player::act(Team* allies, Team* enemies) {
     if (is_alive) {
-        is_alive = stats->hp > 0;
-        stats->hp += stats->regen;
-        // regen
-        // attack
+        update_effects();
+        regen();
+        attack(enemies);
+       
         // smite
         // blast
         // heal
@@ -25,4 +25,76 @@ void Player::act(Team* allies, Team* enemies) {
     } else {
         stats->hp = 0;
     }
+}
+
+void Player::heal(int healing) {
+	int maxHp = getStatMaxHp(stat_points->maxHp);
+	dyn_stats->hp += healing;
+	if (hp > maxHp) {
+		dyn_stats->hp = maxHp;
+	}
+}
+
+void Player::regen(){
+	if (dyn_stats->next_regen == 0) {
+		dyn_stats->next_regen = 50;
+		heal(getStatRegen(stat_points->regen));
+	} else {
+		dyn_stats->next_regen--;
+	}
+}
+
+int Player::crit_damage(int damage) {
+	float chance = 23.0f;//random entre 0 y 1;
+	return 0;
+}
+
+void Player::damage_ad(Player* player) {
+	return;
+	int damage_output = 2;//
+	int damage_dealt = 0;
+	//aplicarle dano segun armor 
+	//si murio, marcarlo como muerto
+	
+	//vamp
+	int vamp_healing = (int)roundf(damage_dealt * getStatVamp(stat_points->vamp));
+		if (vamp_healing > 0)
+			heal(vamp_healing);
+	
+}
+
+int Player::damage_ap(Player* player) {
+}
+
+void Player::update_effects() {
+	if (dyn_stats->end_acc == 0)
+		dyn_stats->buff_acc = 0;
+	else
+		dyn_stats->end_acc --;
+	
+	if (dyn_stats->end_slow == 0)
+		dyn_stats->nerf_slow = 0;
+	else
+		dyn_stats->end_slow --;
+	//TODO seguir
+	
+}
+
+void Player:bleed(Player* player) {
+	
+}
+
+void Player::attack(Team* enemies) {
+	//int acc_ticks = (int)roundf((dyn_stats->buff_acc * getStatAs(stat_points->as));
+	//int slow_ticks = (int)roundf((dyn_stats->nerf_slow * getStatAs(stat_points->as));
+	
+	if ((dyn_stats->next_attack - dyn_stats->acc_ticks + dyn_stats->slow_ticks) <= 0) {
+		dyn_stats->next_attack = getStatAs(stat_points->as);
+		Player* target = selectAttackTarget(enemies);
+		damage_ad(target);		
+	} else
+		dyn_stats->next_attack--;
+}
+
+Player* selectAttackTarget(Team* enemies){
 }

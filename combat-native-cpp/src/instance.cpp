@@ -1,22 +1,9 @@
 #include "../include/instance.hpp"
 #include <math.h>
 
-/*
-float getStatStat(int stat_point, Instance instance) {
-    switch (instance) {
-        case BALANCED:
-            return 100.0f + stat_point * 20.0f;
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
-        default:
-            return 100.0f + stat_point * 20.0f;
-    }
-}
-*/
+extern Instance instance;
 
-int getStatMaxHp(int stat_point, Instance instance) {
+int getStatMaxHp(int stat_point) {
     switch (instance) {
         case BALANCED: { //f(x)=1600+9385 (1-ℯ^(-0.02257 x))
             const float k = 0.02257f;
@@ -32,7 +19,7 @@ int getStatMaxHp(int stat_point, Instance instance) {
     }
 }
 
-int getStatRegen(int stat_point, Instance instance) {
+int getStatRegen(int stat_point) {
     switch (instance) {
         case BALANCED: { //f(x)=5+428.571 (1-ℯ^(-0.016425 x))
             const float k = 0.016425f;
@@ -48,7 +35,7 @@ int getStatRegen(int stat_point, Instance instance) {
     }
 }
 
-int getStatAd(int stat_point, Instance instance) {
+int getStatAd(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 50 + 2861.85 * (1 - e^(-0.004565 x))
@@ -65,7 +52,7 @@ int getStatAd(int stat_point, Instance instance) {
     }
 }
 
-int getStatArmor(int stat_point, Instance instance) {
+int getStatArmor(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.00875 * x^2 + 7.325 * x + 80
@@ -82,7 +69,7 @@ int getStatArmor(int stat_point, Instance instance) {
     }
 }
 
-int getStatArmorPen(int stat_point, Instance instance) {
+int getStatArmorPen(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.4005 * (1 - exp(-0.06915 * x))
@@ -99,7 +86,7 @@ int getStatArmorPen(int stat_point, Instance instance) {
     }
 }
 
-int getStatLethality(int stat_point, Instance instance) {
+int getStatLethality(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 110.76 * (1 - exp(-0.05 * x))
@@ -116,7 +103,7 @@ int getStatLethality(int stat_point, Instance instance) {
     }
 }
 
-int getStatAs(int stat_point, Instance instance) {
+int getStatAs(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 150 + 450 * exp(-0.038664 * x)
@@ -134,7 +121,7 @@ int getStatAs(int stat_point, Instance instance) {
     }
 }
 
-float getStatCrit(int stat_point, Instance instance) {
+float getStatCrit(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 100 * (1 - exp(-0.0693147 * x))
@@ -151,7 +138,7 @@ float getStatCrit(int stat_point, Instance instance) {
     }
 }
 
-float getStatCritFactor(int stat_point, Instance instance) {
+float getStatCritFactor(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 2.85 - 1.35 * exp(-0.0463733 * x)
@@ -170,7 +157,7 @@ float getStatCritFactor(int stat_point, Instance instance) {
 }
 
 //check P(bleed) > 1 --> bleed
-float getStatBleed(int stat_point, Instance instance) {
+float getStatBleed(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.02252 * x^0.8239
@@ -188,7 +175,7 @@ float getStatBleed(int stat_point, Instance instance) {
 }
 
 
-int getStatBleedDmg(int stat_point, Instance instance) {
+int getStatBleedDmg(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.05 + 0.0182 * x^0.569
@@ -206,7 +193,7 @@ int getStatBleedDmg(int stat_point, Instance instance) {
     }
 }
 
-int getStatBleedTicks(int stat_point, Instance instance) {
+int getStatBleedTicks(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 120 + 8.35 * x^0.829
@@ -226,7 +213,7 @@ int getStatBleedTicks(int stat_point, Instance instance) {
 
 
 
-int getStatAp(int stat_point, Instance instance) {
+int getStatAp(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 1597.9 * (1 - exp(-0.02354 * x))
@@ -243,7 +230,7 @@ int getStatAp(int stat_point, Instance instance) {
     }
 }
 
-int getStatMr(int stat_point, Instance instance) {
+int getStatMr(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 43 + 12.59 * x^0.7266
@@ -262,7 +249,7 @@ int getStatMr(int stat_point, Instance instance) {
 }
 
 
-int getStatMrPen(int stat_point, Instance instance) {
+int getStatMrPen(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.4005 * (1 - exp(-0.06915 * x))
@@ -279,7 +266,7 @@ int getStatMrPen(int stat_point, Instance instance) {
     }
 }
 
-int getStatEthereal(int stat_point, Instance instance) {
+int getStatEthereal(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 10.79 * x^0.22185
@@ -296,7 +283,7 @@ int getStatEthereal(int stat_point, Instance instance) {
     }
 }
 
-int getStatAh(int stat_point, Instance instance) {
+int getStatAh(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 14.25 * x^0.4804
@@ -313,7 +300,7 @@ int getStatAh(int stat_point, Instance instance) {
     }
 }
 
-float getStatSmite(int stat_point, Instance instance) {
+float getStatSmite(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
@@ -334,7 +321,7 @@ float getStatSmite(int stat_point, Instance instance) {
     }
 }
 
-int getStatCdSmite(int stat_point, Instance instance) {
+int getStatCdSmite(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x)=150+550 e^(-0.0313 x)
@@ -352,7 +339,7 @@ int getStatCdSmite(int stat_point, Instance instance) {
     }
 }
 
-float getStatBlast(int stat_point, Instance instance) {
+float getStatBlast(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
@@ -374,7 +361,7 @@ float getStatBlast(int stat_point, Instance instance) {
 }
 
 
-int getStatCdBlast(int stat_point, Instance instance) {
+int getStatCdBlast(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 500 + 700 * exp(-0.0693 * x)
@@ -393,7 +380,7 @@ int getStatCdBlast(int stat_point, Instance instance) {
 }
 
 
-float getStatHeal(int stat_point, Instance instance) {
+float getStatHeal(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
@@ -415,7 +402,7 @@ float getStatHeal(int stat_point, Instance instance) {
 }
 
 
-int getStatCdHeal(int stat_point, Instance instance) {
+int getStatCdHeal(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 150 + 450 * exp(-0.038664 * x)
@@ -433,7 +420,7 @@ int getStatCdHeal(int stat_point, Instance instance) {
     }
 }
 
-float getStatStun(int stat_point, Instance instance) {
+float getStatStun(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
@@ -455,7 +442,7 @@ float getStatStun(int stat_point, Instance instance) {
 }
 
 
-int getStatCdStun(int stat_point, Instance instance) {
+int getStatCdStun(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 300 + 700 * exp(-0.038664 * x)
@@ -473,7 +460,7 @@ int getStatCdStun(int stat_point, Instance instance) {
     }
 }
 
-float getStatAcc(int stat_point, Instance instance) {
+float getStatAcc(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
@@ -495,7 +482,7 @@ float getStatAcc(int stat_point, Instance instance) {
 }
 
 //depende del ap
-float getStatAccTicks(int stat_point, Instance instance) {
+float getStatAccTicks(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.8 + 0.117 * x^0.777
@@ -513,7 +500,7 @@ float getStatAccTicks(int stat_point, Instance instance) {
     }
 }
 
-int getStatCdAcc(int stat_point, Instance instance) {
+int getStatCdAcc(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 100 + 300 * exp(-0.038664 * x)
@@ -531,7 +518,7 @@ int getStatCdAcc(int stat_point, Instance instance) {
     }
 }
 
-float getStatSlow(int stat_point, Instance instance) {
+float getStatSlow(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
@@ -553,7 +540,7 @@ float getStatSlow(int stat_point, Instance instance) {
 }
 
 //depende del ap
-float getStatSlowTicks(int stat_point, Instance instance) {
+float getStatSlowTicks(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.8 + 0.117 * x^0.777
@@ -571,7 +558,7 @@ float getStatSlowTicks(int stat_point, Instance instance) {
     }
 }
 
-int getStatCdSlow(int stat_point, Instance instance) {
+int getStatCdSlow(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 100 + 300 * exp(-0.038664 * x)
@@ -589,7 +576,7 @@ int getStatCdSlow(int stat_point, Instance instance) {
     }
 }
 
-float getStatShield(int stat_point, Instance instance) {
+float getStatShield(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
@@ -610,7 +597,7 @@ float getStatShield(int stat_point, Instance instance) {
     }
 }
 
-int getStatShieldTicks(int stat_point, Instance instance) {
+int getStatShieldTicks(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 50 + 5 * x
@@ -625,7 +612,7 @@ int getStatShieldTicks(int stat_point, Instance instance) {
     }
 }
 
-int getStatCdShield(int stat_point, Instance instance) {
+int getStatCdShield(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 250 + 450 * exp(-0.038664 * x)
@@ -643,7 +630,7 @@ int getStatCdShield(int stat_point, Instance instance) {
     }
 }
 
-float getStatMark(int stat_point, Instance instance) {
+float getStatMark(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
@@ -665,7 +652,7 @@ float getStatMark(int stat_point, Instance instance) {
 }
 
 //depende del ap
-float getStatMarkTicks(int stat_point, Instance instance) {
+float getStatMarkTicks(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.8 + 0.117 * x^0.777
@@ -683,7 +670,7 @@ float getStatMarkTicks(int stat_point, Instance instance) {
     }
 }
 
-int getStatCdMark(int stat_point, Instance instance) {
+int getStatCdMark(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 100 + 300 * exp(-0.038664 * x)
@@ -701,7 +688,7 @@ int getStatCdMark(int stat_point, Instance instance) {
     }
 }
 
-float getStatVamp(int stat_point, Instance instance) {
+float getStatVamp(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.01678 * x^0.8277
@@ -718,7 +705,7 @@ float getStatVamp(int stat_point, Instance instance) {
     }
 }
 
-float getStatThorns(int stat_point, Instance instance) {
+float getStatThorns(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.01678 * x^0.8277
@@ -735,7 +722,7 @@ float getStatThorns(int stat_point, Instance instance) {
     }
 }
 
-int getStatAx(int stat_point, Instance instance) {
+int getStatAx(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 21.33 * x^0.847
@@ -752,7 +739,7 @@ int getStatAx(int stat_point, Instance instance) {
     }
 }
 
-float getStatTenacity(int stat_point, Instance instance) {
+float getStatTenacity(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.0971 * x^0.4307
@@ -769,7 +756,7 @@ float getStatTenacity(int stat_point, Instance instance) {
     }
 }
 
-int getStatAggro(int stat_point, Instance instance) {
+int getStatAggro(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = x
@@ -784,7 +771,7 @@ int getStatAggro(int stat_point, Instance instance) {
     }
 }
 
-int getStatFocus(int stat_point, Instance instance) {
+int getStatFocus(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = x
