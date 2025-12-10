@@ -172,11 +172,18 @@ void Player::attack(Team* enemies) {
 }
 
 Player* Player::selectAttackTarget(Team* enemies) {
-	
-	float weights[] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+	int denom = 0;
+	int reduced_hp[5];
 	for (int i=0; i<5; i++) {
-		
+		Player* target = enemies->getPlayer(i);
+		int remaining_hp = target->getDynStats()->hp;
+		reduced_hp[i] = reduce_ad(target, remaining_hp);
+		denom += reduce_ad(target, remaining_hp);
 	}
-	
-	return nullptr;
+	float weights[5];
+	for (int i=0; i<5; i++) {
+		Player* target = enemies->getPlayer(i);
+		weights[i] = target->getStatAggro(target->getStatPoints()->aggro) + (getStatFocus(stat_points->focus) * (1-(reduced_hp[i]/denom)));
+	}
+	return enemies->getPlayer(linear_softmax(weights, 5));
 }

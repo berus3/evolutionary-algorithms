@@ -4,6 +4,10 @@
 #include <math.h>
 #include <random>
 
+int softmax(float[] weights) {
+	
+}
+
 enum Instance {
     BALANCED,
     LINEAR,

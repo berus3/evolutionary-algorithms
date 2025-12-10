@@ -2,6 +2,23 @@
 
 Instance instance;
 
+int linear_softmax(const float* weights, int n) {
+    float sum = 0.0f;
+    for (int i = 0; i < n; i++) {
+        sum += weights[i];
+    }
+    float r = rng::real01();
+    float acc = 0.0f;
+    for (int i = 0; i < n; i++) {
+        acc += weights[i] / sum;
+        if (r <= acc) {
+            return i;
+        }
+    }
+    return n - 1;
+}
+
+
 int getStatMaxHp(int stat_point) {
     switch (instance) {
         case BALANCED: { //f(x)=1600+9385 (1-ℯ^(-0.02257 x))
