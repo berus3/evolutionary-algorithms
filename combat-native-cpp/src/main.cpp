@@ -4,7 +4,7 @@ int main() {
 	Instance i = BALANCED;
 	int inp;
 	std::cin >> inp; 
-	int a = getStatBleedTicks(inp, i);
+	float a = getStatSmite(inp, i);
 	std::cout << a;
 	return 0;
 }

@@ -246,10 +246,10 @@ int getStatAp(int stat_point, Instance instance) {
 int getStatMr(int stat_point, Instance instance) {
     switch (instance) {
         case BALANCED: {
-            // f(x) = 43 + 79.551569 * x^0.320848
+            // f(x) = 43 + 12.59 * x^0.7266
             const float A = 43.0f;
-            const float B = 79.551569f;
-            const float p = 0.320848f;
+            const float B = 12.59f;
+            const float p = 0.7266f;
             return (int)roundf(A + B * powf(stat_point, p));
         }
         case LINEAR:
@@ -260,6 +260,7 @@ int getStatMr(int stat_point, Instance instance) {
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
 }
+
 
 int getStatMrPen(int stat_point, Instance instance) {
     switch (instance) {
@@ -292,6 +293,44 @@ int getStatEthereal(int stat_point, Instance instance) {
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
+    }
+}
+
+int getStatAh(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = 14.25 * x^0.4804
+            const float B = 14.25f;
+            const float p = 0.4804f;
+            return (int)roundf(B * powf(stat_point, p));
+        }
+        case LINEAR:
+            return (int)roundf(80.0f + stat_point * 25.0f);
+        case UNFAIR:
+            return (int)roundf(120.0f + stat_point * 15.0f);
+        default:
+            return (int)roundf(100.0f + stat_point * 20.0f);
+    }
+}
+
+float getStatSmite(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
+            const float A = 3.0f;
+            const float b = 5.7f;
+            const float c = 0.073f;
+
+            float num   = expf(-b * expf(-c * stat_point)) - expf(-b);
+            float denom = 1.0f - expf(-b);
+            return A * (num / denom);
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
     }
 }
 
