@@ -92,9 +92,8 @@ void Player::damage_ad(Player* target, int damage_output) {
 	if (target->getDynStats->hp <= 0)
 		target->getDynStats->is_alive = false;
 	
-	if (vamp_healing > 0) {
-		heal((int)roundf(damage_dealt * getStatVamp(stat_points->vamp)));
-	}
+	heal((int)roundf(getStatVamp(stat_points->vamp) * damage_dealt));
+	bleed(target, damage_dealt); 
 	
 	float target_thorns = target->getStatThorns(stat_points->thorns);
 	if (target_thorns > 0) {
@@ -115,12 +114,27 @@ void Player::update_effects() {
 		dyn_stats->end_slow --;
 	//TODO mark y shield
 	//TODO seguir
+	//bleed stacks y end bleed
 }
 
-void Player::bleed(Player* player) {
-	
-	
+void Player::bleed(Player* target, int damage_dealt) {
+	 if (getStatBleed(stat_points->bleed) > rng::real01()) {		
+		 if (target->getDynStats->bleed_stacks < 10) {
+			target->getDynStats->bleed_stacks ++;
+			target->getDynStats->bleed_damage += (int)roundf((getStatBleedDmg(stat_points->bleed_dmg) * (getStatAd(stat_points->ad) + getStatAx(stat_points->ax))));
+		 }
+		 target->getDynStats->end_bleed = getStatBleedTicks(stat_points->bleed_ticks);
+	 }
 }
+
+void Player::damage_bleed(Player* target, int damage_output) {
+	int damage_dealt = reduce_ad(damage_output);
+	
+	if (target->getDynStats->hp <= 0)
+		target->getDynStats->is_alive = false;
+}
+
+
 
 void Player::attack(Team* enemies) {
 	//int acc_ticks = (int)roundf((dyn_stats->buff_acc * getStatAs(stat_points->as));
@@ -131,7 +145,6 @@ void Player::attack(Team* enemies) {
 		Player* target = selectAttackTarget(enemies);
 		int damage_output = apply_crit(getStatAd(stat_points->ad) + getStatAx(stat_points->ax)
 		damage_ad(target, damage_output);	
-		if ()	
 	} else
 		dyn_stats->next_attack--;
 }

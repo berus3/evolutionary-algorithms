@@ -53,6 +53,7 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int hp;
     int next_regen;
     int next_attack;
+    int next_bleed;
     
     int acc_ticks;
     int slow_ticks;
@@ -63,6 +64,10 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int end_mark;
     int shield_resistance;
     int mark_resistance;
+    
+    int bleed_stacks;
+    int bleed_damage;
+    int end_bleed;
     //TODO implemetar funciones para darle shield resistance y mark resistance a personajes
     //TODO implementar funciones de slow y acc (darle slow y acc a otro personaje)
 };
