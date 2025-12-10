@@ -334,6 +334,60 @@ float getStatSmite(int stat_point, Instance instance) {
     }
 }
 
+int getStatCdSmite(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = 300 + 400 * exp(-0.0693 * x)
+            const float C = 300.0f;
+            const float D = 400.0f;
+            const float k = 0.0693f;
+            return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR:
+            return (int)roundf(80.0f + stat_point * 25.0f);
+        case UNFAIR:
+            return (int)roundf(120.0f + stat_point * 15.0f);
+        default:
+            return (int)roundf(100.0f + stat_point * 20.0f);
+    }
+}
+
+float getStatBlast(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = 300 + 400 * exp(-0.0693 * x)
+            const float C = 300.0f;
+            const float D = 400.0f;
+            const float k = 0.0693f;
+            return C + D * expf(-k * stat_point);
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
+    }
+}
+
+int getStatCdBlast(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = 500 + 700 * exp(-0.0693 * x)
+            const float C = 500.0f;
+            const float D = 700.0f;
+            const float k = 0.0693f;
+            return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR:
+            return (int)roundf(80.0f + stat_point * 25.0f);
+        case UNFAIR:
+            return (int)roundf(120.0f + stat_point * 15.0f);
+        default:
+            return (int)roundf(100.0f + stat_point * 20.0f);
+    }
+}
+
 
 
 // TODO: Implement other stat functions similarly
