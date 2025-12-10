@@ -23,14 +23,14 @@ void Player::act(Team* allies, Team* enemies) {
         // shield
         // mark
     } else {
-        stats->hp = 0;
+        dyn_stats->hp = 0;
     }
 }
 
 void Player::heal(int healing) {
-	int maxHp = getStatMaxHp(stat_points->maxHp);
+	int maxHp = getStatMaxHp(stat_points->max_hp);
 	dyn_stats->hp += healing;
-	if (hp > maxHp) {
+	if (dyn_stats->hp > maxHp) {
 		dyn_stats->hp = maxHp;
 	}
 }
@@ -63,24 +63,24 @@ void Player::damage_ad(Player* player) {
 	
 }
 
-int Player::damage_ap(Player* player) {
+void Player::damage_ap(Player* player) {
 }
 
 void Player::update_effects() {
 	if (dyn_stats->end_acc == 0)
-		dyn_stats->buff_acc = 0;
+		dyn_stats->acc_ticks = 0;
 	else
 		dyn_stats->end_acc --;
 	
 	if (dyn_stats->end_slow == 0)
-		dyn_stats->nerf_slow = 0;
+		dyn_stats->slow_ticks = 0;
 	else
 		dyn_stats->end_slow --;
 	//TODO seguir
 	
 }
 
-void Player:bleed(Player* player) {
+void Player::bleed(Player* player) {
 	
 }
 
@@ -96,5 +96,6 @@ void Player::attack(Team* enemies) {
 		dyn_stats->next_attack--;
 }
 
-Player* selectAttackTarget(Team* enemies){
+Player* Player::selectAttackTarget(Team* enemies) {
+	return nullptr;
 }

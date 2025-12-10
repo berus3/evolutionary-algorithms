@@ -1,1 +1,0 @@
-/usr/bin/g++ -fPIC -g -shared -Wl,-soname,libcombat.so -o libcombat.so CMakeFiles/combat.dir/src/combat_engine.cpp.o CMakeFiles/combat.dir/src/combat_jni.cpp.o 

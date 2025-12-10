@@ -1,13 +1,15 @@
 #ifndef INSTANCE_HPP
 #define INSTANCE_HPP
 
+#include <math.h>
+
 enum Instance {
     BALANCED,
     LINEAR,
     UNFAIR
 };
 
-Instance instance;
+extern Instance instance;
 
 int getStatMaxHp(int stat_point);
 int getStatRegen(int stat_point);

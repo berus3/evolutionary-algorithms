@@ -1,5 +1,7 @@
 #include "../include/combat_engine.hpp"
 
+extern Instance instance;
+
 bool step(Team* team1, Team* team2) {
     team1->getPlayer(0)->act(team1, team2);
     team2->getPlayer(0)->act(team2, team1);
@@ -22,6 +24,7 @@ FightResult fight(Team* team1, Team* team2) {
         // make a step
 
     } while (!end);
+    return DRAW;
 }
 
 int64_t runLoop(int64_t n) {

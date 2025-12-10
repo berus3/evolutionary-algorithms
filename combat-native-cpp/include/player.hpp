@@ -1,5 +1,6 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
+
 #include "instance.hpp"
 
 struct StatPoints {
@@ -67,6 +68,15 @@ class Player {
       StatPoints* stat_points;
       DynamicStats* dyn_stats;
       bool is_alive;
+      void update_effects();
+      void regen();
+      void attack(Team* enemies);
+      Player* selectAttackTarget(Team* enemies);
+      void heal(int healing);
+      int crit_damage(int damage);
+      void damage_ad(Player* player);
+      void damage_ap(Player* player);
+      void bleed(Player* player);
   public:
       Player(int id);
       ~Player();
@@ -74,9 +84,6 @@ class Player {
       StatPoints* getStatPoints();
       void setStatPoints(StatPoints* sp);
       void act(Team* allies, Team* enemies);
-      void regen();
-      void attack(Player* player);
-      Player selectAttackTarget(Team* enemies);
       // TODO: Add methods to get/set Stats
 };
 

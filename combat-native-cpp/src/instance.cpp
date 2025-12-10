@@ -1,7 +1,6 @@
 #include "../include/instance.hpp"
-#include <math.h>
 
-extern Instance instance;
+Instance instance;
 
 int getStatMaxHp(int stat_point) {
     switch (instance) {
