@@ -88,7 +88,11 @@ class Player {
       int apply_crit(int damage);
       void damage_ad(Player* player, int damage_output);
       void damage_ap(Player* player, int damage_output);
-      void bleed(Player* player);
+      void bleed(Player* player, int damage_dealt);
+      void receive_bleed();
+      void damage_bleed(Player* player, int damage_output);
+      int reduce_ad(Player* target, int damage_output);
+      int reduce_ap(Player* target, int damage_output);
   public:
       Player(int id);
       ~Player();

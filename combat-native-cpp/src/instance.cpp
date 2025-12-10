@@ -596,7 +596,7 @@ float getStatShield(int stat_point) {
 }
 
 //depende del ap
-float getStatMarkTicks(int stat_point) {
+float getStatShieldTicks(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.8 + 0.117 * x^0.777

@@ -14,12 +14,13 @@ extern Instance instance;
 
 namespace rng {
     inline std::mt19937 gen(std::random_device{}());
-    inline std::uniform_real_distribution<double> dist(0.0, 1.0);
+    inline std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
-    inline double real01() {
+    inline float real01() {
         return dist(gen);
     }
 }
+
 
 int getStatMaxHp(int stat_point);
 int getStatRegen(int stat_point);
@@ -53,7 +54,7 @@ float getStatSlow(int stat_point);
 float getStatSlowTicks(int stat_point);
 int getStatCdSlow(int stat_point);
 float getStatShield(int stat_point);
-int getStatShieldTicks(int stat_point);
+float getStatShieldTicks(int stat_point);
 int getStatCdShield(int stat_point);
 float getStatMark(int stat_point);
 float getStatMarkTicks(int stat_point);
