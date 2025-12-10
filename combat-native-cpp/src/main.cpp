@@ -4,7 +4,7 @@ int main() {
 	Instance i = BALANCED;
 	int inp;
 	std::cin >> inp; 
-	float a = getStatAccTicks(inp, i);
+	float a = getStatTenacity(inp, i);
 	std::cout << a;
 	return 0;
 }
