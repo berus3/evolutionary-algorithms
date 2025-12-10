@@ -13,7 +13,8 @@ void Player::act(Team* allies, Team* enemies) {
         update_effects();
         regen();
         attack(enemies);
-       
+        receive_bleed();
+        
         // smite
         // blast
         // heal
@@ -35,12 +36,19 @@ void Player::heal(Player* target, int healing) {
 	}
 }
 
-void Player::regen(){
+void Player::regen() {
 	if (dyn_stats->next_regen == 0) {
 		dyn_stats->next_regen = 50;
 		heal(this, getStatRegen(stat_points->regen));
 	} else {
 		dyn_stats->next_regen--;
+	}
+}
+
+void Player::receive_bleed() {
+	if (dyn_stats->next_bleed == 0) {
+		dyn_stats->next_bleed = 100;
+		damage_bleed(this, dyn_stats->bleed_accumulated_damage);
 	}
 }
 
@@ -101,7 +109,6 @@ void Player::damage_ad(Player* target, int damage_output) {
 	}
 }
 
-
 void Player::update_effects() {
 	if (dyn_stats->end_acc == 0)
 		dyn_stats->acc_ticks = 0;
@@ -112,16 +119,31 @@ void Player::update_effects() {
 		dyn_stats->slow_ticks = 0;
 	else
 		dyn_stats->end_slow --;
-	//TODO mark y shield
+		
+	if (dyn_stats->end_mark == 0)
+		dyn_stats->mark_resistance = 0;
+	else 
+		dyn_stats->mark_resistance--;
+		
+	if (dyn_stats->end_shield == 0)
+		dyn_stats->shield_resistance = 0;
+	else 
+		dyn_stats->shield_resistance--;
+		
+	if (dyn_stats->end_bleed == 0) {
+		dyn_stats->bleed_accumulated_damage = 0;
+		dyn_stats->bleed_stacks = 0;
+	} else 
+		dyn_stats->end_bleed--;
+		
 	//TODO seguir
-	//bleed stacks y end bleed
 }
 
 void Player::bleed(Player* target, int damage_dealt) {
 	 if (getStatBleed(stat_points->bleed) > rng::real01()) {		
 		 if (target->getDynStats->bleed_stacks < 10) {
 			target->getDynStats->bleed_stacks ++;
-			target->getDynStats->bleed_damage += (int)roundf((getStatBleedDmg(stat_points->bleed_dmg) * (getStatAd(stat_points->ad) + getStatAx(stat_points->ax))));
+			target->getDynStats->bleed_accumulated_damage += (int)roundf((getStatBleedDmg(stat_points->bleed_dmg) * (getStatAd(stat_points->ad) + getStatAx(stat_points->ax))));
 		 }
 		 target->getDynStats->end_bleed = getStatBleedTicks(stat_points->bleed_ticks);
 	 }
