@@ -6,5 +6,8 @@ int main() {
 	int bla;
 	std::cin >> bla;
 	std::cout << getStatCrit(bla) << std::endl;
+	for (int i=0; i<5; i++) {
+		std::cout << i;
+	}
 	return 0;
 }

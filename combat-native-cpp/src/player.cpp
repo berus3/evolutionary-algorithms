@@ -159,9 +159,6 @@ void Player::damage_bleed(Player* target, int damage_output) {
 
 
 void Player::attack(Team* enemies) {
-	//int acc_ticks = (int)roundf((dyn_stats->buff_acc * getStatAs(stat_points->as));
-	//int slow_ticks = (int)roundf((dyn_stats->nerf_slow * getStatAs(stat_points->as));
-	
 	if ((dyn_stats->next_attack - dyn_stats->acc_ticks + dyn_stats->slow_ticks) <= 0) {
 		dyn_stats->next_attack = getStatAs(stat_points->as);
 		Player* target = selectAttackTarget(enemies);
@@ -172,5 +169,11 @@ void Player::attack(Team* enemies) {
 }
 
 Player* Player::selectAttackTarget(Team* enemies) {
+	
+	float[] weights = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+	for (int i=0; i<5; i++) {
+		
+	}
+	
 	return nullptr;
 }
