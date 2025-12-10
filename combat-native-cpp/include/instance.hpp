@@ -16,7 +16,7 @@ namespace rng {
     inline std::mt19937 gen(std::random_device{}());
     inline std::uniform_real_distribution<double> dist(0.0, 1.0);
 
-    inline double grn() {
+    inline double real01() {
         return dist(gen);
     }
 }
