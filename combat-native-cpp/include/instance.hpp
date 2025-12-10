@@ -4,10 +4,6 @@
 #include <math.h>
 #include <random>
 
-int softmax(float[] weights) {
-	
-}
-
 enum Instance {
     BALANCED,
     LINEAR,
@@ -25,6 +21,7 @@ namespace rng {
     }
 }
 
+int linear_softmax(const float* weights, int size);
 
 int getStatMaxHp(int stat_point);
 int getStatRegen(int stat_point);

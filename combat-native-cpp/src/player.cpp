@@ -1,4 +1,5 @@
 #include "../include/player.hpp"
+#include "../include/team.hpp"
 
 Player::Player(int id) { 
     this->player_id = id; 
@@ -183,7 +184,7 @@ Player* Player::selectAttackTarget(Team* enemies) {
 	float weights[5];
 	for (int i=0; i<5; i++) {
 		Player* target = enemies->getPlayer(i);
-		weights[i] = target->getStatAggro(target->getStatPoints()->aggro) + (getStatFocus(stat_points->focus) * (1-(reduced_hp[i]/denom)));
+		weights[i] = getStatAggro(target->getStatPoints()->aggro) + (getStatFocus(stat_points->focus) * (1-(reduced_hp[i]/denom)));
 	}
 	return enemies->getPlayer(linear_softmax(weights, 5));
 }

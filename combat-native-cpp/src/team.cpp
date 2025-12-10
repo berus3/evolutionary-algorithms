@@ -6,6 +6,11 @@ Team::Team(int id) {
         players[i] = nullptr;
 }
 
+Team::~Team() {
+    for (int i = 0; i < 5; i++)
+        delete players[i];
+}
+
 int Team::getId() {
     return team_id;
 }
