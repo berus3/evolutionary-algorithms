@@ -4,7 +4,7 @@ int main() {
 	Instance i = BALANCED;
 	int inp;
 	std::cin >> inp; 
-	int a = getStatCdBlast(inp, i);
+	float a = getStatAccTicks(inp, i);
 	std::cout << a;
 	return 0;
 }

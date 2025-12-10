@@ -119,11 +119,11 @@ int getStatLethality(int stat_point, Instance instance) {
 int getStatAs(int stat_point, Instance instance) {
     switch (instance) {
         case BALANCED: {
-            // f(x) = 24.42 + 135.58 * exp(-0.13786 * x)
-            const float A = 24.42f;
-            const float B = 135.58f;
-            const float k = 0.13786f;
-            return (int)roundf(A + B * expf(-k * stat_point));
+            // f(x) = 150 + 450 * exp(-0.038664 * x)
+            const float C = 30.0f;
+            const float D = 100.0f;
+            const float k = 0.048664f;
+            return (int)roundf(C + D * expf(-k * stat_point));
         }
         case LINEAR:
             return (int)roundf(80.0f + stat_point * 25.0f);
@@ -337,10 +337,10 @@ float getStatSmite(int stat_point, Instance instance) {
 int getStatCdSmite(int stat_point, Instance instance) {
     switch (instance) {
         case BALANCED: {
-            // f(x) = 300 + 400 * exp(-0.0693 * x)
-            const float C = 300.0f;
-            const float D = 400.0f;
-            const float k = 0.0693f;
+            // f(x)=150+550 e^(-0.0313 x)
+            const float C = 150.0f;
+            const float D = 550.0f;
+            const float k = 0.0313f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
         case LINEAR:
@@ -355,11 +355,14 @@ int getStatCdSmite(int stat_point, Instance instance) {
 float getStatBlast(int stat_point, Instance instance) {
     switch (instance) {
         case BALANCED: {
-            // f(x) = 300 + 400 * exp(-0.0693 * x)
-            const float C = 300.0f;
-            const float D = 400.0f;
-            const float k = 0.0693f;
-            return C + D * expf(-k * stat_point);
+            // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
+            const float A = 1.0f;
+            const float b = 5.7f;
+            const float c = 0.073f;
+
+            float num   = expf(-b * expf(-c * stat_point)) - expf(-b);
+            float denom = 1.0f - expf(-b);
+            return A * (num / denom);
         }
         case LINEAR:
             return 80.0f + stat_point * 25.0f;
@@ -370,13 +373,14 @@ float getStatBlast(int stat_point, Instance instance) {
     }
 }
 
+
 int getStatCdBlast(int stat_point, Instance instance) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 500 + 700 * exp(-0.0693 * x)
-            const float C = 500.0f;
-            const float D = 700.0f;
-            const float k = 0.0693f;
+            const float C = 400.0f;
+            const float D = 800.0f;
+            const float k = 0.0393f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
         case LINEAR:
@@ -388,6 +392,126 @@ int getStatCdBlast(int stat_point, Instance instance) {
     }
 }
 
+
+float getStatHeal(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
+            const float A = 3.0f;
+            const float b = 5.7f;
+            const float c = 0.073f;
+
+            float num   = expf(-b * expf(-c * stat_point)) - expf(-b);
+            float denom = 1.0f - expf(-b);
+            return A * (num / denom);
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
+    }
+}
+
+
+int getStatCdHeal(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = 150 + 450 * exp(-0.038664 * x)
+            const float C = 150.0f;
+            const float D = 450.0f;
+            const float k = 0.038664f;
+            return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR:
+            return (int)roundf(80.0f + stat_point * 25.0f);
+        case UNFAIR:
+            return (int)roundf(120.0f + stat_point * 15.0f);
+        default:
+            return (int)roundf(100.0f + stat_point * 20.0f);
+    }
+}
+
+float getStatStun(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
+            const float A = 2.0f;
+            const float b = 5.7f;
+            const float c = 0.073f;
+
+            float num   = expf(-b * expf(-c * stat_point)) - expf(-b);
+            float denom = 1.0f - expf(-b);
+            return A * (num / denom);
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
+    }
+}
+
+
+int getStatCdStun(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = 300 + 700 * exp(-0.038664 * x)
+            const float C = 300.0f;
+            const float D = 700.0f;
+            const float k = 0.038664f;
+            return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR:
+            return (int)roundf(80.0f + stat_point * 25.0f);
+        case UNFAIR:
+            return (int)roundf(120.0f + stat_point * 15.0f);
+        default:
+            return (int)roundf(100.0f + stat_point * 20.0f);
+    }
+}
+
+float getStatAcc(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = A * (e^{-b e^{-c x}} - e^{-b}) / (1 - e^{-b})
+            const float A = 1.0f;
+            const float b = 5.7f;
+            const float c = 0.173f;
+
+            float num   = expf(-b * expf(-c * stat_point)) - expf(-b);
+            float denom = 1.0f - expf(-b);
+            return A * (num / denom);
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
+    }
+}
+
+//depende del ap
+float getStatAccTicks(int stat_point, Instance instance) {
+    switch (instance) {
+        case BALANCED: {
+            // f(x) = 0.8 + 0.117 * x^0.777
+            const float A = 0.8f;
+            const float B = 0.117f;
+            const float p = 0.777f;
+            return A + B * powf(stat_point, p);
+        }
+        case LINEAR:
+            return 80.0f + stat_point * 25.0f;
+        case UNFAIR:
+            return 120.0f + stat_point * 15.0f;
+        default:
+            return 100.0f + stat_point * 20.0f;
+    }
+}
 
 
 // TODO: Implement other stat functions similarly
