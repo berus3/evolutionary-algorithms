@@ -2,6 +2,7 @@
 #define INSTANCE_HPP
 
 #include <math.h>
+#include <random>
 
 enum Instance {
     BALANCED,
@@ -10,6 +11,15 @@ enum Instance {
 };
 
 extern Instance instance;
+
+namespace rng {
+    inline std::mt19937 gen(std::random_device{}());
+    inline std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+    inline double grn() {
+        return dist(gen);
+    }
+}
 
 int getStatMaxHp(int stat_point);
 int getStatRegen(int stat_point);

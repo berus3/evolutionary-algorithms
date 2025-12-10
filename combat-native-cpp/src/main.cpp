@@ -2,9 +2,6 @@
 
 int main() {
 	chooseInstance(BALANCED);
-	int inp;
-	std::cin >> inp; 
-	float a = getStatCrit(inp);
-	std::cout << a;
+	std::cout << rng::real01() << std::endl;
 	return 0;
 }
