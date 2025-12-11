@@ -31,6 +31,8 @@ void Player::act(Team* allies, Team* enemies) {
         _update_effects();
         _regen();
         _attack(enemies);
+        _smite(enemies);
+        
         _receive_bleed();
         
         
@@ -523,6 +525,8 @@ void Player::_init_player() {
     this->_dyn_stats->next_bleed = 0;
     this->_dyn_stats->next_acc = _haste(getStatCdAcc(_stat_points->cd_acc));
     this->_dyn_stats->next_slow = _haste(getStatCdSlow(_stat_points->cd_slow));
+    this->_dyn_stats->next_smite = _haste(getStatCdSmite(_stat_points->cd_smite));
+    
     
     this->_dyn_stats->acc_as_ticks  = 0;
     this->_dyn_stats->acc_ah_ticks  = 0;
