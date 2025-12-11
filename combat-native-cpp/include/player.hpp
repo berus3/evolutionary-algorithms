@@ -58,6 +58,7 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int next_acc;
     int next_slow;
     int next_smite;
+    int next_blast;
     
     int acc_as_ticks;
     int acc_ah_ticks;
@@ -94,6 +95,7 @@ class Player {
       void _regen();
       void _attack(Team* enemies);
       void _smite(Team* enemies);
+      void _blast(Team* enemies);
       Player* _select_attack_target(Team* enemies);
       Player* _select_acc_target(Team* allies);
       Player* _select_slow_target(Team* enemies);

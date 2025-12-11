@@ -32,12 +32,16 @@ void Player::act(Team* allies, Team* enemies) {
         _regen();
         _attack(enemies);
         if (_stat_points->ap > 0 || _stat_points->ax > 0) {
-			if (_stat_points->smite > 0)
-				_smite(enemies);
 			if (_stat_points->acc > 0)	
 				_apply_acc(allies);
 			if (_stat_points->slow > 0)	
 				_apply_slow(enemies);
+			if (_stat_points->smite > 0)
+				_smite(enemies);
+			if (_stat_points->blast > 0)
+				_blast(enemies);
+			
+				
 		}
         _receive_bleed();
         
@@ -141,8 +145,12 @@ void Player::_damage_ad(Player* target, int damage_output) {
 	if (target->getDynStats()->hp <= 0)
 		target->_is_alive = false;
 	
-	_heal(this, (int)roundf(getStatVamp(_stat_points->vamp) * damage_dealt));
-	_bleed(target, damage_dealt); 
+	float vamp = getStatVamp(_stat_points->vamp);
+	if (vamp > 0.0f)
+		_heal(this, (int)roundf(vamp * damage_dealt));
+	
+	if (_stat_points->bleed > 0)
+		_bleed(target, damage_dealt);
 	
 	float target_thorns = getStatThorns(target->getStatPoints()->thorns);
 	if (target_thorns > 0) {
@@ -265,6 +273,18 @@ void Player::_smite(Team* enemies){
 		_damage_ap(target, (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * (getStatSmite(_stat_points->smite)));
 		}
 	else _dyn_stats->next_smite--;
+}
+
+void Player::_blast(Team* enemies){
+	if ((_dyn_stats->next_blast - _dyn_stats->acc_ah_ticks + _dyn_stats->slow_ah_ticks) <= 0) {
+		_dyn_stats->next_blast = _haste(getStatCdBlast(_stat_points->cd_blast));
+		for (int i = 0; i < 5; i++) {
+			Player* p = enemies->getPlayer(i);
+			_damage_ap(p, (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * (getStatBlast(_stat_points->blast)));
+		}
+		
+	}
+	else _dyn_stats->next_blast--;
 }
 
 Player* Player::_select_attack_target(Team* enemies) {
@@ -530,6 +550,7 @@ void Player::_init_player() {
     this->_dyn_stats->next_acc = _haste(getStatCdAcc(_stat_points->cd_acc));
     this->_dyn_stats->next_slow = _haste(getStatCdSlow(_stat_points->cd_slow));
     this->_dyn_stats->next_smite = _haste(getStatCdSmite(_stat_points->cd_smite));
+    this->_dyn_stats->next_blast = _haste(getStatCdBlast(_stat_points->cd_blast));
     
     
     this->_dyn_stats->acc_as_ticks  = 0;
