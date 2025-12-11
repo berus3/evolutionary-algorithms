@@ -40,6 +40,8 @@ void Player::act(Team* allies, Team* enemies) {
 				_smite(enemies);
 			if (_stat_points->blast > 0)
 				_blast(enemies);
+			if (_stat_points->heal > 0)
+				_heal(allies);
 			
 				
 		}
@@ -60,19 +62,19 @@ void Player::act(Team* allies, Team* enemies) {
     }
 }
 
-void Player::_heal(Player* target, int healing) {
+void Player::_raw_heal(Player* target, int healing) {
 	int maxHp = getStatMaxHp(target->getStatPoints()->max_hp);
 	target->getDynStats()->hp += healing;
 	if (target->getDynStats()->hp > maxHp) {
 		target->getDynStats()->hp = maxHp;
 	}
-	target->getDynStats()->track_hp_healed += healing;
+	target->getDynStats()->track_hp_raw_healed += healing;
 }
 
 void Player::_regen() {
 	if (_dyn_stats->next_regen == 0) {
 		_dyn_stats->next_regen = 50;
-		_heal(this, getStatRegen(_stat_points->regen));
+		_raw_heal(this, getStatRegen(_stat_points->regen));
 	} else {
 		_dyn_stats->next_regen--;
 	}
@@ -147,7 +149,7 @@ void Player::_damage_ad(Player* target, int damage_output) {
 	
 	float vamp = getStatVamp(_stat_points->vamp);
 	if (vamp > 0.0f)
-		_heal(this, (int)roundf(vamp * damage_dealt));
+		_raw_heal(this, (int)roundf(vamp * damage_dealt));
 	
 	if (_stat_points->bleed > 0)
 		_bleed(target, damage_dealt);
@@ -278,9 +280,13 @@ void Player::_smite(Team* enemies){
 void Player::_blast(Team* enemies){
 	if ((_dyn_stats->next_blast - _dyn_stats->acc_ah_ticks + _dyn_stats->slow_ah_ticks) <= 0) {
 		_dyn_stats->next_blast = _haste(getStatCdBlast(_stat_points->cd_blast));
+		int damage_output = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * (getStatBlast(_stat_points->blast));
 		for (int i = 0; i < 5; i++) {
 			Player* p = enemies->getPlayer(i);
-			_damage_ap(p, (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * (getStatBlast(_stat_points->blast)));
+			if (p && p->isAlive()) {
+				_damage_ap(p, damage_output);
+			}
+			
 		}
 		
 	}
@@ -443,7 +449,7 @@ void Player::_randomize_stats() {
         &_stat_points->blast,
         &_stat_points->cd_blast,
         &_stat_points->heal,
-        &_stat_points->cd_heal,
+        &_stat_points->cd_raw_heal,
         &_stat_points->stun,
         &_stat_points->cd_stun,
         &_stat_points->acc,
@@ -504,7 +510,7 @@ void Player::print() {
     std::cout << "blast: " <<_stat_points->blast << "\n";
     std::cout << "cd_blast: " <<_stat_points->cd_blast << "\n";
     std::cout << "heal: " <<_stat_points->heal << "\n";
-    std::cout << "cd_heal: " <<_stat_points->cd_heal << "\n";
+    std::cout << "cd_raw_heal: " <<_stat_points->cd_raw_heal << "\n";
     std::cout << "stun: " <<_stat_points->stun << "\n";
     std::cout << "cd_stun: " <<_stat_points->cd_stun << "\n";
     std::cout << "acc: " <<_stat_points->acc << "\n";
@@ -570,6 +576,6 @@ void Player::_init_player() {
     
     this->_dyn_stats->track_damage_dealt = 0;
     this->_dyn_stats->track_damage_received = 0;
-    this->_dyn_stats->track_hp_healed = 0;
+    this->_dyn_stats->track_hp_raw_healed = 0;
     //TODO agregar el resto
 }

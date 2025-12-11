@@ -19,7 +19,7 @@ std::array<std::pair<std::string, int>, 3> top3Stats(const StatPoints* sp) {
         {"Ethereal", sp->ethereal}, {"AH", sp->ah}, {"Smite", sp->smite},
         {"SmiteCD", sp->cd_smite}, {"Blast", sp->blast},
         {"BlastCD", sp->cd_blast}, {"Heal", sp->heal},
-        {"HealCD", sp->cd_heal}, {"Stun", sp->stun},
+        {"HealCD", sp->cd_raw_heal}, {"Stun", sp->stun},
         {"StunCD", sp->cd_stun}, {"Acc", sp->acc},
         {"AccTicks", sp->acc_as_ticks}, {"AccCD", sp->cd_acc},
         {"Slow", sp->slow}, {"SlowTicks", sp->slow_as_ticks},
@@ -88,7 +88,7 @@ void print_battlefield(Team* team1, Team* team2) {
             std::ostringstream td, tr, th;
             td << "Dealt="  << p->getDynStats()->track_damage_dealt;
             tr << "Taken="  << p->getDynStats()->track_damage_received;
-            th << "Heal="   << p->getDynStats()->track_hp_healed;
+            th << "Heal="   << p->getDynStats()->track_hp_raw_healed;
 
             // NEW: Effects column
             std::ostringstream effects;
