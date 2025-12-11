@@ -252,7 +252,7 @@ void Player::_attack(Team* enemies) {
 }
 
 int Player::_haste(int ticks) {
-	return ticks * (1.0f - (1.0f / (1.0f + ((getStatAh(_stat_points->ah))/100.0f)))); //=(1 - (1/(1+(L10/100))))
+	return ticks * (1.0f / (1.0f + ((getStatAh(_stat_points->ah))/100.0f))); //=1 - (1 - (1/(1+(L10/100))))
 }
 
 void Player::_apply_acc(Team* allies){

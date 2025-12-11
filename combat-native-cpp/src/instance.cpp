@@ -527,8 +527,8 @@ float getStatAccTicks(int stat_point) {
 int getStatCdAcc(int stat_point) {
     switch (instance) {
         case BALANCED: {
-            // f(x) = 100 + 300 * exp(-0.038664 * x)
-            const float C = 100.0f;
+            // f(x) = 300 + 300 * exp(-0.038664 * x)
+            const float C = 300.0f;
             const float D = 300.0f;
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
@@ -585,8 +585,8 @@ float getStatSlowTicks(int stat_point) {
 int getStatCdSlow(int stat_point) {
     switch (instance) {
         case BALANCED: {
-            // f(x) = 100 + 300 * exp(-0.038664 * x)
-            const float C = 100.0f;
+            // f(x) = 300 + 300 * exp(-0.038664 * x)
+            const float C = 300.0f;
             const float D = 300.0f;
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));

@@ -94,56 +94,57 @@ class Team; // forward declaration
 
 class Player {
   private:
-      int _player_id;
-      StatPoints* _stat_points;
-      DynamicStats* _dyn_stats;
-      bool _is_alive;
-      void _update_effects();
-      void _regen();
-      void _attack(Team* enemies);
-      void _smite(Team* enemies);
-      void _blast(Team* enemies);
-      void _heal(Team* allies);
-      void _stun(Team* enemies);
-      void _shield(Team* allies);
-      void _mark(Team* allies);
-      Player* _select_attack_target(Team* enemies);
-      Player* _select_acc_target(Team* allies);
-      Player* _select_slow_target(Team* enemies);
-      Player* _select_smite_target(Team* enemies);
-      Player* _select_heal_target(Team* allies);
-      Player* _select_stun_target(Team* enemies);
-      Player* _select_shield_target(Team* allies);
-      Player* _select_mark_target(Team* allies);
-      void _raw_heal(Player*, int healing);
-      int _apply_crit(int damage);
-      void _damage_ad(Player* player, int damage_output);
-      void _damage_ap(Player* player, int damage_output);
-      void _bleed(Player* player, int damage_dealt);
-      void _receive_bleed();
-      void _damage_bleed(Player* player, int damage_output);
-      int _reduce_ad(Player* target, int damage_output);
-      int _reduce_ap(Player* target, int damage_output);
-      void _apply_acc(Team* allies);
-      void _apply_slow(Team* enemies);
-      int _haste(int);
-      
-      void _init_player();
-      void _randomize_stats();
+	int _player_id;
+	StatPoints* _stat_points;
+	DynamicStats* _dyn_stats;
+	bool _is_alive;
+	void _update_effects();
+	void _regen();
+	void _attack(Team* enemies);
+	void _smite(Team* enemies);
+	void _blast(Team* enemies);
+	void _heal(Team* allies);
+	void _stun(Team* enemies);
+	void _shield(Team* allies);
+	void _mark(Team* allies);
+	Player* _select_attack_target(Team* enemies);
+	Player* _select_acc_target(Team* allies);
+	Player* _select_slow_target(Team* enemies);
+	Player* _select_smite_target(Team* enemies);
+	Player* _select_heal_target(Team* allies);
+	Player* _select_stun_target(Team* enemies);
+	Player* _select_shield_target(Team* allies);
+	Player* _select_mark_target(Team* allies);
+	void _raw_heal(Player*, int healing);
+	int _apply_crit(int damage);
+	void _damage_ad(Player* player, int damage_output);
+	void _damage_ap(Player* player, int damage_output);
+	void _bleed(Player* player, int damage_dealt);
+	void _receive_bleed();
+	void _damage_bleed(Player* player, int damage_output);
+	int _reduce_ad(Player* target, int damage_output);
+	int _reduce_ap(Player* target, int damage_output);
+	void _apply_acc(Team* allies);
+	void _apply_slow(Team* enemies);
+
+
+	void _init_player();
+	void _randomize_stats();
   public:
-      Player(int id);
-      Player();
-      ~Player();
-      int getId();
-      StatPoints* getStatPoints();
-      bool isAlive() {return _is_alive;}
-      void setStatPoints(StatPoints* sp);
-      DynamicStats* getDynStats();
-      void setDynStats(DynamicStats* ds);
-      void print();
-      void act(Team* allies, Team* enemies);
-      int lastAttacked;
-      // TODO: Add methods to get/set Stats
+	int _haste(int); //TODO make private
+	Player(int id);
+	Player();
+	~Player();
+	int getId();
+	StatPoints* getStatPoints();
+	bool isAlive() {return _is_alive;}
+	void setStatPoints(StatPoints* sp);
+	DynamicStats* getDynStats();
+	void setDynStats(DynamicStats* ds);
+	void print();
+	void act(Team* allies, Team* enemies);
+	int lastAttacked;
+	// TODO: Add methods to get/set Stats
 };
 
 #endif // PLAYER_HPP
