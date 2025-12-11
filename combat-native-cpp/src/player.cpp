@@ -29,21 +29,23 @@ void Player::setStatPoints(StatPoints* sp) { _stat_points = sp; }
 void Player::act(Team* allies, Team* enemies) {
     if (_is_alive) {
         _update_effects();
-        _regen();
-        _attack(enemies);
-        if (_stat_points->ap > 0 || _stat_points->ax > 0) {
-			if (_stat_points->acc > 0)	
-				_apply_acc(allies);
-			if (_stat_points->slow > 0)	
-				_apply_slow(enemies);
-			if (_stat_points->smite > 0)
-				_smite(enemies);
-			if (_stat_points->blast > 0)
-				_blast(enemies);
-			if (_stat_points->heal > 0)
-				_heal(allies);
-			
-				
+        if (_dyn_stats->end_stun == 0) {
+			_regen();
+			_attack(enemies);
+			if (_stat_points->ap > 0 || _stat_points->ax > 0) {
+				if (_stat_points->acc > 0)	
+					_apply_acc(allies);
+				if (_stat_points->slow > 0)	
+					_apply_slow(enemies);
+				if (_stat_points->smite > 0)
+					_smite(enemies);
+				if (_stat_points->blast > 0)
+					_blast(enemies);
+				if (_stat_points->heal > 0)
+					_heal(allies);
+				if (_stat_points->stun > 0)
+					_stun(enemies);
+			}		
 		}
         _receive_bleed();
         
@@ -191,6 +193,9 @@ void Player::_update_effects() {
 	} else 
 		_dyn_stats->end_bleed--;
 		
+	if (_dyn_stats->end_stun > 0)
+		_dyn_stats->end_stun--;
+		
 	//TODO seguir
 }
 
@@ -302,6 +307,19 @@ void Player::_heal(Team* allies){
 		_raw_heal(target, (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * (getStatHeal(_stat_points->heal)));
 		}
 	else _dyn_stats->next_heal--;
+}
+
+void Player::_stun(Team* enemies){
+	if ((_dyn_stats->next_stun - _dyn_stats->acc_ah_ticks + _dyn_stats->slow_ah_ticks) <= 0) {
+		_dyn_stats->next_stun = _haste(getStatCdStun(_stat_points->cd_stun));
+		Player* target = _select_stun_target(enemies);
+		if (target == nullptr)
+			return;
+		else {
+			target->getDynStats()->end_stun = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatStun(_stat_points->stun); // (ap + ax) * stun
+		}
+	} else
+		_dyn_stats->next_stun--;
 }
 
 Player* Player::_select_attack_target(Team* enemies) {
@@ -469,6 +487,41 @@ Player* Player::_select_heal_target(Team* allies) {
 }
 
 
+Player* Player::_select_stun_target(Team* enemies) {
+	std::vector<Player*> alive_enemies;
+    alive_enemies.reserve(5);
+    for (int i = 0; i < 5; i++) {
+        Player* p = enemies->getPlayer(i);
+        if (p->isAlive()) {
+            alive_enemies.push_back(p);
+        }
+    }
+    if (alive_enemies.empty())
+        return nullptr; 
+    size_t n = alive_enemies.size();
+    std::vector<int> utility(n);
+    int denom = 0;
+    for (size_t i = 0; i < n; i++) { // calculate utility as ad+ap+ax+focus (heuristic, could change)
+        int ad = getStatAd(alive_enemies[i]->getStatPoints()->ad);
+        int ap = getStatAd(alive_enemies[i]->getStatPoints()->ap);
+        int ax = getStatAd(alive_enemies[i]->getStatPoints()->ax);
+        int foc = getStatFocus(alive_enemies[i]->getStatPoints()->focus);
+        int enemy_utility = ad + ap + ax + foc;
+        
+        utility[i] = enemy_utility;
+        denom += enemy_utility;
+    }
+    if (denom == 0)
+        denom = 1; // evitar división entre cero
+    std::vector<float> weights(n);
+    for (size_t i = 0; i < n; i++) {
+        float ratio = utility[i] / float(denom);
+        weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
+    }
+    return alive_enemies[ linear_softmax(weights.data(), n) ];
+}
+
+
 void Player::_randomize_stats() {
     int* stats[] = {
         &_stat_points->max_hp,
@@ -602,7 +655,7 @@ void Player::_init_player() {
     this->_dyn_stats->next_smite = _haste(getStatCdSmite(_stat_points->cd_smite));
     this->_dyn_stats->next_blast = _haste(getStatCdBlast(_stat_points->cd_blast));
     this->_dyn_stats->next_heal = _haste(getStatCdHeal(_stat_points->cd_heal));
-    
+    this->_dyn_stats->next_stun = _haste(getStatCdStun(_stat_points->cd_stun));
     
     this->_dyn_stats->acc_as_ticks  = 0;
     this->_dyn_stats->acc_ah_ticks  = 0;
@@ -613,6 +666,7 @@ void Player::_init_player() {
     this->_dyn_stats->end_slow = 0;
     this->_dyn_stats->end_shield = 0;
     this->_dyn_stats->end_mark = 0;
+    this->_dyn_stats->end_stun = 0;
     this->_dyn_stats->shield_resistance = 0;
     this->_dyn_stats->mark_resistance = 0;
     this->_dyn_stats->bleed_stacks = 0;
