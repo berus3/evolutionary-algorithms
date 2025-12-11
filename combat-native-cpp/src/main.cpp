@@ -23,7 +23,7 @@ int main() {
 		int cooldown = target->_haste(getStatCdAcc(target->getStatPoints()->cd_acc));
 		std::cout << "el acc dura " << ticks_duracion_acc << " ticks y se tiene cada " << cooldown  << " ticks" << "\n";
 		*/
-		
+		/*
 		//Player 0: adc
 		t1->getPlayer(0)->getStatPoints()->ad = 25;
 		t1->getPlayer(0)->getStatPoints()->as = 20;
@@ -58,7 +58,31 @@ int main() {
 		t1->getPlayer(4)->getStatPoints()->blast = 40;
 		t1->getPlayer(4)->getStatPoints()->cd_blast = 20;
 		
+		*/
 		
+        //Player 0: adc
+        t1->getPlayer(0)->getStatPoints()->ad = 20;
+        t1->getPlayer(0)->getStatPoints()->crit = 20;
+        t1->getPlayer(0)->getStatPoints()->crit_factor = 20;
+        t1->getPlayer(0)->getStatPoints()->focus = 40;
+
+
+        //Player 1: tanque
+        t1->getPlayer(1)->getStatPoints()->max_hp = 40;
+        t1->getPlayer(1)->getStatPoints()->aggro = 50;
+        t1->getPlayer(1)->getStatPoints()->regen = 10;
+        //Player 2: tanque
+        t1->getPlayer(2)->getStatPoints()->max_hp = 40;
+        t1->getPlayer(2)->getStatPoints()->aggro = 50;
+        t1->getPlayer(2)->getStatPoints()->regen = 10;
+        //Player 3: tanque
+        t1->getPlayer(3)->getStatPoints()->max_hp = 40;
+        t1->getPlayer(3)->getStatPoints()->aggro = 50;
+        t1->getPlayer(3)->getStatPoints()->regen = 10;
+        //Player 4: tanque
+        t1->getPlayer(4)->getStatPoints()->max_hp = 40;
+        t1->getPlayer(4)->getStatPoints()->aggro = 50;
+        t1->getPlayer(4)->getStatPoints()->regen = 10;
 		//Player 0: adc
         t2->getPlayer(0)->getStatPoints()->ad = 20;
         t2->getPlayer(0)->getStatPoints()->as = 20;

@@ -190,7 +190,34 @@ bool step(Team* team1, Team* team2) {
 		&& (team2->getPlayer(0)->isAlive() || team2->getPlayer(1)->isAlive() || team2->getPlayer(2)->isAlive() || team2->getPlayer(3)->isAlive() || team2->getPlayer(4)->isAlive()));
 }
 
+int[100] wins(Team[100]) {
+	//
+}
 
+FightResult bo3(Team* team1, Team* team2) {
+	int wins_team_1 = 0;
+	int wins_team_2 = 0;
+	
+	//first match
+	if (fight(team1, team2) == TEAM1_WIN)
+		wins_team_1++;
+	else
+		wins_team_2++;
+		
+	//second match
+	if (fight(team1, team2) == TEAM1_WIN)
+		wins_team_1++;
+	else
+		wins_team_2++;
+	
+	if (wins_team_1 == 2)
+		return TEAM1_WIN;
+	if (wins_team_2 == 2)
+		return TEAM2_WIN;
+	
+	//final match
+	return (fight(team1, team2));
+}
 
 FightResult fight(Team* team1, Team* team2) {
     bool end = false;
@@ -202,16 +229,14 @@ FightResult fight(Team* team1, Team* team2) {
         if (end) {
             if (team1_alive && !team2_alive)
                 return TEAM1_WIN;
-            else if (!team1_alive && team2_alive)
-                return TEAM2_WIN;
-            else
-                return DRAW;
+            else 
+				return TEAM2_WIN;
         }
-        ++it;
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        ++it; //TODO BORRAR
+		//std::this_thread::sleep_for(std::chrono::milliseconds(10));
     } while (!end);
     std::cout << "Fight ended in " << it << " iterations.\n";
-    return DRAW;
+    return TEAM1_WIN;
 }
 
 int64_t runLoop(int64_t n) {

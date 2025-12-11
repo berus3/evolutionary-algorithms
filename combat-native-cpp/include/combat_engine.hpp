@@ -15,8 +15,7 @@
 
 enum FightResult {
     TEAM1_WIN,
-    TEAM2_WIN,
-    DRAW
+    TEAM2_WIN
 };
 
 void print_battlefield(Team* team1, Team* team2);

@@ -137,8 +137,10 @@ void Player::_damage_ap(Player* target, int damage_output) {
 	target->getDynStats()->track_damage_received += damage_dealt;
 	_dyn_stats->track_damage_dealt += damage_dealt;
 	
-	if (target->getDynStats()->hp <= 0)
+	if (target->getDynStats()->hp <= 0) {
+		target->getDynStats()->hp = 0;
 		target->_is_alive = false;
+	}
 }
 
 void Player::_damage_ad(Player* target, int damage_output) {
@@ -149,9 +151,10 @@ void Player::_damage_ad(Player* target, int damage_output) {
 	target->getDynStats()->track_damage_received += damage_dealt;
 	_dyn_stats->track_damage_dealt += damage_dealt;
 	
-	if (target->getDynStats()->hp <= 0)
+	if (target->getDynStats()->hp <= 0) {
+		target->getDynStats()->hp = 0;
 		target->_is_alive = false;
-	
+	}
 	float vamp = getStatVamp(_stat_points->vamp);
 	if (vamp > 0.0f)
 		_raw_heal(this, (int)roundf(vamp * damage_dealt));
@@ -233,8 +236,10 @@ void Player::_damage_bleed(Player* target, int damage_dealt) {
 	
 	target->getDynStats()->track_damage_received += damage_dealt;
 	
-	if (target->getDynStats()->hp <= 0)
+	if (target->getDynStats()->hp <= 0) {
+		target->getDynStats()->hp = 0;
 		target->_is_alive = false;
+	}
 }
 
 
