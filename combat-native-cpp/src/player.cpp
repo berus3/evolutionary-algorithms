@@ -18,6 +18,238 @@ Player::Player() {
     _init_player();    
 }
 
+Player::~Player() {
+	delete this->_stat_points;
+	delete this->_dyn_stats;
+}
+int Player::getId() { return _player_id; }
+StatPoints* Player::getStatPoints() { return _stat_points; }
+DynamicStats* Player::getDynStats() { return _dyn_stats; }
+void Player::setStatPoints(StatPoints* sp) { _stat_points = sp; }
+void Player::act(Team* allies, Team* enemies) {
+    if (_is_alive) {
+        _update_effects();
+        _regen();
+        _attack(enemies);
+        _receive_bleed();
+        
+        _apply_acc(allies);
+        // acc
+        // slow
+        // shield
+        // mark
+        // smite
+        // blast
+        // heal
+        // stun
+        
+    } else {
+        _dyn_stats->hp = 0;
+    }
+}
+
+void Player::_heal(Player* target, int healing) {
+	int maxHp = getStatMaxHp(target->getStatPoints()->max_hp);
+	target->getDynStats()->hp += healing;
+	if (target->getDynStats()->hp > maxHp) {
+		target->getDynStats()->hp = maxHp;
+	}
+}
+
+void Player::_regen() {
+	if (_dyn_stats->next_regen == 0) {
+		_dyn_stats->next_regen = 50;
+		_heal(this, getStatRegen(_stat_points->regen));
+	} else {
+		_dyn_stats->next_regen--;
+	}
+}
+
+void Player::_receive_bleed() {
+	if (_dyn_stats->next_bleed == 0) {
+		_dyn_stats->next_bleed = 100;
+		_damage_bleed(this, _dyn_stats->bleed_accumulated_damage);
+	}
+}
+
+int Player::_apply_crit(int damage) {
+	if (getStatCrit(_stat_points->crit) > rng::real01()) {
+		damage = (int)roundf(damage * getStatCritFactor(_stat_points->crit_factor));
+	}
+	return damage;
+}
+
+int Player::_reduce_ad(Player* target, int damage_output) {
+	int total_armor = getStatArmor(target->getStatPoints()->armor); //armor base
+	total_armor = (int)roundf(total_armor * (1.0f - getStatArmorPen(_stat_points->armor_pen))) - getStatLethality(_stat_points->lethality); //aplicar armor-pen y lethality
+	
+	if (target->getDynStats()->end_shield > 0)
+		total_armor += target->getDynStats()->shield_resistance;
+	
+	if (target->getDynStats()->end_mark > 0)
+		total_armor -= target->getDynStats()->mark_resistance;
+		
+	float reduction = 1.0f - (100.0f / (100.0f + total_armor)); //(1-(100/(100+armor)))
+	return (int)roundf(damage_output * reduction);
+}
+
+int Player::_reduce_ap(Player* target, int damage_output) {
+	int total_mr = getStatMr(target->getStatPoints()->mr); //mr base
+	total_mr = (int)roundf(total_mr * (1 - getStatMrPen(_stat_points->mr_pen))) - getStatEthereal(_stat_points->ethereal); //aplicar mr-pen y ethereal
+	
+	if (target->getDynStats()->end_shield > 0)
+		total_mr += target->getDynStats()->shield_resistance;
+	
+	if (target->getDynStats()->end_mark > 0)
+		total_mr -= target->getDynStats()->mark_resistance;
+		
+	float reduction = 1.0f - (100.0f / (100.0f + total_mr)); //(1-(100/(100+armor)))
+	return (int)roundf(damage_output * reduction);
+}
+
+void Player::_damage_ap(Player* target, int damage_output) {
+	int damage_dealt = _reduce_ap(target, damage_output);
+	target->getDynStats()->hp -= damage_dealt;
+
+	if (target->getDynStats()->hp <= 0)
+		target->_is_alive = false;
+}
+
+void Player::_damage_ad(Player* target, int damage_output) {
+	int damage_dealt = _reduce_ad(target, damage_output);
+	target->getDynStats()->hp -= damage_dealt;
+	lastAttacked = target->getId();
+	if (target->getDynStats()->hp <= 0)
+		target->_is_alive = false;
+	
+	_heal(this, (int)roundf(getStatVamp(_stat_points->vamp) * damage_dealt));
+	_bleed(target, damage_dealt); 
+	
+	float target_thorns = getStatThorns(target->getStatPoints()->thorns);
+	if (target_thorns > 0) {
+		_damage_ap(this, (int)roundf(damage_dealt * target_thorns)); //TODO: verificar lógica
+	}
+}
+
+void Player::_update_effects() {
+	if (_dyn_stats->end_acc == 0)
+		_dyn_stats->acc_as_ticks = 0;
+	else
+		_dyn_stats->end_acc --;
+	
+	if (_dyn_stats->end_slow == 0)
+		_dyn_stats->slow_as_ticks = 0;
+	else
+		_dyn_stats->end_slow --;
+		
+	if (_dyn_stats->end_mark == 0)
+		_dyn_stats->mark_resistance = 0;
+	else 
+		_dyn_stats->mark_resistance--;
+		
+	if (_dyn_stats->end_shield == 0)
+		_dyn_stats->shield_resistance = 0;
+	else 
+		_dyn_stats->shield_resistance--;
+		
+	if (_dyn_stats->end_bleed == 0) {
+		_dyn_stats->bleed_accumulated_damage = 0;
+		_dyn_stats->bleed_stacks = 0;
+	} else 
+		_dyn_stats->end_bleed--;
+		
+	//TODO seguir
+}
+
+void Player::_bleed(Player* target, int damage_dealt) {
+	 if (getStatBleed(_stat_points->bleed) > rng::real01()) {		
+		 if (target->getDynStats()->bleed_stacks < 10) {
+			target->getDynStats()->bleed_stacks ++;
+			target->getDynStats()->bleed_accumulated_damage += (int)roundf((getStatBleedDmg(_stat_points->bleed_dmg) * (getStatAd(_stat_points->ad) + getStatAx(_stat_points->ax))));
+		 }
+		 target->getDynStats()->end_bleed = getStatBleedTicks(_stat_points->bleed_ticks);
+	 }
+}
+
+void Player::_damage_bleed(Player* target, int damage_output) {
+	int damage_dealt = _reduce_ad(target, damage_output);
+	target->getDynStats()->hp -= damage_dealt;
+	
+	if (target->getDynStats()->hp <= 0)
+		target->_is_alive = false;
+}
+
+
+
+void Player::_attack(Team* enemies) {
+	if ((_dyn_stats->next_attack - _dyn_stats->acc_as_ticks + _dyn_stats->slow_as_ticks) <= 0) {
+		_dyn_stats->next_attack = getStatAs(_stat_points->as);
+		Player* target = _select_attack_target(enemies);
+		if (target == nullptr)
+			return;
+		int damage_output = _apply_crit(getStatAd(_stat_points->ad) + getStatAx(_stat_points->ax));
+		_damage_ad(target, damage_output);	
+	} else
+		_dyn_stats->next_attack--;
+}
+
+int Player::_haste(int ticks) {
+	return ticks * (1.0f - (1.0f / (1.0f + ((getStatAh(_stat_points->ah))/100.0f)))); //=(1 - (1/(1+(L10/100))))
+}
+
+void Player::_apply_acc(Team* allies){
+	if ((_dyn_stats->next_acc - _dyn_stats->acc_ah_ticks + _dyn_stats->slow_ah_ticks) <= 0) {
+		_dyn_stats->next_acc = _haste(getStatAcc(_stat_points->acc));
+		Player* target = _select_acc_target(allies);
+		if (target == nullptr)
+			return;
+		else {
+			target->getDynStats()->end_acc = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatAccTicks(_stat_points->acc_as_ticks) // (ap + ax) * acc ticks
+			target->getDynStats()->acc_as_ticks = getStatAs(target->_stat_points->as) * getStatAcc(_stat_points->acc); // ally_as * acc
+			target->getDynStats()->acc_ah_ticks = getStatAh(target->_stat_points->ah) * getStatAcc(_stat_points->acc); // ally_ah * acc
+		
+		}
+	} else
+		_dyn_stats->next_attack--;
+}
+
+Player* Player::_select_attack_target(Team* enemies) {
+    std::vector<Player*> alive_enemies;
+    alive_enemies.reserve(5);
+    for (int i = 0; i < 5; i++) {
+        Player* p = enemies->getPlayer(i);
+        if (p->isAlive()) {
+            alive_enemies.push_back(p);
+        }
+    }
+    if (alive_enemies.empty())
+        return nullptr; // o lo que corresponda
+    size_t n = alive_enemies.size();
+    std::vector<int> reduced_hp(n);
+    int denom = 0;
+    for (size_t i = 0; i < n; i++) { // calcular hp reducida
+        int hp = alive_enemies[i]->getDynStats()->hp;
+        int red = _reduce_ad(alive_enemies[i], hp);
+        reduced_hp[i] = red;
+        denom += red;
+    }
+    if (denom == 0)
+        denom = 1; // evitar división por cero
+    std::vector<float> weights(n);
+    for (size_t i = 0; i < n; i++) {
+        float ratio = reduced_hp[i] / float(denom);
+        weights[i] = 
+            getStatAggro(alive_enemies[i]->getStatPoints()->aggro) +
+            getStatFocus(_stat_points->focus) * (1.0f - ratio);
+    }
+    return alive_enemies[ linear_softmax(weights.data(), n) ];
+}
+
+Player* Player::_select_acc_target(Team* allies) {
+	return nullptr;
+}
+
+
 void Player::_randomize_stats() {
     int* stats[] = {
         &_stat_points->max_hp,
@@ -46,10 +278,10 @@ void Player::_randomize_stats() {
         &_stat_points->stun,
         &_stat_points->cd_stun,
         &_stat_points->acc,
-        &_stat_points->acc_ticks,
+        &_stat_points->acc_as_ticks,
         &_stat_points->cd_acc,
         &_stat_points->slow,
-        &_stat_points->slow_ticks,
+        &_stat_points->slow_as_ticks,
         &_stat_points->cd_slow,
         &_stat_points->shield,
         &_stat_points->shield_ticks,
@@ -107,10 +339,10 @@ void Player::print() {
     std::cout << "stun: " <<_stat_points->stun << "\n";
     std::cout << "cd_stun: " <<_stat_points->cd_stun << "\n";
     std::cout << "acc: " <<_stat_points->acc << "\n";
-    std::cout << "acc_ticks: " <<_stat_points->acc_ticks << "\n";
+    std::cout << "acc_as_ticks: " <<_stat_points->acc_as_ticks << "\n";
     std::cout << "cd_acc: " <<_stat_points->cd_acc << "\n";
     std::cout << "slow: " <<_stat_points->slow << "\n";
-    std::cout << "slow_ticks: " <<_stat_points->slow_ticks << "\n";
+    std::cout << "slow_as_ticks: " <<_stat_points->slow_as_ticks << "\n";
     std::cout << "cd_slow: " <<_stat_points->cd_slow << "\n";
     std::cout << "shield: " <<_stat_points->shield << "\n";
     std::cout << "shield_ticks: " <<_stat_points->shield_ticks << "\n";
@@ -129,8 +361,8 @@ void Player::print() {
     std::cout << "hp: " <<_dyn_stats->hp << "\n";
     std::cout << "next_regen: " <<_dyn_stats->next_regen << "\n";
     std::cout << "next_attack: " <<_dyn_stats->next_attack << "\n";
-    std::cout << "acc_ticks: " <<_dyn_stats->acc_ticks << "\n";
-    std::cout << "slow_ticks: " <<_dyn_stats->slow_ticks << "\n";
+    std::cout << "acc_as_ticks: " <<_dyn_stats->acc_as_ticks << "\n";
+    std::cout << "slow_as_ticks: " <<_dyn_stats->slow_as_ticks << "\n";
     std::cout << "end_acc: " <<_dyn_stats->end_acc << "\n";
     std::cout << "end_slow: " <<_dyn_stats->end_slow << "\n";
     std::cout << "end_shield: " <<_dyn_stats->end_shield << "\n";
@@ -146,8 +378,8 @@ void Player::_init_player() {
     this->_dyn_stats->next_regen = 50;
     this->_dyn_stats->next_attack = getStatAs(_stat_points->as);
     this->_dyn_stats->next_bleed = 0;
-    this->_dyn_stats->acc_ticks = 0;
-    this->_dyn_stats->slow_ticks = 0;
+    this->_dyn_stats->acc_as_ticks = 0;
+    this->_dyn_stats->slow_as_ticks = 0;
     this->_dyn_stats->end_acc = 0;
     this->_dyn_stats->end_slow = 0;
     this->_dyn_stats->end_shield = 0;
@@ -159,209 +391,3 @@ void Player::_init_player() {
     this->_dyn_stats->end_bleed = 0;
     //TODO agregar el resto
 }
-
-Player::~Player() {
-	delete this->_stat_points;
-	delete this->_dyn_stats;
-}
-int Player::getId() { return _player_id; }
-StatPoints* Player::getStatPoints() { return _stat_points; }
-DynamicStats* Player::getDynStats() { return _dyn_stats; }
-void Player::setStatPoints(StatPoints* sp) { _stat_points = sp; }
-void Player::act(Team* allies, Team* enemies) {
-    if (_is_alive) {
-        _update_effects();
-        _regen();
-        _attack(enemies);
-        _receive_bleed();
-        
-        // smite
-        // blast
-        // heal
-        // stun
-        // acc
-        // slow
-        // shield
-        // mark
-    } else {
-        _dyn_stats->hp = 0;
-    }
-}
-
-void Player::_heal(Player* target, int healing) {
-	int maxHp = getStatMaxHp(target->getStatPoints()->max_hp);
-	target->getDynStats()->hp += healing;
-	if (target->getDynStats()->hp > maxHp) {
-		target->getDynStats()->hp = maxHp;
-	}
-}
-
-void Player::_regen() {
-	if (_dyn_stats->next_regen == 0) {
-		_dyn_stats->next_regen = 50;
-		_heal(this, getStatRegen(_stat_points->regen));
-	} else {
-		_dyn_stats->next_regen--;
-	}
-}
-
-void Player::_receive_bleed() {
-	if (_dyn_stats->next_bleed == 0) {
-		_dyn_stats->next_bleed = 100;
-		_damage_bleed(this, _dyn_stats->bleed_accumulated_damage);
-	}
-}
-
-int Player::_apply_crit(int damage) {
-	if (getStatCrit(_stat_points->crit) > rng::real01()) {
-		damage = (int)roundf(damage * getStatCritFactor(_stat_points->crit_factor));
-	}
-	return damage;
-}
-
-int Player::_reduce_ad(Player* target, int damage_output) {
-	int total_armor = getStatArmor(target->getStatPoints()->armor); //armor base
-	total_armor = (int)roundf(total_armor * (1 - getStatArmorPen(_stat_points->armor_pen))) - getStatLethality(_stat_points->lethality); //aplicar armor-pen y lethality
-	
-	if (target->getDynStats()->end_shield > 0)
-		total_armor += target->getDynStats()->shield_resistance;
-	
-	if (target->getDynStats()->end_mark > 0)
-		total_armor -= target->getDynStats()->mark_resistance;
-		
-	float reduction = 1.0f - (100.0f / (100.0f + total_armor)); //(1-(100/(100+armor)))
-	return (int)roundf(damage_output * reduction);
-}
-
-int Player::_reduce_ap(Player* target, int damage_output) {
-	int total_mr = getStatMr(target->getStatPoints()->mr); //mr base
-	total_mr = (int)roundf(total_mr * (1 - getStatMrPen(_stat_points->mr_pen))) - getStatEthereal(_stat_points->ethereal); //aplicar mr-pen y ethereal
-	
-	if (target->getDynStats()->end_shield > 0)
-		total_mr += target->getDynStats()->shield_resistance;
-	
-	if (target->getDynStats()->end_mark > 0)
-		total_mr -= target->getDynStats()->mark_resistance;
-		
-	float reduction = 1.0f - (100.0f / (100.0f + total_mr)); //(1-(100/(100+armor)))
-	return (int)roundf(damage_output * reduction);
-}
-
-void Player::_damage_ap(Player* target, int damage_output) {
-	int damage_dealt = _reduce_ap(target, damage_output);
-	target->getDynStats()->hp -= damage_dealt;
-
-	if (target->getDynStats()->hp <= 0)
-		target->_is_alive = false;
-}
-
-void Player::_damage_ad(Player* target, int damage_output) {
-	int damage_dealt = _reduce_ad(target, damage_output);
-	target->getDynStats()->hp -= damage_dealt;
-	lastAttacked = target->getId();
-	if (target->getDynStats()->hp <= 0)
-		target->_is_alive = false;
-	
-	_heal(this, (int)roundf(getStatVamp(_stat_points->vamp) * damage_dealt));
-	_bleed(target, damage_dealt); 
-	
-	float target_thorns = getStatThorns(target->getStatPoints()->thorns);
-	if (target_thorns > 0) {
-		_damage_ap(this, (int)roundf(damage_dealt * target_thorns)); //TODO: verificar lógica
-	}
-}
-
-void Player::_update_effects() {
-	if (_dyn_stats->end_acc == 0)
-		_dyn_stats->acc_ticks = 0;
-	else
-		_dyn_stats->end_acc --;
-	
-	if (_dyn_stats->end_slow == 0)
-		_dyn_stats->slow_ticks = 0;
-	else
-		_dyn_stats->end_slow --;
-		
-	if (_dyn_stats->end_mark == 0)
-		_dyn_stats->mark_resistance = 0;
-	else 
-		_dyn_stats->mark_resistance--;
-		
-	if (_dyn_stats->end_shield == 0)
-		_dyn_stats->shield_resistance = 0;
-	else 
-		_dyn_stats->shield_resistance--;
-		
-	if (_dyn_stats->end_bleed == 0) {
-		_dyn_stats->bleed_accumulated_damage = 0;
-		_dyn_stats->bleed_stacks = 0;
-	} else 
-		_dyn_stats->end_bleed--;
-		
-	//TODO seguir
-}
-
-void Player::_bleed(Player* target, int damage_dealt) {
-	 if (getStatBleed(_stat_points->bleed) > rng::real01()) {		
-		 if (target->getDynStats()->bleed_stacks < 10) {
-			target->getDynStats()->bleed_stacks ++;
-			target->getDynStats()->bleed_accumulated_damage += (int)roundf((getStatBleedDmg(_stat_points->bleed_dmg) * (getStatAd(_stat_points->ad) + getStatAx(_stat_points->ax))));
-		 }
-		 target->getDynStats()->end_bleed = getStatBleedTicks(_stat_points->bleed_ticks);
-	 }
-}
-
-void Player::_damage_bleed(Player* target, int damage_output) {
-	int damage_dealt = _reduce_ad(target, damage_output);
-	target->getDynStats()->hp -= damage_dealt;
-	
-	if (target->getDynStats()->hp <= 0)
-		target->_is_alive = false;
-}
-
-
-
-void Player::_attack(Team* enemies) {
-	if ((_dyn_stats->next_attack - _dyn_stats->acc_ticks + _dyn_stats->slow_ticks) <= 0) {
-		_dyn_stats->next_attack = getStatAs(_stat_points->as);
-		Player* target = _select_attack_target(enemies);
-		if (target == nullptr)
-			return;
-		int damage_output = _apply_crit(getStatAd(_stat_points->ad) + getStatAx(_stat_points->ax));
-		_damage_ad(target, damage_output);	
-	} else
-		_dyn_stats->next_attack--;
-}
-
-Player* Player::_select_attack_target(Team* enemies) {
-    std::vector<Player*> alive_enemies;
-    alive_enemies.reserve(5);
-    for (int i = 0; i < 5; i++) {
-        Player* p = enemies->getPlayer(i);
-        if (p->isAlive()) {
-            alive_enemies.push_back(p);
-        }
-    }
-    if (alive_enemies.empty())
-        return nullptr; // o lo que corresponda
-    size_t n = alive_enemies.size();
-    std::vector<int> reduced_hp(n);
-    int denom = 0;
-    for (size_t i = 0; i < n; i++) { // calcular hp reducida
-        int hp = alive_enemies[i]->getDynStats()->hp;
-        int red = _reduce_ad(alive_enemies[i], hp);
-        reduced_hp[i] = red;
-        denom += red;
-    }
-    if (denom == 0)
-        denom = 1; // evitar división por cero
-    std::vector<float> weights(n);
-    for (size_t i = 0; i < n; i++) {
-        float ratio = reduced_hp[i] / float(denom);
-        weights[i] = 
-            getStatAggro(alive_enemies[i]->getStatPoints()->aggro) +
-            getStatFocus(_stat_points->focus) * (1.0f - ratio);
-    }
-    return alive_enemies[ linear_softmax(weights.data(), n) ];
-}
-

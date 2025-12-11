@@ -31,10 +31,10 @@ struct StatPoints {
     int stun;
     int cd_stun;
     int acc;
-    int acc_ticks;
+    int acc_as_ticks;
     int cd_acc;
     int slow;
-    int slow_ticks;
+    int slow_as_ticks;
     int cd_slow;
     int shield;
     int shield_ticks;
@@ -54,10 +54,13 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int hp;
     int next_regen;
     int next_attack;
-    int next_bleed;
+    int next_bleed; //received, not dealt
+    int next_acc;
     
-    int acc_ticks;
-    int slow_ticks;
+    int acc_as_ticks;
+    int acc_ah_ticks;
+    int slow_as_ticks;
+    int slow_ah_ticks;
     int end_acc;
     int end_slow;
     
