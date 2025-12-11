@@ -4,6 +4,8 @@
 
 Player::Player(int id) {
     _player_id = id;
+		this->_stat_points = new StatPoints();
+		this->_dyn_stats = new DynamicStats();
     _randomize_stats();
     _init_player();
 }
@@ -62,11 +64,11 @@ void Player::_randomize_stats() {
         &_stat_points->aggro,
         &_stat_points->focus
     };
-
     constexpr int N = sizeof(stats) / sizeof(stats[0]);
-
-    for (int i = 0; i < N; i++)
-        *stats[i] = 0;
+		
+    for (int i = 0; i < N; i++) {
+			*stats[i] = 0;
+		}
 
     for (int p = 0; p < 100; p++) {
         int index = rng::randint(0, N - 1); 
@@ -139,7 +141,7 @@ void Player::print() {
 
 
 void Player::_init_player() {
-	this->_is_alive = true;
+		this->_is_alive = true;
     this->_dyn_stats->hp = getStatMaxHp(_stat_points->max_hp);
     this->_dyn_stats->next_regen = 50;
     this->_dyn_stats->next_attack = getStatAs(_stat_points->as);
@@ -158,7 +160,10 @@ void Player::_init_player() {
     //TODO agregar el resto
 }
 
-Player::~Player() {}
+Player::~Player() {
+	delete this->_stat_points;
+	delete this->_dyn_stats;
+}
 int Player::getId() { return _player_id; }
 StatPoints* Player::getStatPoints() { return _stat_points; }
 DynamicStats* Player::getDynStats() { return _dyn_stats; }
@@ -253,7 +258,7 @@ void Player::_damage_ap(Player* target, int damage_output) {
 void Player::_damage_ad(Player* target, int damage_output) {
 	int damage_dealt = _reduce_ad(target, damage_output);
 	target->getDynStats()->hp -= damage_dealt;
-
+	lastAttacked = target->getId();
 	if (target->getDynStats()->hp <= 0)
 		target->_is_alive = false;
 	
@@ -320,6 +325,8 @@ void Player::_attack(Team* enemies) {
 	if ((_dyn_stats->next_attack - _dyn_stats->acc_ticks + _dyn_stats->slow_ticks) <= 0) {
 		_dyn_stats->next_attack = getStatAs(_stat_points->as);
 		Player* target = _select_attack_target(enemies);
+		if (target == nullptr)
+			return;
 		int damage_output = _apply_crit(getStatAd(_stat_points->ad) + getStatAx(_stat_points->ax));
 		_damage_ad(target, damage_output);	
 	} else
@@ -327,18 +334,34 @@ void Player::_attack(Team* enemies) {
 }
 
 Player* Player::_select_attack_target(Team* enemies) {
-	int denom = 0;
-	int reduced_hp[5];
-	for (int i=0; i<5; i++) {
-		Player* target = enemies->getPlayer(i);
-		int remaining_hp = target->getDynStats()->hp;
-		reduced_hp[i] = _reduce_ad(target, remaining_hp);
-		denom += _reduce_ad(target, remaining_hp);
-	}
-	float weights[5];
-	for (int i=0; i<5; i++) {
-		Player* target = enemies->getPlayer(i);
-		weights[i] = getStatAggro(target->getStatPoints()->aggro) + (getStatFocus(_stat_points->focus) * (1-(reduced_hp[i]/denom)));
-	}
-	return enemies->getPlayer(linear_softmax(weights, 5));
+    std::vector<Player*> alive_enemies;
+    alive_enemies.reserve(5);
+    for (int i = 0; i < 5; i++) {
+        Player* p = enemies->getPlayer(i);
+        if (p->isAlive()) {
+            alive_enemies.push_back(p);
+        }
+    }
+    if (alive_enemies.empty())
+        return nullptr; // o lo que corresponda
+    size_t n = alive_enemies.size();
+    std::vector<int> reduced_hp(n);
+    int denom = 0;
+    for (size_t i = 0; i < n; i++) { // calcular hp reducida
+        int hp = alive_enemies[i]->getDynStats()->hp;
+        int red = _reduce_ad(alive_enemies[i], hp);
+        reduced_hp[i] = red;
+        denom += red;
+    }
+    if (denom == 0)
+        denom = 1; // evitar división por cero
+    std::vector<float> weights(n);
+    for (size_t i = 0; i < n; i++) {
+        float ratio = reduced_hp[i] / float(denom);
+        weights[i] = 
+            getStatAggro(alive_enemies[i]->getStatPoints()->aggro) +
+            getStatFocus(_stat_points->focus) * (1.0f - ratio);
+    }
+    return alive_enemies[ linear_softmax(weights.data(), n) ];
 }
+

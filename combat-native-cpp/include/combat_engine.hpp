@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include "team.hpp"
 #include "player.hpp"
+#include <chrono>
+#include <thread>
+#include <iostream>
 
 enum FightResult {
     TEAM1_WIN,
@@ -12,6 +15,7 @@ enum FightResult {
     DRAW
 };
 
+void print_battlefield(Team* team1, Team* team2);
 
 void chooseInstance(Instance i);
 

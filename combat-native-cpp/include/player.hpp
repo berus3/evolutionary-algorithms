@@ -2,6 +2,7 @@
 #define PLAYER_HPP
 
 #include "instance.hpp"
+#include <vector>
 
 struct StatPoints {
     int max_hp;
@@ -108,6 +109,7 @@ class Player {
       void setDynStats(DynamicStats* ds);
       void print();
       void act(Team* allies, Team* enemies);
+      int lastAttacked;
       // TODO: Add methods to get/set Stats
 };
 
