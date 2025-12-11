@@ -9,7 +9,7 @@ int main() {
 			t1->setPlayer(i, new Player(i));
 			t2->setPlayer(i, new Player(i+5));
 		}
-		t1->getPlayer(0)->getStatPoints()->bleed = 100;
+		//t1->getPlayer(0)->getStatPoints()->bleed = 100;
 		
 		fight(t1, t2);
 		delete t1;

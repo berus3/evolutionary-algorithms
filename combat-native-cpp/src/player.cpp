@@ -35,8 +35,8 @@ void Player::act(Team* allies, Team* enemies) {
         
         
         _apply_acc(allies);
-        // acc
-        // slow
+        _apply_slow(enemies);
+       
         // shield
         // mark
         // smite
@@ -56,7 +56,7 @@ void Player::_heal(Player* target, int healing) {
 	if (target->getDynStats()->hp > maxHp) {
 		target->getDynStats()->hp = maxHp;
 	}
-	_dyn_stats->track_hp_healed += healing;
+	target->getDynStats()->track_hp_healed += healing;
 }
 
 void Player::_regen() {
@@ -144,14 +144,18 @@ void Player::_damage_ad(Player* target, int damage_output) {
 	}
 }
 
-void Player::_update_effects() {
-	if (_dyn_stats->end_acc == 0)
+void Player::_update_effects() {	
+	if (_dyn_stats->end_acc == 0) {
 		_dyn_stats->acc_as_ticks = 0;
+		_dyn_stats->acc_ah_ticks = 0;
+	}
 	else
 		_dyn_stats->end_acc --;
 	
-	if (_dyn_stats->end_slow == 0)
+	if (_dyn_stats->end_slow == 0) {
 		_dyn_stats->slow_as_ticks = 0;
+		_dyn_stats->slow_ah_ticks = 0;
+	}
 	else
 		_dyn_stats->end_slow --;
 		
@@ -189,7 +193,7 @@ void Player::_bleed(Player* target, int damage_dealt) {
 	 
 }
 
-void Player::_damage_bleed(Player* target, int damage_output) {
+void Player::_damage_bleed(Player* target, int damage_dealt) {
 	target->getDynStats()->hp -= damage_dealt;
 	
 	target->getDynStats()->track_damage_received += damage_dealt;
@@ -218,17 +222,32 @@ int Player::_haste(int ticks) {
 
 void Player::_apply_acc(Team* allies){
 	if ((_dyn_stats->next_acc - _dyn_stats->acc_ah_ticks + _dyn_stats->slow_ah_ticks) <= 0) {
-		_dyn_stats->next_acc = _haste(getStatAcc(_stat_points->acc));
+		_dyn_stats->next_acc = _haste(getStatCdAcc(_stat_points->cd_acc));
 		Player* target = _select_acc_target(allies);
 		if (target == nullptr)
 			return;
 		else {
-			target->getDynStats()->end_acc = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatAccTicks(_stat_points->acc_as_ticks); // (ap + ax) * acc ticks
+			target->getDynStats()->end_acc = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatAccTicks(_stat_points->acc_ticks); // (ap + ax) * acc ticks
 			target->getDynStats()->acc_as_ticks = getStatAs(target->_stat_points->as) * getStatAcc(_stat_points->acc); // ally_as * acc
 			target->getDynStats()->acc_ah_ticks = getStatAh(target->_stat_points->ah) * getStatAcc(_stat_points->acc); // ally_ah * acc
 		}
 	} else
-		_dyn_stats->next_attack--;
+		_dyn_stats->next_acc--;
+}
+
+void Player::_apply_slow(Team* enemies){
+	if ((_dyn_stats->next_slow - _dyn_stats->acc_ah_ticks + _dyn_stats->slow_ah_ticks) <= 0) {
+		_dyn_stats->next_slow = _haste(getStatCdSlow(_stat_points->cd_slow));
+		Player* target = _select_slow_target(enemies);
+		if (target == nullptr)
+			return;
+		else {
+			target->getDynStats()->end_slow = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatSlowTicks(_stat_points->slow_ticks); // (ap + ax) * slow ticks
+			target->getDynStats()->slow_as_ticks = getStatAs(target->_stat_points->as) * getStatSlow(_stat_points->slow); // enemy_as * slow
+			target->getDynStats()->slow_ah_ticks = getStatAh(target->_stat_points->ah) * getStatSlow(_stat_points->slow); // enemy_ah * slow
+		}
+	} else
+		_dyn_stats->next_slow--;
 }
 
 Player* Player::_select_attack_target(Team* enemies) {
@@ -263,8 +282,72 @@ Player* Player::_select_attack_target(Team* enemies) {
     return alive_enemies[ linear_softmax(weights.data(), n) ];
 }
 
-Player* Player::_select_acc_target(Team* allies) {
-	return nullptr;
+Player* Player::_select_slow_target(Team* allies) {
+	std::vector<Player*> alive_allies;
+    alive_allies.reserve(5);
+    for (int i = 0; i < 5; i++) {
+        Player* p = allies->getPlayer(i);
+        if (p->isAlive()) {
+            alive_allies.push_back(p);
+        }
+    }
+    if (alive_allies.empty())
+        return nullptr; 
+    size_t n = alive_allies.size();
+    std::vector<int> utility(n);
+    int denom = 0;
+    for (size_t i = 0; i < n; i++) { // calculate utility as ad+ap+ax+focus (heuristic, could change)
+        int ad = getStatAd(alive_allies[i]->getStatPoints()->ad);
+        int ap = getStatAd(alive_allies[i]->getStatPoints()->ap);
+        int ax = getStatAd(alive_allies[i]->getStatPoints()->ax);
+        int foc = getStatFocus(alive_allies[i]->getStatPoints()->focus);
+        int ally_utility = ad + ap + ax + foc;
+        
+        utility[i] = ally_utility;
+        denom += ally_utility;
+    }
+    if (denom == 0)
+        denom = 1; // evitar división entre cero
+    std::vector<float> weights(n);
+    for (size_t i = 0; i < n; i++) {
+        float ratio = utility[i] / float(denom);
+        weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
+    }
+    return alive_allies[ linear_softmax(weights.data(), n) ];
+}
+
+Player* Player::_select_acc_target(Team* enemies) {
+	std::vector<Player*> alive_enemies;
+    alive_enemies.reserve(5);
+    for (int i = 0; i < 5; i++) {
+        Player* p = enemies->getPlayer(i);
+        if (p->isAlive()) {
+            alive_enemies.push_back(p);
+        }
+    }
+    if (alive_enemies.empty())
+        return nullptr; 
+    size_t n = alive_enemies.size();
+    std::vector<int> utility(n);
+    int denom = 0;
+    for (size_t i = 0; i < n; i++) { // calculate utility as ad+ap+ax+focus (heuristic, could change)
+        int ad = getStatAd(alive_enemies[i]->getStatPoints()->ad);
+        int ap = getStatAd(alive_enemies[i]->getStatPoints()->ap);
+        int ax = getStatAd(alive_enemies[i]->getStatPoints()->ax);
+        int foc = getStatFocus(alive_enemies[i]->getStatPoints()->focus);
+        int enemy_utility = ad + ap + ax + foc;
+        
+        utility[i] = enemy_utility;
+        denom += enemy_utility;
+    }
+    if (denom == 0)
+        denom = 1; // evitar división entre cero
+    std::vector<float> weights(n);
+    for (size_t i = 0; i < n; i++) {
+        float ratio = utility[i] / float(denom);
+        weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
+    }
+    return alive_enemies[ linear_softmax(weights.data(), n) ];
 }
 
 
@@ -296,10 +379,10 @@ void Player::_randomize_stats() {
         &_stat_points->stun,
         &_stat_points->cd_stun,
         &_stat_points->acc,
-        &_stat_points->acc_as_ticks,
+        &_stat_points->acc_ticks,
         &_stat_points->cd_acc,
         &_stat_points->slow,
-        &_stat_points->slow_as_ticks,
+        &_stat_points->slow_ticks,
         &_stat_points->cd_slow,
         &_stat_points->shield,
         &_stat_points->shield_ticks,
@@ -357,10 +440,10 @@ void Player::print() {
     std::cout << "stun: " <<_stat_points->stun << "\n";
     std::cout << "cd_stun: " <<_stat_points->cd_stun << "\n";
     std::cout << "acc: " <<_stat_points->acc << "\n";
-    std::cout << "acc_as_ticks: " <<_stat_points->acc_as_ticks << "\n";
+    std::cout << "acc_ticks: " <<_stat_points->acc_ticks << "\n";
     std::cout << "cd_acc: " <<_stat_points->cd_acc << "\n";
     std::cout << "slow: " <<_stat_points->slow << "\n";
-    std::cout << "slow_as_ticks: " <<_stat_points->slow_as_ticks << "\n";
+    std::cout << "slow_ticks: " <<_stat_points->slow_ticks << "\n";
     std::cout << "cd_slow: " <<_stat_points->cd_slow << "\n";
     std::cout << "shield: " <<_stat_points->shield << "\n";
     std::cout << "shield_ticks: " <<_stat_points->shield_ticks << "\n";
@@ -396,9 +479,14 @@ void Player::_init_player() {
     this->_dyn_stats->next_regen = 50;
     this->_dyn_stats->next_attack = getStatAs(_stat_points->as);
     this->_dyn_stats->next_bleed = 0;
-    this->_dyn_stats->next_acc = _haste(getStatAcc(_stat_points->acc));
-    this->_dyn_stats->acc_as_ticks = 0;
+    this->_dyn_stats->next_acc = _haste(getStatCdAcc(_stat_points->cd_acc));
+    this->_dyn_stats->next_slow = _haste(getStatCdSlow(_stat_points->cd_slow));
+    
+    this->_dyn_stats->acc_as_ticks  = 0;
+    this->_dyn_stats->acc_ah_ticks  = 0;
     this->_dyn_stats->slow_as_ticks = 0;
+    this->_dyn_stats->slow_ah_ticks = 0;
+    
     this->_dyn_stats->end_acc = 0;
     this->_dyn_stats->end_slow = 0;
     this->_dyn_stats->end_shield = 0;

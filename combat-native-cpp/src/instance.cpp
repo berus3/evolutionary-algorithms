@@ -2,6 +2,7 @@
 
 Instance instance;
 
+
 int linear_softmax(const float* weights, int n) {
     float sum = 0.0f;
     for (int i = 0; i < n; i++) {
@@ -18,6 +19,14 @@ int linear_softmax(const float* weights, int n) {
     return n - 1;
 }
 
+float getCounterFocus() {
+    switch (instance) {
+        case BALANCED: return 10.0f;
+        case LINEAR: return 10.0f;
+        case UNFAIR:return 10.0f;
+        default: return 10.0f;
+    }
+}
 
 int getStatMaxHp(int stat_point) {
     switch (instance) {

@@ -27,6 +27,7 @@ namespace rng {
 }
 
 int linear_softmax(const float* weights, int size);
+float getCounterFocus();
 
 int getStatMaxHp(int stat_point);
 int getStatRegen(int stat_point);
