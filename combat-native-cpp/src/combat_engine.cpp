@@ -200,7 +200,7 @@ std::map<int, int> wins(std::vector<Team*> teams) {
         Team* team1 = teams[i];
         for (size_t j = i + 1; j < vector_size; j++) {
             Team* team2 = teams[j];
-            std::cout << "Fighting Team " << team1->getId() << " vs Team " << team2->getId() << "\n";
+            std::cout << "[START]  Fighting Team " << team1->getId() << " vs Team " << team2->getId() << "\n";
             FightResult result = bo3(team1, team2);
             if (result == TEAM1_WIN) {
                 results[team1->getId()]++;
@@ -217,19 +217,19 @@ FightResult bo3(Team* team1, Team* team2) {
 	int wins_team_1 = 0;
 	int wins_team_2 = 0;
 	
-	//first match
-	if (fight(team1, team2) == TEAM1_WIN)
-		wins_team_1++;
-	else
-		wins_team_2++;
-		
-	//second match
+    //first match
 	if (fight(team1, team2) == TEAM1_WIN)
 		wins_team_1++;
 	else
 		wins_team_2++;
 	
-	if (wins_team_1 == 2)
+    //second match
+	if (fight(team1, team2) == TEAM1_WIN)
+		wins_team_1++;
+	else
+		wins_team_2++;
+	
+    if (wins_team_1 == 2) 
 		return TEAM1_WIN;
 	if (wins_team_2 == 2)
 		return TEAM2_WIN;
@@ -266,11 +266,13 @@ FightResult fight(Team* team1, Team* team2) {
         team1->getPlayer(i)->_init_player();
         team2->getPlayer(i)->_init_player();
     }
-    float fire_circle_dmg = 0.05f;
+    float fire_circle_dmg = 0.0f;
     do {
         end = !step(team1, team2);
         if (++it % 20000 == 0) {
-            fire_circle_dmg = fire_circle_dmg * 2;
+            fire_circle_dmg = fire_circle_dmg + 0.05f;
+        }
+        if (it % 100 == 0) {
             fire_circle(team1, team2, fire_circle_dmg); // 5% max HP true damage every 20k iterations
         }
         bool team1_alive = team1->getPlayer(0)->isAlive() || team1->getPlayer(1)->isAlive() || team1->getPlayer(2)->isAlive() || team1->getPlayer(3)->isAlive() || team1->getPlayer(4)->isAlive();
@@ -281,7 +283,6 @@ FightResult fight(Team* team1, Team* team2) {
             else 
 				return TEAM2_WIN;
         }
-        ++it; //TODO BORRAR
 		//std::this_thread::sleep_for(std::chrono::milliseconds(10));
     } while (!end);
     std::cout << "Fight ended in " << it << " iterations.\n";

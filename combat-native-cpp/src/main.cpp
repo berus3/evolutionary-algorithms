@@ -128,7 +128,6 @@ int main() {
 				teams[i]->setPlayer(j, new Player(j));
 			}
 		}
-		std::cout << "=== Team 1 ===\n";
 		
 		std::map<int, int> results = wins(teams);
 		for (int i = 0; i < 100; ++i) {
