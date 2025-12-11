@@ -6,7 +6,7 @@ Player::Player(int id) {
     _player_id = id;
 		this->_stat_points = new StatPoints();
 		this->_dyn_stats = new DynamicStats();
-    _randomize_stats();
+   // _randomize_stats();
     _init_player();
 }
 

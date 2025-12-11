@@ -128,9 +128,10 @@ class Player {
 	void _apply_slow(Team* enemies);
 
 
-	void _init_player();
+	
 	void _randomize_stats();
   public:
+	void _init_player();
 	int _haste(int); //TODO make private
 	Player(int id);
 	Player();
