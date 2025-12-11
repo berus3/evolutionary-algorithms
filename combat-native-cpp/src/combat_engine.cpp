@@ -39,18 +39,19 @@ std::array<std::pair<std::string, int>, 3> top3Stats(const StatPoints* sp) {
 
 
 void print_battlefield(Team* team1, Team* team2) {
-    std::cout << "\033[2J\033[H"; // clear console
+    std::cout << "\033[2J\033[H";
 
-    const int COL1 = 26;   // Player + HP text
-    const int COL2 = 24;   // HP bar
-    const int COL3 = 6;    // Alive/Dead
-    const int COL4 = 6;    // Last attacked
-    const int COL5 = 18;   // top stat 1
-    const int COL6 = 18;   // top stat 2
-    const int COL7 = 18;   // top stat 3
-    const int COL8 = 12;   // damage dealt
-    const int COL9 = 12;   // damage received
-    const int COL10 = 12;  // hp healed
+    const int COL1 = 26;
+    const int COL2 = 24;
+    const int COLE = 12;   // NEW EFFECTS COLUMN
+    const int COL3 = 6;
+    const int COL4 = 6;
+    const int COL5 = 18;
+    const int COL6 = 18;
+    const int COL7 = 18;
+    const int COL8 = 12;
+    const int COL9 = 12;
+    const int COL10 = 12;
 
     const char* RED   = "\033[31m";
     const char* RESET = "\033[0m";
@@ -61,18 +62,17 @@ void print_battlefield(Team* team1, Team* team2) {
         for (int i = 0; i < 5; i++) {
             Player* p = t->getPlayer(i);
 
-            int hp     = p->getDynStats()->hp;
-            int maxHp  = getStatMaxHp(p->getStatPoints()->max_hp);
+            int hp    = p->getDynStats()->hp;
+            int maxHp = getStatMaxHp(p->getStatPoints()->max_hp);
 
             std::string bar   = hpBar(hp, maxHp);
             std::string state = p->isAlive() ? "Alive" : "Dead";
 
-            // Column 1: Player + HP
+            // Player label
             std::ostringstream col1;
-            col1 << "Player " << p->getId()
-                 << "  HP " << hp << "/" << maxHp;
+            col1 << "Player " << p->getId() << "  HP " << hp << "/" << maxHp;
 
-            // Column 4: Last attacked
+            // Last attacked
             std::ostringstream col4;
             col4 << p->lastAttacked;
 
@@ -84,43 +84,42 @@ void print_battlefield(Team* team1, Team* team2) {
             t2 << top3[1].first << "=" << top3[1].second;
             t3 << top3[2].first << "=" << top3[2].second;
 
-            // Damage tracking columns
-            int dmgDealt    = p->getDynStats()->track_damage_dealt;
-            int dmgTaken    = p->getDynStats()->track_damage_received;
-            int hpHealed    = p->getDynStats()->track_hp_healed;
-
+            // Damage tracking
             std::ostringstream td, tr, th;
-            td << "Dealt="   << dmgDealt;
-            tr << "Taken=" << dmgTaken;
-            th << "Healed="  << hpHealed;
-            
+            td << "Dealt="  << p->getDynStats()->track_damage_dealt;
+            tr << "Taken="  << p->getDynStats()->track_damage_received;
+            th << "Heal="   << p->getDynStats()->track_hp_healed;
+
+            // NEW: Effects column
+            std::ostringstream effects;
+            if (p->getDynStats()->bleed_stacks > 0)
+                effects << "BLEED:" << p->getDynStats()->bleed_stacks;
+            else
+                effects << "";
+
+            // Color HP bar on attack
             bool wasAttacked = false;
             for (int j = 0; j < 5; j++) {
                 if (team1->getPlayer(j)->lastAttacked == p->getId()) wasAttacked = true;
                 if (team2->getPlayer(j)->lastAttacked == p->getId()) wasAttacked = true;
             }
 
-            // Pad bar BEFORE adding ANSI color to prevent alignment issues
+            // Pad bar first
             std::ostringstream pad;
             pad << std::left << std::setw(COL2) << bar;
             std::string paddedBar = pad.str();
 
-            // Only color the bar characters, not the padding
             std::string coloredBar;
-            if (wasAttacked) {
-                coloredBar =
-                    std::string(RED) +
-                    paddedBar.substr(0, bar.size()) +
-                    RESET +
-                    paddedBar.substr(bar.size());
-            } else {
+            if (wasAttacked)
+                coloredBar = std::string(RED) + paddedBar.substr(0, bar.size()) +
+                             RESET + paddedBar.substr(bar.size());
+            else
                 coloredBar = paddedBar;
-            }
 
-            // Print final row
             std::cout
                 << std::left << std::setw(COL1)  << col1.str()
                 << coloredBar
+                << std::setw(COLE) << effects.str()     // NEW COLUMN HERE
                 << std::setw(COL3)  << state
                 << std::setw(COL4)  << col4.str()
                 << std::setw(COL5)  << t1.str()

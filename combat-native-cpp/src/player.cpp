@@ -33,6 +33,7 @@ void Player::act(Team* allies, Team* enemies) {
         _attack(enemies);
         _receive_bleed();
         
+        
         _apply_acc(allies);
         // acc
         // slow
@@ -68,10 +69,13 @@ void Player::_regen() {
 }
 
 void Player::_receive_bleed() {
+	if (_dyn_stats->bleed_stacks <= 0)
+        return;
 	if (_dyn_stats->next_bleed == 0) {
 		_dyn_stats->next_bleed = 100;
 		_damage_bleed(this, _dyn_stats->bleed_accumulated_damage);
-	}
+	} else
+		_dyn_stats->next_bleed--;
 }
 
 int Player::_apply_crit(int damage) {
@@ -171,21 +175,24 @@ void Player::_update_effects() {
 }
 
 void Player::_bleed(Player* target, int damage_dealt) {
-	 if (getStatBleed(_stat_points->bleed) > rng::real01()) {		
-		 if (target->getDynStats()->bleed_stacks < 10) {
-			target->getDynStats()->bleed_stacks ++;
-			target->getDynStats()->bleed_accumulated_damage += (int)roundf((getStatBleedDmg(_stat_points->bleed_dmg) * (getStatAd(_stat_points->ad) + getStatAx(_stat_points->ax))));
-		 }
-		 target->getDynStats()->end_bleed = getStatBleedTicks(_stat_points->bleed_ticks);
+	if (getStatBleed(_stat_points->bleed) < rng::real01())
+        return;
+	 	
+	 if (target->getDynStats()->bleed_stacks < 10) {
+		target->getDynStats()->bleed_stacks ++;
+		target->getDynStats()->bleed_accumulated_damage += (int)roundf((getStatBleedDmg(_stat_points->bleed_dmg) * damage_dealt));
+		if (target->getDynStats()->bleed_stacks == 1) { //first stack
+			target->getDynStats()-> next_bleed = 100;
+		}
 	 }
+	 target->getDynStats()->end_bleed = getStatBleedTicks(_stat_points->bleed_ticks);
+	 
 }
 
 void Player::_damage_bleed(Player* target, int damage_output) {
-	int damage_dealt = _reduce_ad(target, damage_output);
 	target->getDynStats()->hp -= damage_dealt;
 	
 	target->getDynStats()->track_damage_received += damage_dealt;
-	_dyn_stats->track_damage_dealt += damage_dealt;
 	
 	if (target->getDynStats()->hp <= 0)
 		target->_is_alive = false;
@@ -389,6 +396,7 @@ void Player::_init_player() {
     this->_dyn_stats->next_regen = 50;
     this->_dyn_stats->next_attack = getStatAs(_stat_points->as);
     this->_dyn_stats->next_bleed = 0;
+    this->_dyn_stats->next_acc = _haste(getStatAcc(_stat_points->acc));
     this->_dyn_stats->acc_as_ticks = 0;
     this->_dyn_stats->slow_as_ticks = 0;
     this->_dyn_stats->end_acc = 0;
