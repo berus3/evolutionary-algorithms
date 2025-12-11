@@ -191,7 +191,7 @@ bool step(Team* team1, Team* team2) {
 }
 
 int[100] wins(Team[100]) {
-	//
+	//retorna un array con la cantidad de bo3 que ganó cada team
 }
 
 FightResult bo3(Team* team1, Team* team2) {
