@@ -166,20 +166,25 @@ void Player::_damage_ad(Player* target, int damage_output) {
 }
 
 void Player::_update_effects() {	
-	if (_dyn_stats->end_acc == 0) {
-		_dyn_stats->acc_as_ticks = 0;
-		_dyn_stats->acc_ah_ticks = 0;
+	//acc
+	if (_dyn_stats->end_acc > 0) {
+		_dyn_stats->end_acc--;
+		if (_dyn_stats->end_acc == 0) {
+			_dyn_stats->acc_as_ticks = 0;
+			_dyn_stats->acc_ah_ticks = 0;
+		}
 	}
-	else
-		_dyn_stats->end_acc --;
-	
-	if (_dyn_stats->end_slow == 0) {
-		_dyn_stats->slow_as_ticks = 0;
-		_dyn_stats->slow_ah_ticks = 0;
+
+	//slow
+	if (_dyn_stats->end_slow > 0) {
+		_dyn_stats->end_slow--;
+		if (_dyn_stats->end_slow == 0) {
+			_dyn_stats->slow_as_ticks = 0;
+			_dyn_stats->slow_ah_ticks = 0;
+		}
 	}
-	else
-		_dyn_stats->end_slow --;
-		
+
+	//mark
 	if (_dyn_stats->end_mark > 0) {
         _dyn_stats->end_mark--;
         if (_dyn_stats->end_mark == 0) {
@@ -187,23 +192,25 @@ void Player::_update_effects() {
         }
     }
 		
+	//shield
 	if (_dyn_stats->end_shield > 0) {
         _dyn_stats->end_shield--;
         if (_dyn_stats->end_shield == 0) {
             _dyn_stats->shield_resistance = 0;
         }
     }
-		
+	
+	//bleed
 	if (_dyn_stats->end_bleed == 0) {
 		_dyn_stats->bleed_accumulated_damage = 0;
 		_dyn_stats->bleed_stacks = 0;
 	} else 
 		_dyn_stats->end_bleed--;
-		
+	
+	//stun	
 	if (_dyn_stats->end_stun > 0)
 		_dyn_stats->end_stun--;
 		
-	//TODO seguir
 }
 
 void Player::_bleed(Player* target, int damage_dealt) {
@@ -407,8 +414,8 @@ Player* Player::_select_slow_target(Team* enemies) {
     int denom = 0;
     for (size_t i = 0; i < n; i++) { // calculate utility as ad+ap+ax+focus (heuristic, could change)
         int ad = getStatAd(alive_enemies[i]->getStatPoints()->ad);
-        int ap = getStatAd(alive_enemies[i]->getStatPoints()->ap);
-        int ax = getStatAd(alive_enemies[i]->getStatPoints()->ax);
+        int ap = getStatAp(alive_enemies[i]->getStatPoints()->ap);
+        int ax = getStatAx(alive_enemies[i]->getStatPoints()->ax);
         int foc = getStatFocus(alive_enemies[i]->getStatPoints()->focus);
         int enemy_utility = ad + ap + ax + foc;
         
@@ -759,6 +766,7 @@ void Player::_init_player() {
     this->_dyn_stats->next_heal = _haste(getStatCdHeal(_stat_points->cd_heal));
     this->_dyn_stats->next_stun = _haste(getStatCdStun(_stat_points->cd_stun));
     this->_dyn_stats->next_shield = _haste(getStatCdShield(_stat_points->cd_shield));
+    this->_dyn_stats->next_mark = _haste(getStatCdMark(_stat_points->cd_mark));
     
     
     this->_dyn_stats->acc_as_ticks  = 0;
