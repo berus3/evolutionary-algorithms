@@ -27,7 +27,7 @@ struct StatPoints {
     int blast;
     int cd_blast;
     int heal;
-    int cd_raw_heal;
+    int cd_heal;
     int stun;
     int cd_stun;
     int acc;
@@ -59,6 +59,7 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int next_slow;
     int next_smite;
     int next_blast;
+    int next_heal;    
     
     int acc_as_ticks;
     int acc_ah_ticks;
@@ -101,6 +102,7 @@ class Player {
       Player* _select_acc_target(Team* allies);
       Player* _select_slow_target(Team* enemies);
       Player* _select_smite_target(Team* enemies);
+      Player* _select_heal_target(Team* allies);
       void _raw_heal(Player*, int healing);
       int _apply_crit(int damage);
       void _damage_ad(Player* player, int damage_output);

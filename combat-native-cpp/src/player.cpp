@@ -63,13 +63,13 @@ void Player::act(Team* allies, Team* enemies) {
 }
 
 void Player::_raw_heal(Player* target, int healing) {
-	int maxHp = getStatMaxHp(target->getStatPoints()->max_hp);
-	target->getDynStats()->hp += healing;
-	if (target->getDynStats()->hp > maxHp) {
-		target->getDynStats()->hp = maxHp;
-	}
-	target->getDynStats()->track_hp_raw_healed += healing;
+    int maxHp = getStatMaxHp(target->getStatPoints()->max_hp);
+    int before = target->getDynStats()->hp;
+    target->getDynStats()->hp = std::min(before + healing, maxHp);
+    target->getDynStats()->track_hp_raw_healed += (target->getDynStats()->hp - before);
 }
+
+
 
 void Player::_regen() {
 	if (_dyn_stats->next_regen == 0) {
@@ -293,6 +293,17 @@ void Player::_blast(Team* enemies){
 	else _dyn_stats->next_blast--;
 }
 
+void Player::_heal(Team* allies){
+	if ((_dyn_stats->next_heal - _dyn_stats->acc_ah_ticks + _dyn_stats->slow_ah_ticks) <= 0) {
+		_dyn_stats->next_heal = _haste(getStatCdHeal(_stat_points->cd_heal));
+		Player* target = _select_heal_target(allies);
+		if (target == nullptr)
+			return;
+		_raw_heal(target, (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * (getStatHeal(_stat_points->heal)));
+		}
+	else _dyn_stats->next_heal--;
+}
+
 Player* Player::_select_attack_target(Team* enemies) {
     std::vector<Player*> alive_enemies;
     alive_enemies.reserve(5);
@@ -425,6 +436,39 @@ Player* Player::_select_smite_target(Team* enemies) {
     return alive_enemies[ linear_softmax(weights.data(), n) ];
 }
 
+Player* Player::_select_heal_target(Team* allies) {
+	std::vector<Player*> alive_allies;
+    alive_allies.reserve(5);
+    for (int i = 0; i < 5; i++) {
+        Player* p = allies->getPlayer(i);
+        if (p->isAlive()) {
+            alive_allies.push_back(p);
+        }
+    }
+    if (alive_allies.empty())
+        return nullptr; 
+    size_t n = alive_allies.size();
+    std::vector<float> frailty(n);
+	float denom = 0.0f;
+	for (size_t i = 0; i < n; ++i) {
+		float hp    = static_cast<float>(alive_allies[i]->getDynStats()->hp);
+		float maxhp = static_cast<float>(getStatMaxHp(alive_allies[i]->getStatPoints()->max_hp));
+		float ally_frailty = (maxhp > 0.0f) ? (hp / maxhp) : 1.0f; // 1 = full, 0 = muerto
+		frailty[i] = ally_frailty;
+		denom += ally_frailty;
+	}
+	if (denom <= 0.0f)
+		denom = 1.0f;
+
+    std::vector<float> weights(n);
+    for (size_t i = 0; i < n; i++) {
+        float ratio = frailty[i] / float(denom);
+        weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
+    }
+    return alive_allies[ linear_softmax(weights.data(), n) ];
+}
+
+
 void Player::_randomize_stats() {
     int* stats[] = {
         &_stat_points->max_hp,
@@ -449,7 +493,7 @@ void Player::_randomize_stats() {
         &_stat_points->blast,
         &_stat_points->cd_blast,
         &_stat_points->heal,
-        &_stat_points->cd_raw_heal,
+        &_stat_points->cd_heal,
         &_stat_points->stun,
         &_stat_points->cd_stun,
         &_stat_points->acc,
@@ -510,7 +554,7 @@ void Player::print() {
     std::cout << "blast: " <<_stat_points->blast << "\n";
     std::cout << "cd_blast: " <<_stat_points->cd_blast << "\n";
     std::cout << "heal: " <<_stat_points->heal << "\n";
-    std::cout << "cd_raw_heal: " <<_stat_points->cd_raw_heal << "\n";
+    std::cout << "cd_heal: " <<_stat_points->cd_heal << "\n";
     std::cout << "stun: " <<_stat_points->stun << "\n";
     std::cout << "cd_stun: " <<_stat_points->cd_stun << "\n";
     std::cout << "acc: " <<_stat_points->acc << "\n";
@@ -557,6 +601,7 @@ void Player::_init_player() {
     this->_dyn_stats->next_slow = _haste(getStatCdSlow(_stat_points->cd_slow));
     this->_dyn_stats->next_smite = _haste(getStatCdSmite(_stat_points->cd_smite));
     this->_dyn_stats->next_blast = _haste(getStatCdBlast(_stat_points->cd_blast));
+    this->_dyn_stats->next_heal = _haste(getStatCdHeal(_stat_points->cd_heal));
     
     
     this->_dyn_stats->acc_as_ticks  = 0;
