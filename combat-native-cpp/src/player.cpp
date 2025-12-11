@@ -204,10 +204,9 @@ void Player::_apply_acc(Team* allies){
 		if (target == nullptr)
 			return;
 		else {
-			target->getDynStats()->end_acc = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatAccTicks(_stat_points->acc_as_ticks) // (ap + ax) * acc ticks
+			target->getDynStats()->end_acc = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatAccTicks(_stat_points->acc_as_ticks); // (ap + ax) * acc ticks
 			target->getDynStats()->acc_as_ticks = getStatAs(target->_stat_points->as) * getStatAcc(_stat_points->acc); // ally_as * acc
 			target->getDynStats()->acc_ah_ticks = getStatAh(target->_stat_points->ah) * getStatAcc(_stat_points->acc); // ally_ah * acc
-		
 		}
 	} else
 		_dyn_stats->next_attack--;

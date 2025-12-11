@@ -88,6 +88,7 @@ class Player {
       void _regen();
       void _attack(Team* enemies);
       Player* _select_attack_target(Team* enemies);
+      Player* _select_acc_target(Team* allies);
       void _heal(Player*, int healing);
       int _apply_crit(int damage);
       void _damage_ad(Player* player, int damage_output);
@@ -97,6 +98,8 @@ class Player {
       void _damage_bleed(Player* player, int damage_output);
       int _reduce_ad(Player* target, int damage_output);
       int _reduce_ap(Player* target, int damage_output);
+      void _apply_acc(Team* allies);
+      int _haste(int);
       
       void _init_player();
       void _randomize_stats();
