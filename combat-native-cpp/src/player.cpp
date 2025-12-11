@@ -27,6 +27,7 @@ StatPoints* Player::getStatPoints() { return _stat_points; }
 DynamicStats* Player::getDynStats() { return _dyn_stats; }
 void Player::setStatPoints(StatPoints* sp) { _stat_points = sp; }
 void Player::act(Team* allies, Team* enemies) {
+	_dyn_stats->track_healed_this_tick = false;
     if (_is_alive) {
         _update_effects();
         if (_dyn_stats->end_stun == 0) {
@@ -65,11 +66,16 @@ void Player::act(Team* allies, Team* enemies) {
 }
 
 void Player::_raw_heal(Player* target, int healing) {
-    int maxHp = getStatMaxHp(target->getStatPoints()->max_hp);
+    int maxHp  = getStatMaxHp(target->getStatPoints()->max_hp);
     int before = target->getDynStats()->hp;
     target->getDynStats()->hp = std::min(before + healing, maxHp);
-    target->getDynStats()->track_hp_raw_healed += (target->getDynStats()->hp - before);
+    int gained = target->getDynStats()->hp - before;
+    if (gained > 0) {
+        target->getDynStats()->track_hp_raw_healed += gained;
+        target->getDynStats()->track_healed_this_tick = true; 
+    }
 }
+
 
 
 
@@ -263,7 +269,7 @@ void Player::_apply_slow(Team* enemies){
 		if (target == nullptr)
 			return;
 		else {
-			target->getDynStats()->end_slow = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatSlowTicks(_stat_points->slow_ticks); // (ap + ax) * slow ticks
+			target->getDynStats()->end_slow = (int)roundf(((getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatSlowTicks(_stat_points->slow_ticks)) * (1-(getStatTenacity(target->getStatPoints()->tenacity)))); // (ap + ax) * slow ticks * (1- tenacity)
 			target->getDynStats()->slow_as_ticks = getStatAs(target->_stat_points->as) * getStatSlow(_stat_points->slow); // enemy_as * slow
 			target->getDynStats()->slow_ah_ticks = getStatAh(target->_stat_points->ah) * getStatSlow(_stat_points->slow); // enemy_ah * slow
 		}
@@ -316,8 +322,8 @@ void Player::_stun(Team* enemies){
 		if (target == nullptr)
 			return;
 		else {
-			target->getDynStats()->end_stun = (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatStun(_stat_points->stun); // (ap + ax) * stun
-		}
+			target->getDynStats()->end_stun = (int)roundf((getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * getStatStun(_stat_points->stun) * (1 - (getStatTenacity(target->getStatPoints()->tenacity)))); // (ap + ax) * stun * (1-tenacity)
+		} 
 	} else
 		_dyn_stats->next_stun--;
 }
@@ -676,5 +682,6 @@ void Player::_init_player() {
     this->_dyn_stats->track_damage_dealt = 0;
     this->_dyn_stats->track_damage_received = 0;
     this->_dyn_stats->track_hp_raw_healed = 0;
+    this->_dyn_stats->track_healed_this_tick = false;
     //TODO agregar el resto
 }

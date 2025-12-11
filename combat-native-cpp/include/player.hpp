@@ -84,6 +84,7 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int track_damage_dealt;
     int track_damage_received;
     int track_hp_raw_healed;
+    bool track_healed_this_tick;
 };
 
 class Team; // forward declaration
