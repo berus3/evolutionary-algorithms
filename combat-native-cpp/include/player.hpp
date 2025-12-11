@@ -61,6 +61,8 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int next_blast;
     int next_heal;    
     int next_stun;    
+    int next_shield;    
+    int next_mark;    
     
     int acc_as_ticks;
     int acc_ah_ticks;
@@ -68,6 +70,7 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int slow_ah_ticks;
     int end_acc;
     int end_slow;
+    int end_stun;
     
     int end_shield;
     int end_mark;
@@ -77,7 +80,7 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int bleed_stacks;
     int bleed_accumulated_damage;
     int end_bleed;
-    int end_stun;
+    
     //TODO implemetar funciones para darle shield resistance y mark resistance a personajes
     //TODO implementar funciones de slow y acc (darle slow y acc a otro personaje)
     
@@ -102,12 +105,16 @@ class Player {
       void _blast(Team* enemies);
       void _heal(Team* allies);
       void _stun(Team* enemies);
+      void _shield(Team* allies);
+      void _mark(Team* allies);
       Player* _select_attack_target(Team* enemies);
       Player* _select_acc_target(Team* allies);
       Player* _select_slow_target(Team* enemies);
       Player* _select_smite_target(Team* enemies);
       Player* _select_heal_target(Team* allies);
       Player* _select_stun_target(Team* enemies);
+      Player* _select_shield_target(Team* allies);
+      Player* _select_mark_target(Team* allies);
       void _raw_heal(Player*, int healing);
       int _apply_crit(int damage);
       void _damage_ad(Player* player, int damage_output);
