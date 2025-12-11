@@ -250,6 +250,17 @@ void Player::_apply_slow(Team* enemies){
 		_dyn_stats->next_slow--;
 }
 
+void Player::_smite(Team* enemies){
+	if ((_dyn_stats->next_smite - _dyn_stats->acc_ah_ticks + _dyn_stats->slow_ah_ticks) <= 0) {
+		_dyn_stats->next_smite = _haste(getStatCdSmite(_stat_points->cd_smite));
+		Player* target = _select_smite_target(enemies);
+		if (target == nullptr)
+			return;
+		_damage_ap(target, (getStatAp(_stat_points->ap) + getStatAx(_stat_points->ax)) * (getStatSmite(_stat_points->smite)));
+		}
+	else _dyn_stats->next_smite--;
+}
+
 Player* Player::_select_attack_target(Team* enemies) {
     std::vector<Player*> alive_enemies;
     alive_enemies.reserve(5);
@@ -350,6 +361,37 @@ Player* Player::_select_acc_target(Team* enemies) {
     return alive_enemies[ linear_softmax(weights.data(), n) ];
 }
 
+Player* Player::_select_smite_target(Team* enemies) {
+    std::vector<Player*> alive_enemies;
+    alive_enemies.reserve(5);
+    for (int i = 0; i < 5; i++) {
+        Player* p = enemies->getPlayer(i);
+        if (p->isAlive()) {
+            alive_enemies.push_back(p);
+        }
+    }
+    if (alive_enemies.empty())
+        return nullptr; // o lo que corresponda
+    size_t n = alive_enemies.size();
+    std::vector<int> reduced_hp(n);
+    int denom = 0;
+    for (size_t i = 0; i < n; i++) { // calcular hp reducida
+        int hp = alive_enemies[i]->getDynStats()->hp;
+        int red = _reduce_ap(alive_enemies[i], hp);
+        reduced_hp[i] = red;
+        denom += red;
+    }
+    if (denom == 0)
+        denom = 1; // evitar división por cero
+    std::vector<float> weights(n);
+    for (size_t i = 0; i < n; i++) {
+        float ratio = reduced_hp[i] / float(denom);
+        weights[i] = 
+            getStatAggro(alive_enemies[i]->getStatPoints()->aggro) +
+            getStatFocus(_stat_points->focus) * (1.0f - ratio);
+    }
+    return alive_enemies[ linear_softmax(weights.data(), n) ];
+}
 
 void Player::_randomize_stats() {
     int* stats[] = {

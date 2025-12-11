@@ -57,6 +57,7 @@ struct DynamicStats { // TODO: seleccionar las stats que no son estaticas durant
     int next_bleed; //received, not dealt
     int next_acc;
     int next_slow;
+    int next_smite;
     
     int acc_as_ticks;
     int acc_ah_ticks;
@@ -92,9 +93,11 @@ class Player {
       void _update_effects();
       void _regen();
       void _attack(Team* enemies);
+      void _smite(Team* enemies);
       Player* _select_attack_target(Team* enemies);
       Player* _select_acc_target(Team* allies);
       Player* _select_slow_target(Team* enemies);
+      Player* _select_smite_target(Team* enemies);
       void _heal(Player*, int healing);
       int _apply_crit(int damage);
       void _damage_ad(Player* player, int damage_output);
