@@ -5,8 +5,8 @@
 
 class Team {
   private:
-    int team_id;
-    Player* players[5];
+    int _team_id;
+    Player* _players[5];
   public:
     Team(int id);
     ~Team();

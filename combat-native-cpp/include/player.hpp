@@ -76,23 +76,23 @@ class Team; // forward declaration
 
 class Player {
   private:
-      int player_id;
-      StatPoints* stat_points;
-      DynamicStats* dyn_stats;
-      bool is_alive;
-      void update_effects();
-      void regen();
-      void attack(Team* enemies);
-      Player* selectAttackTarget(Team* enemies);
-      void heal(Player*, int healing);
-      int apply_crit(int damage);
-      void damage_ad(Player* player, int damage_output);
-      void damage_ap(Player* player, int damage_output);
-      void bleed(Player* player, int damage_dealt);
-      void receive_bleed();
-      void damage_bleed(Player* player, int damage_output);
-      int reduce_ad(Player* target, int damage_output);
-      int reduce_ap(Player* target, int damage_output);
+      int _player_id;
+      StatPoints* _stat_points;
+      DynamicStats* _dyn_stats;
+      bool _is_alive;
+      void _update_effects();
+      void _regen();
+      void _attack(Team* enemies);
+      Player* _select_attack_target(Team* enemies);
+      void _heal(Player*, int healing);
+      int _apply_crit(int damage);
+      void _damage_ad(Player* player, int damage_output);
+      void _damage_ap(Player* player, int damage_output);
+      void _bleed(Player* player, int damage_dealt);
+      void _receive_bleed();
+      void _damage_bleed(Player* player, int damage_output);
+      int _reduce_ad(Player* target, int damage_output);
+      int _reduce_ap(Player* target, int damage_output);
   public:
       Player(int id);
       ~Player();
