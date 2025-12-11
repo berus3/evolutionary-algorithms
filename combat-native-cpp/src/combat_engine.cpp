@@ -185,12 +185,31 @@ bool step(Team* team1, Team* team2) {
     team1->getPlayer(4)->act(team1, team2);
     team2->getPlayer(4)->act(team2, team1);
 
-	print_battlefield(team1, team2);
+	// print_battlefield(team1, team2);
 	return((team1->getPlayer(0)->isAlive() || team1->getPlayer(1)->isAlive() || team1->getPlayer(2)->isAlive() || team1->getPlayer(3)->isAlive() || team1->getPlayer(4)->isAlive()) 
 		&& (team2->getPlayer(0)->isAlive() || team2->getPlayer(1)->isAlive() || team2->getPlayer(2)->isAlive() || team2->getPlayer(3)->isAlive() || team2->getPlayer(4)->isAlive()));
 }
 
-int[100] wins(Team[100]) {
+std::map<int, int> wins(std::vector<Team*> teams) {
+    std::map<int, int> results = std::map<int, int>();
+    for (Team* team : teams) {
+        results[team->getId()] = 0;
+    }
+    size_t vector_size = teams.size();
+    for (size_t i = 0; i < vector_size; i++) {
+        Team* team1 = teams[i];
+        for (size_t j = i + 1; j < vector_size; j++) {
+            Team* team2 = teams[j];
+            std::cout << "Fighting Team " << team1->getId() << " vs Team " << team2->getId() << "\n";
+            FightResult result = bo3(team1, team2);
+            if (result == TEAM1_WIN) {
+                results[team1->getId()]++;
+            } else {
+                results[team2->getId()]++;
+            }
+        }
+    }
+    return results;
 	//retorna un array con la cantidad de bo3 que ganó cada team
 }
 
@@ -219,11 +238,41 @@ FightResult bo3(Team* team1, Team* team2) {
 	return (fight(team1, team2));
 }
 
+void fire_circle(Team* team1, Team* team2, float true_dmg) {
+    for (int i = 0; i < 5; ++i) {
+        Player* p_t1 = team1->getPlayer(i);
+        Player* p_t2 = team2->getPlayer(i);
+        if (p_t1->isAlive()) {
+            p_t1->getDynStats()->hp -= (int)roundf(getStatMaxHp(p_t1->getStatPoints()->max_hp) * true_dmg);
+            if (p_t1->getDynStats()->hp < 0) {
+                p_t1->setAlive(false);
+                p_t1->getDynStats()->hp = 0;
+            }
+        }
+        if (p_t2->isAlive()) {
+            p_t2->getDynStats()->hp -= (int)roundf(getStatMaxHp(p_t2->getStatPoints()->max_hp) * true_dmg);
+            if (p_t2->getDynStats()->hp < 0) {
+                p_t2->setAlive(false);
+                p_t2->getDynStats()->hp = 0;
+            }
+        }
+    }
+}
+
 FightResult fight(Team* team1, Team* team2) {
     bool end = false;
     int it = 0;
+    for (int i = 0; i < 5; i++) {
+        team1->getPlayer(i)->_init_player();
+        team2->getPlayer(i)->_init_player();
+    }
+    float fire_circle_dmg = 0.05f;
     do {
         end = !step(team1, team2);
+        if (++it % 20000 == 0) {
+            fire_circle_dmg = fire_circle_dmg * 2;
+            fire_circle(team1, team2, fire_circle_dmg); // 5% max HP true damage every 20k iterations
+        }
         bool team1_alive = team1->getPlayer(0)->isAlive() || team1->getPlayer(1)->isAlive() || team1->getPlayer(2)->isAlive() || team1->getPlayer(3)->isAlive() || team1->getPlayer(4)->isAlive();
         bool team2_alive = team2->getPlayer(0)->isAlive() || team2->getPlayer(1)->isAlive() || team2->getPlayer(2)->isAlive() || team2->getPlayer(3)->isAlive() || team2->getPlayer(4)->isAlive();
         if (end) {

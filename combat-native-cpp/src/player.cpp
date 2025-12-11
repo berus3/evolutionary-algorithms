@@ -4,10 +4,10 @@
 
 Player::Player(int id) {
     _player_id = id;
-		this->_stat_points = new StatPoints();
-		this->_dyn_stats = new DynamicStats();
-   // _randomize_stats();
-    _init_player();
+    this->_stat_points = new StatPoints();
+    this->_dyn_stats = new DynamicStats();
+    _randomize_stats();
+    // _init_player();
 }
 
 
@@ -15,7 +15,7 @@ Player::Player() {
     this->_player_id = 0; 
     this->_is_alive = true;
     
-    _init_player();    
+    // _init_player();    
 }
 
 Player::~Player() {
@@ -759,7 +759,7 @@ void Player::print() {
 
 
 void Player::_init_player() {
-		this->_is_alive = true;
+    this->_is_alive = true;
     this->_dyn_stats->hp = getStatMaxHp(_stat_points->max_hp);
     this->_dyn_stats->next_regen = 50;
     this->_dyn_stats->next_attack = getStatAs(_stat_points->as);

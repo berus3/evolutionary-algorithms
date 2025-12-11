@@ -121,8 +121,24 @@ int main() {
 			t1->getPlayer(i)->_init_player();
 			t2->getPlayer(i)->_init_player();
 		}
+		std::vector<Team*> teams = std::vector<Team*>();
+		for (int i = 0; i < 100; ++i) {
+			teams.push_back(new Team(i));
+			for (int j = 0; j < 5; ++j) {
+				teams[i]->setPlayer(j, new Player(j));
+			}
+		}
+		std::cout << "=== Team 1 ===\n";
 		
-		fight(t1, t2);
+		std::map<int, int> results = wins(teams);
+		for (int i = 0; i < 100; ++i) {
+			std::cout << "Team " << i << " wins: " << results[i] << "\n";
+		}
+		for (int i = 0; i < 100; ++i) {
+			delete teams[i];
+		}
+
+		// fight(t1, t2);
 		
 		
 		delete t1;

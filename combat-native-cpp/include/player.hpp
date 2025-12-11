@@ -139,6 +139,7 @@ class Player {
 	int getId();
 	StatPoints* getStatPoints();
 	bool isAlive() {return _is_alive;}
+    void setAlive(bool val) {_is_alive = val;}
 	void setStatPoints(StatPoints* sp);
 	DynamicStats* getDynStats();
 	void setDynStats(DynamicStats* ds);

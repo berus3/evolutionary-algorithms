@@ -11,6 +11,7 @@
 #include <iomanip> 
 #include <algorithm>
 #include <array>
+#include <map>
 
 
 enum FightResult {
@@ -21,6 +22,10 @@ enum FightResult {
 void print_battlefield(Team* team1, Team* team2);
 
 void chooseInstance(Instance i);
+
+std::map<int, int> wins(std::vector<Team*> teams);
+
+FightResult bo3(Team* team1, Team* team2);
 
 // Returns true if the fight has ended
 bool step(Team* team1, Team* team2);
