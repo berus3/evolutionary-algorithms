@@ -8,6 +8,10 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <iomanip> 
+#include <algorithm>
+#include <array>
+
 
 enum FightResult {
     TEAM1_WIN,

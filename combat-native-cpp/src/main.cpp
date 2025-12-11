@@ -6,8 +6,8 @@ int main() {
 		Team* t1 = new Team(1);
 		Team* t2 = new Team(2);
 		for (int i = 0; i < 5; i++) {
-			t1->setPlayer(i, new Player(i+1));
-			t2->setPlayer(i, new Player(i+6));
+			t1->setPlayer(i, new Player(i));
+			t2->setPlayer(i, new Player(i+5));
 		}
 		fight(t1, t2);
 		delete t1;

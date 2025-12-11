@@ -45,6 +45,7 @@ void Player::act(Team* allies, Team* enemies) {
         
     } else {
         _dyn_stats->hp = 0;
+        lastAttacked = -1;
     }
 }
 
@@ -54,6 +55,7 @@ void Player::_heal(Player* target, int healing) {
 	if (target->getDynStats()->hp > maxHp) {
 		target->getDynStats()->hp = maxHp;
 	}
+	_dyn_stats->track_hp_healed += healing;
 }
 
 void Player::_regen() {
@@ -111,6 +113,9 @@ void Player::_damage_ap(Player* target, int damage_output) {
 	int damage_dealt = _reduce_ap(target, damage_output);
 	target->getDynStats()->hp -= damage_dealt;
 
+	target->getDynStats()->track_damage_received += damage_dealt;
+	_dyn_stats->track_damage_dealt += damage_dealt;
+	
 	if (target->getDynStats()->hp <= 0)
 		target->_is_alive = false;
 }
@@ -119,6 +124,10 @@ void Player::_damage_ad(Player* target, int damage_output) {
 	int damage_dealt = _reduce_ad(target, damage_output);
 	target->getDynStats()->hp -= damage_dealt;
 	lastAttacked = target->getId();
+	
+	target->getDynStats()->track_damage_received += damage_dealt;
+	_dyn_stats->track_damage_dealt += damage_dealt;
+	
 	if (target->getDynStats()->hp <= 0)
 		target->_is_alive = false;
 	
@@ -174,6 +183,9 @@ void Player::_bleed(Player* target, int damage_dealt) {
 void Player::_damage_bleed(Player* target, int damage_output) {
 	int damage_dealt = _reduce_ad(target, damage_output);
 	target->getDynStats()->hp -= damage_dealt;
+	
+	target->getDynStats()->track_damage_received += damage_dealt;
+	_dyn_stats->track_damage_dealt += damage_dealt;
 	
 	if (target->getDynStats()->hp <= 0)
 		target->_is_alive = false;
@@ -388,5 +400,9 @@ void Player::_init_player() {
     this->_dyn_stats->bleed_stacks = 0;
     this->_dyn_stats->bleed_accumulated_damage = 0;
     this->_dyn_stats->end_bleed = 0;
+    
+    this->_dyn_stats->track_damage_dealt = 0;
+    this->_dyn_stats->track_damage_received = 0;
+    this->_dyn_stats->track_hp_healed = 0;
     //TODO agregar el resto
 }
