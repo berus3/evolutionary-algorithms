@@ -19,6 +19,11 @@ namespace rng {
     inline float real01() {
         return dist(gen);
     }
+    
+    inline int randint(int x, int y) {
+        std::uniform_int_distribution<int> dist_int(x, y);
+        return dist_int(gen);
+    }
 }
 
 int linear_softmax(const float* weights, int size);

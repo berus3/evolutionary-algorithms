@@ -13,9 +13,9 @@ enum FightResult {
 };
 
 
-// Returns true if the fight has ended
 void chooseInstance(Instance i);
 
+// Returns true if the fight has ended
 bool step(Team* team1, Team* team2);
 
 FightResult fight(Team* team1, Team* team2);

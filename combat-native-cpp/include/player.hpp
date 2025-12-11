@@ -93,14 +93,20 @@ class Player {
       void _damage_bleed(Player* player, int damage_output);
       int _reduce_ad(Player* target, int damage_output);
       int _reduce_ap(Player* target, int damage_output);
+      
+      void _init_player();
+      void _randomize_stats();
   public:
       Player(int id);
+      Player();
       ~Player();
       int getId();
       StatPoints* getStatPoints();
+      bool isAlive() {return _is_alive;}
       void setStatPoints(StatPoints* sp);
       DynamicStats* getDynStats();
       void setDynStats(DynamicStats* ds);
+      void print();
       void act(Team* allies, Team* enemies);
       // TODO: Add methods to get/set Stats
 };

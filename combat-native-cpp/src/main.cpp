@@ -1,13 +1,10 @@
 #include "../include/main.hpp"
 
 int main() {
-	chooseInstance(BALANCED);
-	std::cout << rng::real01() << std::endl;
-	int bla;
-	std::cin >> bla;
-	std::cout << getStatCrit(bla) << std::endl;
-	for (int i=0; i<5; i++) {
-		std::cout << i;
-	}
-	return 0;
+    chooseInstance(BALANCED);
+
+    Player p(1);   // crea un jugador aleatorio
+    p.print();     // imprime sus stats
+
+    return 0;
 }

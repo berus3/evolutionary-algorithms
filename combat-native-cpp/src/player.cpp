@@ -1,10 +1,163 @@
 #include "../include/player.hpp"
 #include "../include/team.hpp"
+#include <iostream>
 
-Player::Player(int id) { 
-    this->_player_id = id; 
-    this->_is_alive = true;
+Player::Player(int id) {
+    _player_id = id;
+    _randomize_stats();
+    _init_player();
 }
+
+
+Player::Player() { 
+    this->_player_id = 0; 
+    this->_is_alive = true;
+    
+    _init_player();    
+}
+
+void Player::_randomize_stats() {
+    int* stats[] = {
+        &_stat_points->max_hp,
+        &_stat_points->regen,
+        &_stat_points->ad,
+        &_stat_points->armor,
+        &_stat_points->armor_pen,
+        &_stat_points->lethality,
+        &_stat_points->as,
+        &_stat_points->crit,
+        &_stat_points->crit_factor,
+        &_stat_points->bleed,
+        &_stat_points->bleed_dmg,
+        &_stat_points->bleed_ticks,
+        &_stat_points->ap,
+        &_stat_points->mr,
+        &_stat_points->mr_pen,
+        &_stat_points->ethereal,
+        &_stat_points->ah,
+        &_stat_points->smite,
+        &_stat_points->cd_smite,
+        &_stat_points->blast,
+        &_stat_points->cd_blast,
+        &_stat_points->heal,
+        &_stat_points->cd_heal,
+        &_stat_points->stun,
+        &_stat_points->cd_stun,
+        &_stat_points->acc,
+        &_stat_points->acc_ticks,
+        &_stat_points->cd_acc,
+        &_stat_points->slow,
+        &_stat_points->slow_ticks,
+        &_stat_points->cd_slow,
+        &_stat_points->shield,
+        &_stat_points->shield_ticks,
+        &_stat_points->cd_shield,
+        &_stat_points->mark,
+        &_stat_points->mark_ticks,
+        &_stat_points->cd_mark,
+        &_stat_points->vamp,
+        &_stat_points->thorns,
+        &_stat_points->ax,
+        &_stat_points->tenacity,
+        &_stat_points->aggro,
+        &_stat_points->focus
+    };
+
+    constexpr int N = sizeof(stats) / sizeof(stats[0]);
+
+    for (int i = 0; i < N; i++)
+        *stats[i] = 0;
+
+    for (int p = 0; p < 100; p++) {
+        int index = rng::randint(0, N - 1); 
+        *stats[index] += 1;                
+    }
+}
+
+
+void Player::print() {
+    std::cout << "Player ID: " << _player_id << "\n";
+
+    std::cout << "=== StatPoints ===\n";
+    std::cout << "max_hp: " <<_stat_points->max_hp << "\n";
+    std::cout << "regen: " <<_stat_points->regen << "\n";
+    std::cout << "ad: " <<_stat_points->ad << "\n";
+    std::cout << "armor: " <<_stat_points->armor << "\n";
+    std::cout << "armor_pen: " <<_stat_points->armor_pen << "\n";
+    std::cout << "lethality: " <<_stat_points->lethality << "\n";
+    std::cout << "as: " <<_stat_points->as << "\n";
+    std::cout << "crit: " <<_stat_points->crit << "\n";
+    std::cout << "crit_factor: " <<_stat_points->crit_factor << "\n";
+    std::cout << "bleed: " <<_stat_points->bleed << "\n";
+    std::cout << "bleed_dmg: " <<_stat_points->bleed_dmg << "\n";
+    std::cout << "bleed_ticks: " <<_stat_points->bleed_ticks << "\n";
+    std::cout << "ap: " <<_stat_points->ap << "\n";
+    std::cout << "mr: " <<_stat_points->mr << "\n";
+    std::cout << "mr_pen: " <<_stat_points->mr_pen << "\n";
+    std::cout << "ethereal: " <<_stat_points->ethereal << "\n";
+    std::cout << "ah: " <<_stat_points->ah << "\n";
+    std::cout << "smite: " <<_stat_points->smite << "\n";
+    std::cout << "cd_smite: " <<_stat_points->cd_smite << "\n";
+    std::cout << "blast: " <<_stat_points->blast << "\n";
+    std::cout << "cd_blast: " <<_stat_points->cd_blast << "\n";
+    std::cout << "heal: " <<_stat_points->heal << "\n";
+    std::cout << "cd_heal: " <<_stat_points->cd_heal << "\n";
+    std::cout << "stun: " <<_stat_points->stun << "\n";
+    std::cout << "cd_stun: " <<_stat_points->cd_stun << "\n";
+    std::cout << "acc: " <<_stat_points->acc << "\n";
+    std::cout << "acc_ticks: " <<_stat_points->acc_ticks << "\n";
+    std::cout << "cd_acc: " <<_stat_points->cd_acc << "\n";
+    std::cout << "slow: " <<_stat_points->slow << "\n";
+    std::cout << "slow_ticks: " <<_stat_points->slow_ticks << "\n";
+    std::cout << "cd_slow: " <<_stat_points->cd_slow << "\n";
+    std::cout << "shield: " <<_stat_points->shield << "\n";
+    std::cout << "shield_ticks: " <<_stat_points->shield_ticks << "\n";
+    std::cout << "cd_shield: " <<_stat_points->cd_shield << "\n";
+    std::cout << "mark: " <<_stat_points->mark << "\n";
+    std::cout << "mark_ticks: " <<_stat_points->mark_ticks << "\n";
+    std::cout << "cd_mark: " <<_stat_points->cd_mark << "\n";
+    std::cout << "vamp: " <<_stat_points->vamp << "\n";
+    std::cout << "thorns: " <<_stat_points->thorns << "\n";
+    std::cout << "ax: " <<_stat_points->ax << "\n";
+    std::cout << "tenacity: " <<_stat_points->tenacity << "\n";
+    std::cout << "aggro: " <<_stat_points->aggro << "\n";
+    std::cout << "focus: " <<_stat_points->focus << "\n";
+
+    std::cout << "=== DynamicStats ===\n";
+    std::cout << "hp: " <<_dyn_stats->hp << "\n";
+    std::cout << "next_regen: " <<_dyn_stats->next_regen << "\n";
+    std::cout << "next_attack: " <<_dyn_stats->next_attack << "\n";
+    std::cout << "acc_ticks: " <<_dyn_stats->acc_ticks << "\n";
+    std::cout << "slow_ticks: " <<_dyn_stats->slow_ticks << "\n";
+    std::cout << "end_acc: " <<_dyn_stats->end_acc << "\n";
+    std::cout << "end_slow: " <<_dyn_stats->end_slow << "\n";
+    std::cout << "end_shield: " <<_dyn_stats->end_shield << "\n";
+    std::cout << "end_mark: " <<_dyn_stats->end_mark << "\n";
+    std::cout << "shield_resistance: " <<_dyn_stats->shield_resistance << "\n";
+    std::cout << "mark_resistance: " <<_dyn_stats->mark_resistance << "\n";
+}
+
+
+void Player::_init_player() {
+	this->_is_alive = true;
+    this->_dyn_stats->hp = getStatMaxHp(_stat_points->max_hp);
+    this->_dyn_stats->next_regen = 50;
+    this->_dyn_stats->next_attack = getStatAs(_stat_points->as);
+    this->_dyn_stats->next_bleed = 0;
+    this->_dyn_stats->acc_ticks = 0;
+    this->_dyn_stats->slow_ticks = 0;
+    this->_dyn_stats->end_acc = 0;
+    this->_dyn_stats->end_slow = 0;
+    this->_dyn_stats->end_shield = 0;
+    this->_dyn_stats->end_mark = 0;
+    this->_dyn_stats->shield_resistance = 0;
+    this->_dyn_stats->mark_resistance = 0;
+    this->_dyn_stats->bleed_stacks = 0;
+    this->_dyn_stats->bleed_accumulated_damage = 0;
+    this->_dyn_stats->end_bleed = 0;
+    //TODO agregar el resto
+}
+
 Player::~Player() {}
 int Player::getId() { return _player_id; }
 StatPoints* Player::getStatPoints() { return _stat_points; }
@@ -155,6 +308,7 @@ void Player::_bleed(Player* target, int damage_dealt) {
 
 void Player::_damage_bleed(Player* target, int damage_output) {
 	int damage_dealt = _reduce_ad(target, damage_output);
+	target->getDynStats()->hp -= damage_dealt;
 	
 	if (target->getDynStats()->hp <= 0)
 		target->_is_alive = false;
