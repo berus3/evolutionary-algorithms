@@ -31,17 +31,21 @@ void Player::act(Team* allies, Team* enemies) {
         _update_effects();
         _regen();
         _attack(enemies);
-        _smite(enemies);
-        
+        if (_stat_points->ap > 0 || _stat_points->ax > 0) {
+			if (_stat_points->smite > 0)
+				_smite(enemies);
+			if (_stat_points->acc > 0)	
+				_apply_acc(allies);
+			if (_stat_points->slow > 0)	
+				_apply_slow(enemies);
+		}
         _receive_bleed();
         
         
-        _apply_acc(allies);
-        _apply_slow(enemies);
+        
        
         // shield
         // mark
-        // smite
         // blast
         // heal
         // stun
@@ -295,41 +299,7 @@ Player* Player::_select_attack_target(Team* enemies) {
     return alive_enemies[ linear_softmax(weights.data(), n) ];
 }
 
-Player* Player::_select_slow_target(Team* allies) {
-	std::vector<Player*> alive_allies;
-    alive_allies.reserve(5);
-    for (int i = 0; i < 5; i++) {
-        Player* p = allies->getPlayer(i);
-        if (p->isAlive()) {
-            alive_allies.push_back(p);
-        }
-    }
-    if (alive_allies.empty())
-        return nullptr; 
-    size_t n = alive_allies.size();
-    std::vector<int> utility(n);
-    int denom = 0;
-    for (size_t i = 0; i < n; i++) { // calculate utility as ad+ap+ax+focus (heuristic, could change)
-        int ad = getStatAd(alive_allies[i]->getStatPoints()->ad);
-        int ap = getStatAd(alive_allies[i]->getStatPoints()->ap);
-        int ax = getStatAd(alive_allies[i]->getStatPoints()->ax);
-        int foc = getStatFocus(alive_allies[i]->getStatPoints()->focus);
-        int ally_utility = ad + ap + ax + foc;
-        
-        utility[i] = ally_utility;
-        denom += ally_utility;
-    }
-    if (denom == 0)
-        denom = 1; // evitar división entre cero
-    std::vector<float> weights(n);
-    for (size_t i = 0; i < n; i++) {
-        float ratio = utility[i] / float(denom);
-        weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
-    }
-    return alive_allies[ linear_softmax(weights.data(), n) ];
-}
-
-Player* Player::_select_acc_target(Team* enemies) {
+Player* Player::_select_slow_target(Team* enemies) {
 	std::vector<Player*> alive_enemies;
     alive_enemies.reserve(5);
     for (int i = 0; i < 5; i++) {
@@ -361,6 +331,40 @@ Player* Player::_select_acc_target(Team* enemies) {
         weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
     return alive_enemies[ linear_softmax(weights.data(), n) ];
+}
+
+Player* Player::_select_acc_target(Team* allies) {
+	std::vector<Player*> alive_allies;
+    alive_allies.reserve(5);
+    for (int i = 0; i < 5; i++) {
+        Player* p = allies->getPlayer(i);
+        if (p->isAlive()) {
+            alive_allies.push_back(p);
+        }
+    }
+    if (alive_allies.empty())
+        return nullptr; 
+    size_t n = alive_allies.size();
+    std::vector<int> utility(n);
+    int denom = 0;
+    for (size_t i = 0; i < n; i++) { // calculate utility as ad+ap+ax+focus (heuristic, could change)
+        int ad = getStatAd(alive_allies[i]->getStatPoints()->ad);
+        int ap = getStatAd(alive_allies[i]->getStatPoints()->ap);
+        int ax = getStatAd(alive_allies[i]->getStatPoints()->ax);
+        int foc = getStatFocus(alive_allies[i]->getStatPoints()->focus);
+        int ally_utility = ad + ap + ax + foc;
+        
+        utility[i] = ally_utility;
+        denom += ally_utility;
+    }
+    if (denom == 0)
+        denom = 1; // evitar división entre cero
+    std::vector<float> weights(n);
+    for (size_t i = 0; i < n; i++) {
+        float ratio = utility[i] / float(denom);
+        weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
+    }
+    return alive_allies[ linear_softmax(weights.data(), n) ];
 }
 
 Player* Player::_select_smite_target(Team* enemies) {
