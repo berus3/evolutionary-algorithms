@@ -11,6 +11,7 @@ class Team {
     Team(int id);
     ~Team();
     int getId();
+    void setId(int id) { _team_id = id; }
     Player* getPlayer(int index);
     void setPlayer(int index, Player* p);
 };

@@ -190,27 +190,30 @@ bool step(Team* team1, Team* team2) {
 		&& (team2->getPlayer(0)->isAlive() || team2->getPlayer(1)->isAlive() || team2->getPlayer(2)->isAlive() || team2->getPlayer(3)->isAlive() || team2->getPlayer(4)->isAlive()));
 }
 
-std::map<int, int> wins(std::vector<Team*> teams) {
-    std::map<int, int> results = std::map<int, int>();
-    for (Team* team : teams) {
-        results[team->getId()] = 0;
+std::vector<double> winrate(std::vector<Team*> teams) {
+    std::vector<int> win_count = std::vector<int>();
+    for (size_t i = 0; i < teams.size(); i++) {
+        win_count.push_back(0);
     }
     size_t vector_size = teams.size();
     for (size_t i = 0; i < vector_size; i++) {
         Team* team1 = teams[i];
         for (size_t j = i + 1; j < vector_size; j++) {
             Team* team2 = teams[j];
-            std::cout << "[START]  Fighting Team " << team1->getId() << " vs Team " << team2->getId() << "\n";
             FightResult result = bo3(team1, team2);
             if (result == TEAM1_WIN) {
-                results[team1->getId()]++;
+                win_count[i]++;
             } else {
-                results[team2->getId()]++;
+                win_count[j]++;
             }
         }
     }
-    return results;
-	//retorna un array con la cantidad de bo3 que ganó cada team
+    std::vector<double> win_rate = std::vector<double>();
+    for (size_t i = 0; i < vector_size; i++) {
+        double wr = static_cast<double>(win_count[i]) / static_cast<double>(vector_size - 1);
+        win_rate.push_back(wr);
+    }
+    return win_rate;
 }
 
 FightResult bo3(Team* team1, Team* team2) {

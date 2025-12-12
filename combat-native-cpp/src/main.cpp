@@ -128,10 +128,9 @@ int main() {
 				teams[i]->setPlayer(j, new Player(j));
 			}
 		}
-		
-		std::map<int, int> results = wins(teams);
+		std::vector<double> results = winrate(teams);
 		for (int i = 0; i < 100; ++i) {
-			std::cout << "Team " << i << " wins: " << results[i] << "\n";
+			std::cout << "Team " << i << " wins: " << (results[i]*100) << "%\n";
 		}
 		for (int i = 0; i < 100; ++i) {
 			delete teams[i];

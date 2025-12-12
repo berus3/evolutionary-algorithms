@@ -23,7 +23,7 @@ void print_battlefield(Team* team1, Team* team2);
 
 void chooseInstance(Instance i);
 
-std::map<int, int> wins(std::vector<Team*> teams);
+std::vector<double> winrate(std::vector<Team*> teams);
 
 FightResult bo3(Team* team1, Team* team2);
 
