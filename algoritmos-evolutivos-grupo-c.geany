@@ -20,25 +20,33 @@ indent_mode=2
 [project]
 name=AE
 base_path=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c
+description=
 
 [long line marker]
 long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=8
-FILE_NAME_0=529;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fcombat_engine.cpp;0;4
-FILE_NAME_1=207;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fcombat_jni.cpp;0;4
-FILE_NAME_2=0;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fplayer.cpp;0;4
-FILE_NAME_3=0;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fteam.cpp;0;4
-FILE_NAME_4=0;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fcombat_engine.hpp;0;4
-FILE_NAME_5=0;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Finstance.hpp;0;4
-FILE_NAME_6=405;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Forg_evol_Poc.h;0;4
-FILE_NAME_7=1988;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fplayer.hpp;0;4
-FILE_NAME_8=5069;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Finstance.cpp;0;4
-FILE_NAME_9=126;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fmain.cpp;0;4
-FILE_NAME_10=44;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fmain.hpp;0;4
-FILE_NAME_11=0;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fteam.hpp;0;4
+current_page=17
+FILE_NAME_0=8242;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fcombat_engine.cpp;0;4
+FILE_NAME_1=6803;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fplayer.cpp;0;4
+FILE_NAME_2=117;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fplayer.hpp;0;4
+FILE_NAME_3=153;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fteam.cpp;0;4
+FILE_NAME_4=310;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fcombat_engine.hpp;0;4
+FILE_NAME_5=121;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Finstance.hpp;0;4
+FILE_NAME_6=985;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Finstance.cpp;0;4
+FILE_NAME_7=2945;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fmain.cpp;0;4
+FILE_NAME_8=72;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fmain.hpp;0;4
+FILE_NAME_9=262;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fteam.hpp;0;4
+FILE_NAME_10=404;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FBenchmark.java;0;4
+FILE_NAME_11=358;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FPoc.java;0;4
+FILE_NAME_12=5213;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fcombat_jni.cpp;0;4
+FILE_NAME_13=48;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FRPGNativeBridge.java;0;4
+FILE_NAME_14=187;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FTestJNI.java;0;4
+FILE_NAME_15=750;CMake;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2FCMakeLists.txt;0;4
+FILE_NAME_16=1291;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FRPGProblem.java;0;4
+FILE_NAME_17=1151;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FArenaEvaluator.java;0;4
+FILE_NAME_18=188;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Ftest_build.cpp;0;4
 
 [VTE]
-last_dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src
+last_dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build

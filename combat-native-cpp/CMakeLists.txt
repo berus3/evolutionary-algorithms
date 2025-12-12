@@ -17,8 +17,14 @@ include_directories(
 add_library(combat SHARED
     src/combat_engine.cpp
     src/combat_jni.cpp
+    src/instance.cpp          # NUEVO
+    src/team.cpp              # NUEVO
+    src/player.cpp            # NUEVO
 )
 
 set_target_properties(combat PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
+add_executable(test_build src/test_build.cpp src/team.cpp src/player.cpp src/instance.cpp src/combat_engine.cpp)
+target_link_libraries(test_build combat)
