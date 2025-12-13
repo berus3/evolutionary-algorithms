@@ -1,4 +1,4 @@
-#include "genome_decode.hpp"
+#include "../include/genome_decode.hpp"
 #include "player.hpp"
 
 static constexpr int STATS_PER_PLAYER = 43;

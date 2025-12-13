@@ -19,7 +19,7 @@ indent_mode=2
 
 [project]
 name=AE
-base_path=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c
+base_path=.
 description=
 
 [long line marker]
@@ -64,4 +64,5 @@ FILE_NAME_32=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falg
 FILE_NAME_33=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_0257.csv;0;4
 
 [VTE]
-last_dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java
+last_dir=./evolver-java
+

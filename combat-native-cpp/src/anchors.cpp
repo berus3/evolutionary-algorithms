@@ -1,5 +1,5 @@
 // anchors.cpp
-#include "anchors.hpp"
+#include "../include/anchors.hpp"
 #include <cstddef>
 
 const int ANCHOR_GENOMES[ANCHOR_COUNT][GENOME_SIZE] = {
