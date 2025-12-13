@@ -1,4 +1,10 @@
+org/evol/MainEA.class
+org/evol/FlipMutation.class
 org/evol/RPGNativeBridge.class
+org/evol/RPGProblem.class
+org/evol/ArenaEvaluator.class
+org/evol/BlockUniformCrossover.class
 org/evol/Poc.class
+org/evol/LoggerEA.class
 org/evol/TestJNI.class
 org/evol/Benchmark.class
