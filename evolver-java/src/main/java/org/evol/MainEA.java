@@ -12,8 +12,7 @@ import java.util.Locale;
 
 public class MainEA {
 
-    private static final boolean DEBUG =
-            Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
+    private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
 
     private static String f(double x) {
         return String.format(Locale.US, "%.4f", x);
@@ -22,12 +21,16 @@ public class MainEA {
     public static void main(String[] args) {
 
         RPGProblem problem = new RPGProblem();
-		//TODO: revisar los parametros (0.75, 0.002, y tama;o de población) para hacer una especie de grid search y ver cuales son los optiomos
+
+        // operators
         CrossoverOperator<IntegerSolution> crossover = new BlockUniformCrossover(0.75);
 
-        MutationOperator<IntegerSolution> mutation = new FlipMutation(0.002);
-
         SelectionOperator<List<IntegerSolution>, IntegerSolution> selection = new BinaryTournamentSelection<>();
+
+        // mutation decay parameters
+        double p0    = 0.01;     // initial mutation rate
+        double pMin  = 0.0005;   // minimum mutation rate
+        double alpha = 0.97;     // decay factor per generation
 
         ArenaEvaluator evaluator = new ArenaEvaluator();
         LoggerEA logger = new LoggerEA("logs/fitness.csv");
@@ -35,7 +38,7 @@ public class MainEA {
         final int popSize = 100;
         final int generations = 50;
 
-        // initialize population as random factible solutions (?
+        // initialize population
         List<IntegerSolution> population = new ArrayList<>(popSize);
         for (int i = 0; i < popSize; i++) {
             population.add(problem.createSolution());
@@ -45,8 +48,13 @@ public class MainEA {
         logger.log(0, population);
         printGeneration(0, population);
 
-        // evo loop
+        // evolution loop
         for (int gen = 1; gen <= generations; gen++) {
+
+            // mutation decay
+            double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
+            MutationOperator<IntegerSolution> mutation =
+                    new FlipMutation(pGen);
 
             List<IntegerSolution> offspring = new ArrayList<>(popSize);
 
@@ -85,7 +93,7 @@ public class MainEA {
                 );
             }
 
-            // elitism
+            // elitist (mu + lambda) replacement
             population.sort((a, b) ->
                     Double.compare(a.objectives()[0], b.objectives()[0]));
             offspring.sort((a, b) ->
@@ -108,7 +116,7 @@ public class MainEA {
         logger.close();
     }
 
-    // summarize gen
+    // print generation summary
     private static void printGeneration(int gen, List<IntegerSolution> pop) {
         double best = pop.stream()
                 .mapToDouble(s -> s.objectives()[0])
@@ -132,6 +140,6 @@ public class MainEA {
                         gen, f(best), f(worst), distinct
                 )
         );
-        System.out.println(); 
+        System.out.println();
     }
 }
