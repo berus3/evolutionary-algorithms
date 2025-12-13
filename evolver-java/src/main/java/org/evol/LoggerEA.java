@@ -20,12 +20,48 @@ public class LoggerEA {
     private static final DateTimeFormatter TS_FMT =
             DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
 
-    public LoggerEA(String basePath) {
+    public LoggerEA(
+            String basePath,
+            int seed,
+            RPGInstance instance,
+            int popSize,
+            int generations,
+            double crossoverProb,
+            double p0,
+            double pMin,
+            double alpha,
+            double lambdaSimilarity,
+            int fightsPerTeam,
+            int anchorCount
+    ) {
         try {
             String ts = LocalDateTime.now().format(TS_FMT);
             String path = basePath.replace(".csv", "_" + ts + ".csv");
 
             writer = new FileWriter(path);
+
+            // ===============================
+            // Metadata header
+            // ===============================
+            writer.write("# seed=" + seed + "\n");
+            writer.write("# instance=" + instance.name() + "\n");
+            writer.write("# popSize=" + popSize + "\n");
+            writer.write("# generations=" + generations + "\n");
+            writer.write("# crossover=BlockUniformCrossover(p=" + crossoverProb + ")\n");
+            writer.write("# mutation=FlipMutation(p0=" + p0 +
+                         ",pMin=" + pMin +
+                         ",alpha=" + alpha + ")\n");
+            writer.write("# fitness=winrate - lambda*similarity\n");
+            writer.write("# lambda_similarity=" + lambdaSimilarity + "\n");
+            writer.write("# similarity_metric=cosine\n");
+            writer.write("# similarity_space=buckets\n");
+            writer.write("# similarity_window=±1\n");
+            writer.write("# fights_per_team=" + fightsPerTeam + "\n");
+            writer.write("# anchors=" + anchorCount + "\n");
+
+            // ===============================
+            // CSV header
+            // ===============================
             writer.write(
                     "gen,changes," +
                     "best_fitness,best_winrate,best_similarity," +
@@ -33,6 +69,7 @@ public class LoggerEA {
                     "best_genome\n"
             );
             writer.flush();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -58,25 +95,19 @@ public class LoggerEA {
 
         double avg = sum / pop.size();
 
-        // --- atributos del mejor ---
-        double bestWinrate   = Double.NaN;
+        double bestWinrate = Double.NaN;
         double bestSimilarity = Double.NaN;
 
         if (bestSol != null) {
             Object wr = bestSol.attributes().get("winrate");
             Object sim = bestSol.attributes().get("similarity");
 
-            if (wr instanceof Double) {
-                bestWinrate = (Double) wr;
-            }
-            if (sim instanceof Double) {
-                bestSimilarity = (Double) sim;
-            }
+            if (wr instanceof Double) bestWinrate = (Double) wr;
+            if (sim instanceof Double) bestSimilarity = (Double) sim;
         }
 
         String genomeStr = serializeGenome(bestSol);
 
-        // mejora histórica
         if (best < bestEver) {
             bestEver = best;
             changeCount++;
@@ -94,6 +125,19 @@ public class LoggerEA {
                     fmt(worst) + "," +
                     "\"" + lastBestGenome + "\"\n"
             );
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // ===============================
+    // Runtime footer
+    // ===============================
+    public void writeRuntime(double seconds) {
+        try {
+            writer.write("# runtime_seconds=" +
+                    String.format(Locale.US, "%.3f", seconds) + "\n");
             writer.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);

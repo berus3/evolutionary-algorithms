@@ -32,7 +32,7 @@ public class RPGProblem extends AbstractIntegerProblem {
 
     @Override
     public IntegerSolution evaluate(IntegerSolution solution) {
-        // ArenaEvaluator asignes objectives
+        // ArenaEvaluator asigns objectives
         return solution;
     }
 }

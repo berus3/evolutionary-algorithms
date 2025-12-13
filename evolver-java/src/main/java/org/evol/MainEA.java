@@ -5,6 +5,7 @@ import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.operator.selection.impl.BinaryTournamentSelection;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
+import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,27 +22,74 @@ public class MainEA {
 
     public static void main(String[] args) {
 
+        // ===============================
+        // RNG seed
+        // ===============================
+        int seed = 123456;
+
+        JMetalRandom.getInstance().setSeed(seed);
+        RPGNativeBridge.setSeed(seed);
+
+        System.out.println("[SEED] " + seed);
+
+        // ===============================
+        // Instance
+        // ===============================
+        RPGInstance instance = RPGInstance.BALANCED;
+        RPGNativeBridge.setInstance(instance.id);
+
+        System.out.println("[INSTANCE] " + instance);
+
+        // ===============================
+        // START TIMER
+        // ===============================
+        long startTimeNs = System.nanoTime();
+
         RPGProblem problem = new RPGProblem();
 
-        // === Operators ===
+        // ===============================
+        // Operators
+        // ===============================
+        double crossoverProb = 0.75;
         CrossoverOperator<IntegerSolution> crossover =
-                new BlockUniformCrossover(0.75);
+                new BlockUniformCrossover(crossoverProb);
 
         SelectionOperator<List<IntegerSolution>, IntegerSolution> selection =
                 new BinaryTournamentSelection<>();
 
-        // === Mutation decay ===
+        // ===============================
+        // Mutation decay
+        // ===============================
         double p0    = 0.10;
         double pMin  = 0.002;
         double alpha = 0.90;
 
-        ArenaEvaluator evaluator = new ArenaEvaluator();
-        LoggerEA logger = new LoggerEA("logs/fitness.csv");
-
+        // ===============================
+        // EA parameters
+        // ===============================
         final int popSize = 100;
         final int generations = 50;
 
-        // === Init population ===
+        ArenaEvaluator evaluator = new ArenaEvaluator();
+
+        LoggerEA logger = new LoggerEA(
+                "logs/fitness.csv",
+                seed,
+                instance,
+                popSize,
+                generations,
+                crossoverProb,
+                p0,
+                pMin,
+                alpha,
+                ArenaEvaluator.LAMBDA_SIMILARITY,
+                5,   // fights per team
+                5    // anchors
+        );
+
+        // ===============================
+        // Init population
+        // ===============================
         List<IntegerSolution> population = new ArrayList<>(popSize);
         for (int i = 0; i < popSize; i++) {
             population.add(problem.createSolution());
@@ -51,7 +99,9 @@ public class MainEA {
         logger.log(0, population);
         printGeneration(0, population);
 
-        // === Evolution loop ===
+        // ===============================
+        // Evolution loop
+        // ===============================
         for (int gen = 1; gen <= generations; gen++) {
 
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
@@ -96,7 +146,9 @@ public class MainEA {
                 );
             }
 
-            // === Elitist (μ + λ) replacement ===
+            // ===============================
+            // Elitism (μ + λ)
+            // ===============================
             population.sort((a, b) ->
                     Double.compare(a.objectives()[0], b.objectives()[0]));
             offspring.sort((a, b) ->
@@ -116,10 +168,20 @@ public class MainEA {
             printGeneration(gen, population);
         }
 
+        // ===============================
+        // END TIMER
+        // ===============================
+        long endTimeNs = System.nanoTime();
+        double runtimeSeconds =
+                (endTimeNs - startTimeNs) / 1_000_000_000.0;
+
+        logger.writeRuntime(runtimeSeconds);
         logger.close();
     }
 
-    // === Pretty generation summary ===
+    // ===============================
+    // Pretty print generation
+    // ===============================
     private static void printGeneration(int gen, List<IntegerSolution> pop) {
 
         IntegerSolution best = pop.stream()

@@ -241,4 +241,5 @@ CMakeFiles/combat_test.dir/src/combat_jni.cpp.o: \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/team.hpp \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/player.hpp \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/anchors.hpp \
- /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/genome_decode.hpp
+ /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/genome_decode.hpp \
+ /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/instance.hpp

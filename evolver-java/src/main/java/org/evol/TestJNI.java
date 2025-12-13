@@ -7,7 +7,7 @@ public class TestJNI {
     public static void main(String[] args) {
 
         int populationSize = 2;
-        int genomeSize = 43 * 5; // 215
+        int genomeSize = 500;
 
         int[] flat = new int[populationSize * genomeSize];
 

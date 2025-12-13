@@ -13,13 +13,18 @@ enum Instance {
 extern Instance instance;
 
 namespace rng {
-    inline std::mt19937 gen(std::random_device{}());
-    inline std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
-    inline float real01() {
-        return dist(gen);
-    }
+    inline std::mt19937 gen;
+
+    inline std::uniform_real_distribution<float> dist01(0.0f, 1.0f);
     
+    inline void seed(uint64_t s) {
+        gen.seed(static_cast<std::mt19937::result_type>(s));
+    }
+    inline float real01() {
+        return dist01(gen);
+    }
+
     inline int randint(int x, int y) {
         std::uniform_int_distribution<int> dist_int(x, y);
         return dist_int(gen);

@@ -4,13 +4,14 @@ import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 
 import java.util.List;
-import java.util.Random;
+import org.uma.jmetal.util.pseudorandom.JMetalRandom;
+
 
 public class BlockUniformCrossover
         implements CrossoverOperator<IntegerSolution> {
 
     private final double crossoverProbability;
-    private final Random random = new Random();
+    private final JMetalRandom rng = JMetalRandom.getInstance();
 
     public BlockUniformCrossover(double crossoverProbability) {
         this.crossoverProbability = crossoverProbability;
@@ -24,15 +25,15 @@ public class BlockUniformCrossover
         IntegerSolution c1 = (IntegerSolution) p1.copy();
         IntegerSolution c2 = (IntegerSolution) p2.copy();
 
-        if (random.nextDouble() < crossoverProbability) {
+        if (rng.nextDouble() < crossoverProbability) {
 
-            int players   = RPGProblem.PLAYERS_PER_TEAM;        // 5
-            int blockSize = RPGProblem.DECISIONS_PER_PLAYER;    // 100
+            int players   = RPGProblem.PLAYERS_PER_TEAM;     // 5
+            int blockSize = RPGProblem.DECISIONS_PER_PLAYER; // 100
 
             for (int player = 0; player < players; player++) {
 
-                // coin flip per player
-                if (random.nextBoolean()) {
+                // coin flip por jugador
+                if (rng.nextDouble() < 0.5) {
 
                     int start = player * blockSize;
                     int end   = start + blockSize;

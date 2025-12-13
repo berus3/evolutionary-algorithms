@@ -23,14 +23,6 @@ JNIEXPORT jdoubleArray JNICALL Java_org_evol_RPGNativeBridge_evaluatePopulation
 JNIEXPORT void JNICALL Java_org_evol_RPGNativeBridge_setSeed
   (JNIEnv *, jclass, jint);
 
-/*
- * Class:     org_evol_RPGNativeBridge
- * Method:    setInstance
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_org_evol_RPGNativeBridge_setInstance
-  (JNIEnv *, jclass, jint);
-
 #ifdef __cplusplus
 }
 #endif

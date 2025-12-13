@@ -10,10 +10,10 @@
 #include "player.hpp"
 #include "anchors.hpp"
 #include "genome_decode.hpp"
+#include "instance.hpp"   // <-- ADD THIS
 
-/* ============================================================
-   Helpers JNI
-   ============================================================ */
+
+	// helpers JNI
 static void throwIAE(JNIEnv* env, const char* msg) {
     jclass ex = env->FindClass("java/lang/IllegalArgumentException");
     if (ex) env->ThrowNew(ex, msg);
@@ -24,9 +24,38 @@ static void throwISE(JNIEnv* env, const char* msg) {
     if (ex) env->ThrowNew(ex, msg);
 }
 
-/* ============================================================
-   ANCHORS (hardcodeados)
-   ============================================================ */
+ // RNG seed
+extern "C"
+JNIEXPORT void JNICALL
+Java_org_evol_RPGNativeBridge_setSeed(
+    JNIEnv*,
+    jclass,
+    jint seed
+) {
+    rng::seed(static_cast<uint32_t>(seed));
+    std::cerr << "[JNI] RNG seeded with " << seed << std::endl;
+}
+
+ // INSTANCE selection
+extern "C"
+JNIEXPORT void JNICALL
+Java_org_evol_RPGNativeBridge_setInstance(
+    JNIEnv*,
+    jclass,
+    jint instanceId
+) {
+    if (instanceId < 0 || instanceId > 2) {
+        std::cerr << "[JNI] Invalid instance id: "
+                  << instanceId << std::endl;
+        return;
+    }
+
+    chooseInstance(static_cast<Instance>(instanceId));
+
+    std::cerr << "[JNI] Instance set to " << instanceId << std::endl;
+}
+
+ //hardcoded anchors
 
 static std::vector<Team*> g_anchors;
 
@@ -40,9 +69,8 @@ static void initAnchorsOnce() {
     }
 }
 
-
 /* ============================================================
-   JNI evaluatePopulation — usa combat_engine::winrate_* con anchors
+   JNI evaluatePopulation
    ============================================================ */
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
@@ -61,22 +89,10 @@ Java_org_evol_RPGNativeBridge_evaluatePopulation(
         return nullptr;
     }
 
-    // init anchors 1 vez
     initAnchorsOnce();
 
     jsize totalLen = env->GetArrayLength(flatPopulation);
     const jsize expected = (jsize)populationSize * (jsize)GENOME_SIZE;
-
-    static bool printedOnce = false;
-    if (!printedOnce) {
-        printedOnce = true;
-        std::cerr << "[JNI] popSize=" << (int)populationSize
-                  << " totalLen=" << (int)totalLen
-                  << " expected=" << (int)expected
-                  << " GENOME_SIZE=" << GENOME_SIZE
-                  << " anchors=" << (int)g_anchors.size()
-                  << std::endl;
-    }
 
     if (totalLen != expected) {
         throwIAE(env, "flatPopulation length mismatch (expected popSize*500)");
@@ -89,53 +105,34 @@ Java_org_evol_RPGNativeBridge_evaluatePopulation(
         return nullptr;
     }
 
-    static bool printedIntsOnce = false;
-    if (!printedIntsOnce) {
-        printedIntsOnce = true;
-        std::cerr << "[JNI] first 20 genes: ";
-        for (int i = 0; i < 20; i++) std::cerr << data[i] << " ";
-        std::cerr << std::endl;
-    }
-
-    // Construcción de equipos
     std::vector<Team*> teams;
     teams.reserve((size_t)populationSize);
 
     for (int i = 0; i < populationSize; i++) {
-        const int* genome_i = reinterpret_cast<const int*>(data + (i * GENOME_SIZE));
-        Team* t = buildTeamFromGenome(genome_i, i);
-        teams.push_back(t);
+        const int* genome_i = data + (i * GENOME_SIZE);
+        teams.push_back(buildTeamFromGenome(genome_i, i));
     }
 
-    // Calcular winrate incluyendo anchors:
-    // - Random-k dentro de población + todos los anchors
-    std::vector<double> wr = winrate_anchor_random_k(teams, g_anchors, 5);
-
-    // (alternativa: round-robin completo + anchors)
-    // std::vector<double> wr = winrate_anchor(teams, g_anchors);
+    std::vector<double> wr =
+        winrate_anchor_random_k(teams, g_anchors, 5);
 
     env->ReleaseIntArrayElements(flatPopulation, data, 0);
 
     if ((int)wr.size() != populationSize) {
         for (Team* t : teams) delete t;
-        throwISE(env, "winrate_anchor_* returned vector size != populationSize");
+        throwISE(env, "winrate returned wrong size");
         return nullptr;
     }
 
     jdoubleArray out = env->NewDoubleArray(populationSize);
-    if (out == nullptr) {
+    if (!out) {
         for (Team* t : teams) delete t;
         throwISE(env, "NewDoubleArray failed");
         return nullptr;
     }
 
-    std::vector<jdouble> jwr(populationSize);
-    for (int i = 0; i < populationSize; i++) {
-        jwr[i] = (jdouble)wr[i];
-    }
-    env->SetDoubleArrayRegion(out, 0, populationSize, jwr.data());
+    env->SetDoubleArrayRegion(out, 0, populationSize, wr.data());
 
     for (Team* t : teams) delete t;
-
     return out;
 }
