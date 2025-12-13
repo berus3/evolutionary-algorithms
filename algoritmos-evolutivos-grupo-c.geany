@@ -27,7 +27,7 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=36
+current_page=50
 FILE_NAME_0=113;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fcombat_engine.cpp;0;4
 FILE_NAME_1=28594;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fplayer.cpp;0;4
 FILE_NAME_2=117;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fplayer.hpp;0;4
@@ -44,10 +44,10 @@ FILE_NAME_12=529;CMake;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2F
 FILE_NAME_13=59;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fgenome_decode.hpp;0;4
 FILE_NAME_14=372;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fgenome_decode.cpp;0;4
 FILE_NAME_15=654;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Ftest_build.cpp;0;4
-FILE_NAME_16=6295;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FMainEA.java;0;4
-FILE_NAME_17=5630;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FLoggerEA.java;0;4
+FILE_NAME_16=8566;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FMainEA.java;0;4
+FILE_NAME_17=6595;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FLoggerEA.java;0;4
 FILE_NAME_18=0;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FBenchmark.java;0;4
-FILE_NAME_19=942;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FFlipMutation.java;0;4
+FILE_NAME_19=816;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FFlipMutation.java;0;4
 FILE_NAME_20=0;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FPoc.java;0;4
 FILE_NAME_21=379;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FRPGNativeBridge.java;0;4
 FILE_NAME_22=1051;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FRPGProblem.java;0;4
@@ -64,7 +64,7 @@ FILE_NAME_32=807;Sh;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falg
 FILE_NAME_33=10265;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1339.csv;0;4
 FILE_NAME_34=16036;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1358.csv;0;4
 FILE_NAME_35=0;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Finclude%2Fanchors.hpp;0;4
-FILE_NAME_36=3545;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fcombat_jni.cpp;0;4
+FILE_NAME_36=2665;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fcombat_jni.cpp;0;4
 FILE_NAME_37=709;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fmain.cpp;0;4
 FILE_NAME_38=311;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1451.csv;0;4
 FILE_NAME_39=13476;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1458.csv;0;4
@@ -72,6 +72,12 @@ FILE_NAME_40=33981;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2
 FILE_NAME_41=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1511.csv;0;4
 FILE_NAME_42=0;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FRPGInstance.java;0;4
 FILE_NAME_43=311;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1527.csv;0;4
+FILE_NAME_44=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1556.csv;0;4
+FILE_NAME_45=49396;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1558.csv;0;4
+FILE_NAME_46=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1608.csv;0;4
+FILE_NAME_47=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1602.csv;0;4
+FILE_NAME_48=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_20251213_1612.csv;0;4
+FILE_NAME_49=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_TOP10_20251213_1623.csv;0;4
 
 [VTE]
-last_dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java
+last_dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c

@@ -6,12 +6,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
 public class LoggerEA {
 
     private final FileWriter writer;
+    private final String basePath;
 
     private double bestEver = Double.POSITIVE_INFINITY;
     private int changeCount = 0;
@@ -19,6 +21,8 @@ public class LoggerEA {
 
     private static final DateTimeFormatter TS_FMT =
             DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
+
+    private final String timestamp;
 
     public LoggerEA(
             String basePath,
@@ -32,12 +36,15 @@ public class LoggerEA {
             double alpha,
             double lambdaSimilarity,
             int fightsPerTeam,
-            int anchorCount
+            int anchorCount,
+            int tournamentK,
+            int elitismCount
     ) {
         try {
-            String ts = LocalDateTime.now().format(TS_FMT);
-            String path = basePath.replace(".csv", "_" + ts + ".csv");
+            this.basePath = basePath;
+            this.timestamp = LocalDateTime.now().format(TS_FMT);
 
+            String path = basePath.replace(".csv", "_" + timestamp + ".csv");
             writer = new FileWriter(path);
 
             // ===============================
@@ -51,11 +58,9 @@ public class LoggerEA {
             writer.write("# mutation=FlipMutation(p0=" + p0 +
                          ",pMin=" + pMin +
                          ",alpha=" + alpha + ")\n");
-            writer.write("# fitness=winrate - lambda*similarity\n");
+            writer.write("# selection=NaryTournament(k=" + tournamentK + ")\n");
+            writer.write("# elitism=" + elitismCount + "\n");
             writer.write("# lambda_similarity=" + lambdaSimilarity + "\n");
-            writer.write("# similarity_metric=cosine\n");
-            writer.write("# similarity_space=buckets\n");
-            writer.write("# similarity_window=±1\n");
             writer.write("# fights_per_team=" + fightsPerTeam + "\n");
             writer.write("# anchors=" + anchorCount + "\n");
 
@@ -132,6 +137,43 @@ public class LoggerEA {
     }
 
     // ===============================
+    // Final TOP-K summary
+    // ===============================
+    public void writeTopIndividuals(List<IntegerSolution> population, int topK) {
+        String outPath = basePath.replace(
+                ".csv",
+                "_TOP" + topK + "_" + timestamp + ".csv"
+        );
+
+        population.sort(Comparator.comparingDouble(s -> s.objectives()[0]));
+
+        try (FileWriter fw = new FileWriter(outPath)) {
+
+            fw.write("rank,fitness,winrate,genome\n");
+
+            for (int i = 0; i < Math.min(topK, population.size()); i++) {
+                IntegerSolution s = population.get(i);
+
+                double fitness = s.objectives()[0];
+                double winrate = (double) s.attributes()
+                        .getOrDefault("winrate", Double.NaN);
+
+                fw.write(
+                        (i + 1) + "," +
+                        fmt(fitness) + "," +
+                        fmt(winrate) + "," +
+                        "\"" + serializeGenome(s) + "\"\n"
+                );
+            }
+
+            fw.flush();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // ===============================
     // Runtime footer
     // ===============================
     public void writeRuntime(double seconds) {
@@ -154,21 +196,11 @@ public class LoggerEA {
         if (sol == null) return "";
 
         List<Integer> v = sol.variables();
-        int players = 5;
-        int genesPerPlayer = v.size() / players;
-
         StringBuilder sb = new StringBuilder();
 
-        for (int p = 0; p < players; p++) {
-            sb.append("[P").append(p).append("] ");
-            int start = p * genesPerPlayer;
-            int end = start + genesPerPlayer;
-
-            for (int i = start; i < end; i++) {
-                sb.append(v.get(i));
-                if (i < end - 1) sb.append(' ');
-            }
-            if (p < players - 1) sb.append("; ");
+        for (int i = 0; i < v.size(); i++) {
+            sb.append(v.get(i));
+            if (i < v.size() - 1) sb.append(' ');
         }
         return sb.toString();
     }

@@ -3,8 +3,9 @@ package org.evol;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.operator.selection.SelectionOperator;
-import org.uma.jmetal.operator.selection.impl.BinaryTournamentSelection;
+import org.uma.jmetal.operator.selection.impl.NaryTournamentSelection;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
+import org.uma.jmetal.util.comparator.ObjectiveComparator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import java.util.ArrayList;
@@ -54,8 +55,12 @@ public class MainEA {
         CrossoverOperator<IntegerSolution> crossover =
                 new BlockUniformCrossover(crossoverProb);
 
+        int tournamentK = 3;
         SelectionOperator<List<IntegerSolution>, IntegerSolution> selection =
-                new BinaryTournamentSelection<>();
+                new NaryTournamentSelection<>(
+                        tournamentK,
+                        new ObjectiveComparator<>(0)
+                );
 
         // ===============================
         // Mutation decay
@@ -69,6 +74,16 @@ public class MainEA {
         // ===============================
         final int popSize = 100;
         final int generations = 50;
+        final int elitismCount = 2;
+
+        // ===============================
+        // Early stopping (plateau)
+        // ===============================
+        final int plateauWindow = 10;
+        final double epsilon = 1e-4;
+
+        double bestEver = Double.POSITIVE_INFINITY;
+        int noImprovementCount = 0;
 
         ArenaEvaluator evaluator = new ArenaEvaluator();
 
@@ -83,8 +98,10 @@ public class MainEA {
                 pMin,
                 alpha,
                 ArenaEvaluator.LAMBDA_SIMILARITY,
-                5,   // fights per team
-                5    // anchors
+                5,              // fights per team
+                5,              // anchors
+                tournamentK,
+                elitismCount
         );
 
         // ===============================
@@ -98,6 +115,10 @@ public class MainEA {
         evaluator.evaluate(population, problem);
         logger.log(0, population);
         printGeneration(0, population);
+
+        bestEver = population.stream()
+                .mapToDouble(s -> s.objectives()[0])
+                .min().orElse(Double.POSITIVE_INFINITY);
 
         // ===============================
         // Evolution loop
@@ -155,14 +176,38 @@ public class MainEA {
                     Double.compare(a.objectives()[0], b.objectives()[0]));
 
             List<IntegerSolution> nextGen = new ArrayList<>(popSize);
-            nextGen.add(population.get(0));
-            nextGen.add(population.get(1));
 
-            for (int i = 0; i < popSize - 2; i++) {
+            for (int i = 0; i < elitismCount; i++) {
+                nextGen.add(population.get(i));
+            }
+
+            for (int i = 0; i < popSize - elitismCount; i++) {
                 nextGen.add(offspring.get(i));
             }
 
             population = nextGen;
+
+            // ===============================
+            // Early stopping check
+            // ===============================
+            double currentBest = population.get(0).objectives()[0];
+
+            if (bestEver - currentBest > epsilon) {
+                bestEver = currentBest;
+                noImprovementCount = 0;
+            } else {
+                noImprovementCount++;
+            }
+
+            if (noImprovementCount >= plateauWindow) {
+                System.out.println(
+                        "[EARLY STOP] No significant improvement for " +
+                        plateauWindow + " generations. Stopping at gen " + gen
+                );
+                logger.log(gen, population);
+                printGeneration(gen, population);
+                break;
+            }
 
             logger.log(gen, population);
             printGeneration(gen, population);
@@ -174,6 +219,11 @@ public class MainEA {
         long endTimeNs = System.nanoTime();
         double runtimeSeconds =
                 (endTimeNs - startTimeNs) / 1_000_000_000.0;
+
+        // ===============================
+        // Final TOP-10 summary
+        // ===============================
+        logger.writeTopIndividuals(population, 10);
 
         logger.writeRuntime(runtimeSeconds);
         logger.close();
