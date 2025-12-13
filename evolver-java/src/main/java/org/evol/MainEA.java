@@ -23,9 +23,7 @@ public class MainEA {
 
     public static void main(String[] args) {
 
-        // ===============================
         // RNG seed
-        // ===============================
         int seed = 123456;
 
         JMetalRandom.getInstance().setSeed(seed);
@@ -33,24 +31,19 @@ public class MainEA {
 
         System.out.println("[SEED] " + seed);
 
-        // ===============================
-        // Instance
-        // ===============================
+        // instance
         RPGInstance instance = RPGInstance.BALANCED;
         RPGNativeBridge.setInstance(instance.id);
 
         System.out.println("[INSTANCE] " + instance);
 
-        // ===============================
         // START TIMER
-        // ===============================
         long startTimeNs = System.nanoTime();
 
         RPGProblem problem = new RPGProblem();
 
-        // ===============================
-        // Operators
-        // ===============================
+        // operators
+        
         double crossoverProb = 0.75;
         CrossoverOperator<IntegerSolution> crossover =
                 new BlockUniformCrossover(crossoverProb);
@@ -62,24 +55,21 @@ public class MainEA {
                         new ObjectiveComparator<>(0)
                 );
 
-        // ===============================
-        // Mutation decay
-        // ===============================
-        double p0    = 0.10;
-        double pMin  = 0.002;
+        // mutation decay
+
+        double p0    = 0.30;
+        double pMin  = 0.02;
         double alpha = 0.90;
 
-        // ===============================
         // EA parameters
-        // ===============================
-        final int popSize = 100;
-        final int generations = 50;
-        final int elitismCount = 2;
 
-        // ===============================
-        // Early stopping (plateau)
-        // ===============================
-        final int plateauWindow = 10;
+        final int popSize = 100;
+        final int generations = 100;
+        final int elitismCount = 3;
+
+        // early stopping (plateau)
+       
+        final int plateauWindow = 20;
         final double epsilon = 1e-4;
 
         double bestEver = Double.POSITIVE_INFINITY;
@@ -104,9 +94,8 @@ public class MainEA {
                 elitismCount
         );
 
-        // ===============================
-        // Init population
-        // ===============================
+        // init population
+     
         List<IntegerSolution> population = new ArrayList<>(popSize);
         for (int i = 0; i < popSize; i++) {
             population.add(problem.createSolution());
@@ -120,9 +109,8 @@ public class MainEA {
                 .mapToDouble(s -> s.objectives()[0])
                 .min().orElse(Double.POSITIVE_INFINITY);
 
-        // ===============================
-        // Evolution loop
-        // ===============================
+        // evolution loop
+       
         for (int gen = 1; gen <= generations; gen++) {
 
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
@@ -167,9 +155,8 @@ public class MainEA {
                 );
             }
 
-            // ===============================
-            // Elitism (μ + λ)
-            // ===============================
+            // elitism (mu + lambda)
+            
             population.sort((a, b) ->
                     Double.compare(a.objectives()[0], b.objectives()[0]));
             offspring.sort((a, b) ->
@@ -187,9 +174,8 @@ public class MainEA {
 
             population = nextGen;
 
-            // ===============================
-            // Early stopping check
-            // ===============================
+            // early stopping check
+           
             double currentBest = population.get(0).objectives()[0];
 
             if (bestEver - currentBest > epsilon) {
@@ -213,25 +199,22 @@ public class MainEA {
             printGeneration(gen, population);
         }
 
-        // ===============================
         // END TIMER
-        // ===============================
+       
         long endTimeNs = System.nanoTime();
         double runtimeSeconds =
                 (endTimeNs - startTimeNs) / 1_000_000_000.0;
 
-        // ===============================
-        // Final TOP-10 summary
-        // ===============================
+        // final TOP-10 summary
+       
         logger.writeTopIndividuals(population, 10);
 
         logger.writeRuntime(runtimeSeconds);
         logger.close();
     }
 
-    // ===============================
-    // Pretty print generation
-    // ===============================
+    // pretty print generation
+
     private static void printGeneration(int gen, List<IntegerSolution> pop) {
 
         IntegerSolution best = pop.stream()

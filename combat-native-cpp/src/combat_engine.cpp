@@ -335,6 +335,7 @@ winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*
     std::vector<int> games_played(n, 0);
 
     // TLS por thead
+	omp_set_num_threads(16);
     const int T = omp_get_max_threads();
     std::vector<std::vector<int>> win_tls(T, std::vector<int>(n, 0));
     std::vector<std::vector<int>> games_tls(T, std::vector<int>(n, 0));

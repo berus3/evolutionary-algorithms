@@ -11,7 +11,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
 
     private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
 
-    public static final double LAMBDA_SIMILARITY = 0.20;
+    public static final double LAMBDA_SIMILARITY = 0.80;
 
     private static String f(double x) {
         return String.format(Locale.US, "%.3f", x);

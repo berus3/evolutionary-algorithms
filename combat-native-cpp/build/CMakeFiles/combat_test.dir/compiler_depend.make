@@ -2375,8 +2375,10 @@ bin/combat_test: /lib64/ld-linux-x86-64.so.2 \
   /usr/lib/gcc/x86_64-redhat-linux/15/crtend.o \
   /usr/lib/gcc/x86_64-redhat-linux/15/libgcc.a \
   /usr/lib/gcc/x86_64-redhat-linux/15/libgcc_s.so \
+  /usr/lib/gcc/x86_64-redhat-linux/15/libgomp.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so \
   /usr/lib64/libc_nonshared.a \
+  /usr/lib64/libpthread.a \
   CMakeFiles/combat_test.dir/src/anchors.cpp.o \
   CMakeFiles/combat_test.dir/src/combat_engine.cpp.o \
   CMakeFiles/combat_test.dir/src/combat_jni.cpp.o \
@@ -2402,6 +2404,8 @@ CMakeFiles/combat_test.dir/src/instance.cpp.o:
 
 CMakeFiles/combat_test.dir/src/anchors.cpp.o:
 
+/usr/lib64/libpthread.a:
+
 /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/libgcc.a:
@@ -2415,6 +2419,8 @@ CMakeFiles/combat_test.dir/src/anchors.cpp.o:
 /lib64/libmvec.so.1:
 
 /lib64/libgcc_s.so.1:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/libgomp.so:
 
 /lib64/libc.so.6:
 

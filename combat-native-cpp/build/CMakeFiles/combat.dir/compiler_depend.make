@@ -2056,8 +2056,10 @@ lib/libcombat.so: /lib64/ld-linux-x86-64.so.2 \
   /usr/lib/gcc/x86_64-redhat-linux/15/crtendS.o \
   /usr/lib/gcc/x86_64-redhat-linux/15/libgcc.a \
   /usr/lib/gcc/x86_64-redhat-linux/15/libgcc_s.so \
+  /usr/lib/gcc/x86_64-redhat-linux/15/libgomp.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so \
   /usr/lib64/libc_nonshared.a \
+  /usr/lib64/libpthread.a \
   CMakeFiles/combat.dir/src/anchors.cpp.o \
   CMakeFiles/combat.dir/src/combat_engine.cpp.o \
   CMakeFiles/combat.dir/src/combat_jni.cpp.o \
@@ -2073,6 +2075,8 @@ CMakeFiles/combat.dir/src/rng_context.cpp.o:
 
 CMakeFiles/combat.dir/src/instance.cpp.o:
 
+/usr/lib64/libpthread.a:
+
 CMakeFiles/combat.dir/src/genome_decode.cpp.o:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so:
@@ -2086,6 +2090,8 @@ CMakeFiles/combat.dir/src/genome_decode.cpp.o:
 /lib64/libmvec.so.1:
 
 /lib64/libgcc_s.so.1:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/libgomp.so:
 
 /lib64/libc.so.6:
 
