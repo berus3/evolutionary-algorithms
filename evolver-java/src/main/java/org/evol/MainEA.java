@@ -32,7 +32,7 @@ public class MainEA {
         System.out.println("[SEED] " + seed);
 
         // instance
-        RPGInstance instance = RPGInstance.BALANCED;
+        RPGInstance instance = RPGInstance.PIECEWISE;
 
         RPGNativeBridge.setInstance(instance.id);
 
