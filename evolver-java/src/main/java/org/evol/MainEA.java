@@ -12,7 +12,8 @@ import java.util.Locale;
 
 public class MainEA {
 
-    private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
+    private static final boolean DEBUG =
+            Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
 
     private static String f(double x) {
         return String.format(Locale.US, "%.4f", x);
@@ -22,15 +23,17 @@ public class MainEA {
 
         RPGProblem problem = new RPGProblem();
 
-        // operators
-        CrossoverOperator<IntegerSolution> crossover = new BlockUniformCrossover(0.75);
+        // === Operators ===
+        CrossoverOperator<IntegerSolution> crossover =
+                new BlockUniformCrossover(0.75);
 
-        SelectionOperator<List<IntegerSolution>, IntegerSolution> selection = new BinaryTournamentSelection<>();
+        SelectionOperator<List<IntegerSolution>, IntegerSolution> selection =
+                new BinaryTournamentSelection<>();
 
-        // mutation decay parameters
-        double p0    = 0.1;     // initial mutation rate
-        double pMin  = 0.002;   // minimum mutation rate
-        double alpha = 0.9;     // decay factor per generation
+        // === Mutation decay ===
+        double p0    = 0.10;
+        double pMin  = 0.002;
+        double alpha = 0.90;
 
         ArenaEvaluator evaluator = new ArenaEvaluator();
         LoggerEA logger = new LoggerEA("logs/fitness.csv");
@@ -38,7 +41,7 @@ public class MainEA {
         final int popSize = 100;
         final int generations = 50;
 
-        // initialize population
+        // === Init population ===
         List<IntegerSolution> population = new ArrayList<>(popSize);
         for (int i = 0; i < popSize; i++) {
             population.add(problem.createSolution());
@@ -48,10 +51,9 @@ public class MainEA {
         logger.log(0, population);
         printGeneration(0, population);
 
-        // evolution loop
+        // === Evolution loop ===
         for (int gen = 1; gen <= generations; gen++) {
 
-            // mutation decay
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
             MutationOperator<IntegerSolution> mutation =
                     new FlipMutation(pGen);
@@ -68,7 +70,8 @@ public class MainEA {
                 mutation.execute(children.get(0));
                 mutation.execute(children.get(1));
 
-                offspring.addAll(children);
+                offspring.add(children.get(0));
+                offspring.add(children.get(1));
             }
 
             evaluator.evaluate(offspring, problem);
@@ -93,7 +96,7 @@ public class MainEA {
                 );
             }
 
-            // elitist (mu + lambda) replacement
+            // === Elitist (μ + λ) replacement ===
             population.sort((a, b) ->
                     Double.compare(a.objectives()[0], b.objectives()[0]));
             offspring.sort((a, b) ->
@@ -116,30 +119,28 @@ public class MainEA {
         logger.close();
     }
 
-    // print generation summary
+    // === Pretty generation summary ===
     private static void printGeneration(int gen, List<IntegerSolution> pop) {
-        double best = pop.stream()
-                .mapToDouble(s -> s.objectives()[0])
-                .min()
-                .orElse(Double.NaN);
 
-        double worst = pop.stream()
-                .mapToDouble(s -> s.objectives()[0])
-                .max()
-                .orElse(Double.NaN);
+        IntegerSolution best = pop.stream()
+                .min((a, b) -> Double.compare(a.objectives()[0], b.objectives()[0]))
+                .orElse(null);
 
-        long distinct = pop.stream()
-                .map(s -> s.objectives()[0])
-                .distinct()
-                .count();
+        if (best == null) return;
 
-        System.out.println(
-                String.format(
-                        Locale.US,
-                        "GEN %3d | best=%s worst=%s distinct=%d",
-                        gen, f(best), f(worst), distinct
-                )
+        double fitness = -best.objectives()[0];
+        double winrate = (double) best.attributes()
+                .getOrDefault("winrate", Double.NaN);
+        double similarity = (double) best.attributes()
+                .getOrDefault("similarity", Double.NaN);
+
+        System.out.printf(
+                Locale.US,
+                "GEN %3d | fitness=%6s | winrate=%6s | sim=%5s%n%n",
+                gen,
+                f(fitness),
+                f(winrate),
+                f(similarity)
         );
-        System.out.println();
     }
 }

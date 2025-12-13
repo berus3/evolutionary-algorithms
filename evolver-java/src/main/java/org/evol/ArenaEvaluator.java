@@ -4,15 +4,16 @@ import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
 
     private static final boolean DEBUG =
             Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
 
-    // printing format
+    private static final double LAMBDA_SIMILARITY = 0.20; // hiperparámetro
+
     private static String f(double x) {
         return String.format(Locale.US, "%.3f", x);
     }
@@ -25,8 +26,9 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
         final int popSize = population.size();
         final int genomeSize = RPGProblem.GENOME_SIZE; // 500
 
-        
-        // flatten population
+        // =====================================================
+        // 1) Flatten population
+        // =====================================================
         int[] flat = new int[popSize * genomeSize];
 
         for (int p = 0; p < popSize; p++) {
@@ -45,17 +47,13 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
             }
         }
 
-        
-         // JNI call
+        // =====================================================
+        // 2) JNI → winrates
+        // =====================================================
         double[] winrates = RPGNativeBridge.evaluatePopulation(flat, popSize);
 
-        if (winrates == null) {
-            throw new IllegalStateException("JNI returned null winrates");
-        }
-        if (winrates.length != popSize) {
-            throw new IllegalStateException(
-                    "JNI returned winrates.length=" + winrates.length +
-                    " but popSize=" + popSize);
+        if (winrates == null || winrates.length != popSize) {
+            throw new IllegalStateException("JNI returned invalid winrates");
         }
 
         if (DEBUG) {
@@ -65,40 +63,102 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
             }
             System.out.println();
         }
-        // assign objectives
-        double min = Double.POSITIVE_INFINITY;
-        double max = Double.NEGATIVE_INFINITY;
-        int distinctish = 0;
 
-        double prev = Double.NaN;
+        // =====================================================
+        // 3) Buckets (para similitud)
+        // =====================================================
+        int[][] buckets = new int[popSize][RPGProblem.STATS_PER_PLAYER];
+
+        for (int i = 0; i < popSize; i++) {
+            int base = i * genomeSize;
+            for (int g = 0; g < genomeSize; g++) {
+                int stat = flat[base + g];
+                if (stat >= 0 && stat < RPGProblem.STATS_PER_PLAYER) {
+                    buckets[i][stat]++;
+                }
+            }
+        }
+
+        // =====================================================
+        // 4) Orden por winrate
+        // =====================================================
+        int[] order = IntStream.range(0, popSize)
+                .boxed()
+                .sorted(Comparator.comparingDouble(i -> winrates[i]))
+                .mapToInt(i -> i)
+                .toArray();
+
+        // =====================================================
+        // 5) Similaridad local (±1)
+        // =====================================================
+        double[] similarity = new double[popSize];
+
+        for (int pos = 0; pos < popSize; pos++) {
+            int i = order[pos];
+            double sum = 0.0;
+            int cnt = 0;
+
+            if (pos > 0) {
+                int j = order[pos - 1];
+                sum += cosineSimilarity(buckets[i], buckets[j]);
+                cnt++;
+            }
+            if (pos < popSize - 1) {
+                int j = order[pos + 1];
+                sum += cosineSimilarity(buckets[i], buckets[j]);
+                cnt++;
+            }
+
+            similarity[i] = (cnt == 0) ? 0.0 : sum / cnt;
+        }
+
+        // =====================================================
+        // 6) Fitness = winrate − λ·similarity
+        // =====================================================
+        double minWR = Double.POSITIVE_INFINITY;
+        double maxWR = Double.NEGATIVE_INFINITY;
 
         for (int i = 0; i < popSize; i++) {
             double wr = winrates[i];
+            double sim = similarity[i];
+            double fitness = wr - LAMBDA_SIMILARITY * sim;
 
-            if (!Double.isFinite(wr)) {
-                throw new IllegalStateException(
-                        "Non-finite winrate at i=" + i + ": " + wr);
-            }
+            population.get(i).objectives()[0] = -fitness;
 
-            // objective minimize ( - winrate)
-            population.get(i).objectives()[0] = -wr;
+            population.get(i).attributes().put("winrate", wr);
+            population.get(i).attributes().put("similarity", sim);
+            population.get(i).attributes().put("fitness", fitness);
 
-            if (wr < min) min = wr;
-            if (wr > max) max = wr;
-            if (i == 0 || wr != prev) distinctish++;
-            prev = wr;
+            minWR = Math.min(minWR, wr);
+            maxWR = Math.max(maxWR, wr);
         }
 
         if (DEBUG) {
             System.out.println(
-                    "WINRATE | min=" + f(min) +
-                    " max=" + f(max) +
-                    " first=" + f(winrates[0]) +
-                    " distinct=" + distinctish
+                    "WINRATE | min=" + f(minWR) +
+                    " max=" + f(maxWR) +
+                    " λ=" + LAMBDA_SIMILARITY
             );
         }
 
         return population;
+    }
+
+    // =====================================================
+    // Cosine similarity (int buckets)
+    // =====================================================
+    private static double cosineSimilarity(int[] a, int[] b) {
+        long dot = 0, na = 0, nb = 0;
+
+        for (int i = 0; i < a.length; i++) {
+            dot += (long) a[i] * b[i];
+            na  += (long) a[i] * a[i];
+            nb  += (long) b[i] * b[i];
+        }
+
+        if (na == 0 || nb == 0) return 0.0;
+
+        return dot / (Math.sqrt((double) na) * Math.sqrt((double) nb));
     }
 
     @Override

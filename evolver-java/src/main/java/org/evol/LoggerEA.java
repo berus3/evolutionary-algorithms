@@ -26,7 +26,12 @@ public class LoggerEA {
             String path = basePath.replace(".csv", "_" + ts + ".csv");
 
             writer = new FileWriter(path);
-            writer.write("gen,changes,best,avg,worst,best_genome\n");
+            writer.write(
+                    "gen,changes," +
+                    "best_fitness,best_winrate,best_similarity," +
+                    "avg_fitness,worst_fitness," +
+                    "best_genome\n"
+            );
             writer.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -53,9 +58,25 @@ public class LoggerEA {
 
         double avg = sum / pop.size();
 
+        // --- atributos del mejor ---
+        double bestWinrate   = Double.NaN;
+        double bestSimilarity = Double.NaN;
+
+        if (bestSol != null) {
+            Object wr = bestSol.attributes().get("winrate");
+            Object sim = bestSol.attributes().get("similarity");
+
+            if (wr instanceof Double) {
+                bestWinrate = (Double) wr;
+            }
+            if (sim instanceof Double) {
+                bestSimilarity = (Double) sim;
+            }
+        }
+
         String genomeStr = serializeGenome(bestSol);
 
-        // Detecta mejora histórica
+        // mejora histórica
         if (best < bestEver) {
             bestEver = best;
             changeCount++;
@@ -67,6 +88,8 @@ public class LoggerEA {
                     gen + "," +
                     changeCount + "," +
                     fmt(best) + "," +
+                    fmt(bestWinrate) + "," +
+                    fmt(bestSimilarity) + "," +
                     fmt(avg) + "," +
                     fmt(worst) + "," +
                     "\"" + lastBestGenome + "\"\n"
@@ -78,7 +101,9 @@ public class LoggerEA {
     }
 
     private static String fmt(double x) {
-        return String.format(Locale.US, "%.3f", x);
+        return Double.isFinite(x)
+                ? String.format(Locale.US, "%.4f", x)
+                : "";
     }
 
     private String serializeGenome(IntegerSolution sol) {
@@ -105,7 +130,8 @@ public class LoggerEA {
     }
 
     public void close() {
-        try { writer.close(); }
-        catch (IOException ignored) {}
+        try {
+            writer.close();
+        } catch (IOException ignored) {}
     }
 }
