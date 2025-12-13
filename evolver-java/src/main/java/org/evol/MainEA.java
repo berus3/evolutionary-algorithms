@@ -36,7 +36,7 @@ public class MainEA {
         // ===============================
         // Instance
         // ===============================
-        RPGInstance instance = RPGInstance.BALANCED;
+        RPGInstance instance = RPGInstance.PIECEWISE;
         RPGNativeBridge.setInstance(instance.id);
 
         System.out.println("[INSTANCE] " + instance);

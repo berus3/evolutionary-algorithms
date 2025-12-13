@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/combat_test.dir/link.d"
   "CMakeFiles/combat_test.dir/src/anchors.cpp.o"
   "CMakeFiles/combat_test.dir/src/anchors.cpp.o.d"
   "CMakeFiles/combat_test.dir/src/combat_engine.cpp.o"

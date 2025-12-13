@@ -11,7 +11,7 @@
 
 enum Instance {
     BALANCED,
-    LINEAR,
+    PIECEWISE,
     UNFAIR
 };
 
