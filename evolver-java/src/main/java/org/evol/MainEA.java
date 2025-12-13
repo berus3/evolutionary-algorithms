@@ -33,6 +33,7 @@ public class MainEA {
 
         // instance
         RPGInstance instance = RPGInstance.BALANCED;
+
         RPGNativeBridge.setInstance(instance.id);
 
         System.out.println("[INSTANCE] " + instance);
@@ -79,7 +80,7 @@ public class MainEA {
 
         LoggerEA logger = new LoggerEA(
                 "logs/fitness.csv",
-                seed,
+    -            seed,
                 instance,
                 popSize,
                 generations,

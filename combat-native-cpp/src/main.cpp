@@ -23,66 +23,14 @@ static std::vector<size_t> topk_indices(const std::vector<double>& v, size_t k) 
 }
 
 int main() {
-    chooseInstance(BALANCED);
-/*
-    // Crear teams (100) con 5 players cada uno
-    const int N = 100;
-    std::vector<Team*> teams;
-    teams.reserve(N);
+    chooseInstance(PIECEWISE);
 
-    for (int i = 0; i < N; ++i) {
-        Team* t = new Team(i);
-        for (int j = 0; j < 5; ++j) {
-            t->setPlayer(j, new Player(j + i * 5)); // ids únicos (opcional)
-        }
-        // si tu lógica requiere init explícito:
-        for (int j = 0; j < 5; ++j) {
-            t->getPlayer(j)->_init_player();
-        }
-        teams.push_back(t);
-    }
+    int genome[] = {30, 23, 28, 11, 2, 0, 38, 3, 5, 26, 38, 0, 7, 32, 39, 5, 16, 13, 32, 20, 26, 13, 1, 24, 38, 4, 1, 1, 7, 18, 35, 26, 2, 39, 21, 9, 29, 27, 28, 29, 18, 2, 4, 29, 16, 33, 15, 24, 32, 3, 11, 17, 38, 35, 24, 2, 20, 26, 1, 13, 4, 33, 22, 38, 5, 41, 34, 28, 27, 34, 16, 35, 19, 39, 37, 28, 13, 0, 39, 19, 24, 0, 16, 5, 36, 34, 1, 33, 18, 1, 10, 30, 11, 29, 1, 26, 41, 25, 41, 5, 7, 21, 31, 15, 29, 5, 4, 33, 39, 13, 5, 9, 10, 34, 2, 27, 33, 25, 21, 35, 3, 31, 20, 21, 2, 13, 33, 20, 16, 11, 10, 19, 9, 13, 5, 33, 28, 15, 3, 9, 33, 5, 20, 12, 9, 0, 9, 36, 23, 30, 10, 7, 13, 11, 0, 2, 40, 26, 5, 25, 28, 20, 38, 42, 29, 30, 17, 26, 19, 33, 16, 34, 41, 7, 34, 36, 14, 13, 30, 25, 31, 32, 7, 29, 33, 12, 14, 22, 22, 10, 0, 16, 13, 28, 37, 10, 23, 2, 12, 8, 16, 28, 35, 23, 34, 35, 27, 7, 28, 32, 16, 40, 25, 27, 25, 22, 16, 32, 29, 15, 38, 32, 14, 34, 30, 29, 20, 13, 13, 38, 33, 32, 39, 7, 8, 5, 15, 35, 39, 39, 19, 24, 39, 33, 37, 24, 18, 0, 34, 1, 19, 7, 34, 31, 31, 19, 27, 28, 42, 14, 32, 42, 1, 13, 13, 32, 41, 36, 20, 42, 37, 34, 27, 4, 1, 35, 35, 35, 10, 29, 0, 36, 39, 5, 41, 4, 41, 30, 11, 39, 1, 5, 10, 18, 19, 2, 36, 29, 8, 8, 20, 21, 31, 2, 38, 7, 3, 26, 2, 28, 35, 29, 37, 24, 29, 26, 17, 24, 20, 17, 26, 9, 8, 28, 10, 25, 13, 37, 33, 7, 30, 37, 1, 40, 41, 23, 32, 4, 14, 15, 19, 17, 2, 6, 34, 9, 34, 18, 27, 28, 5, 21, 11, 42, 17, 26, 11, 39, 2, 19, 37, 24, 26, 21, 21, 39, 37, 17, 2, 16, 8, 38, 40, 23, 8, 36, 39, 7, 32, 42, 1, 30, 24, 36, 29, 12, 11, 41, 5, 2, 2, 9, 41, 17, 18, 8, 2, 9, 9, 31, 41, 42, 33, 36, 37, 22, 1, 18, 18, 5, 29, 28, 38, 28, 36, 17, 14, 8, 26, 34, 37, 41, 36, 26, 22, 37, 13, 37, 37, 4, 34, 32, 24, 8, 36, 16, 28, 20, 26, 27, 36, 40, 13, 0, 33, 24, 9, 19, 14, 16, 29, 10, 0, 4, 36, 16, 38, 39, 26, 16, 38, 20, 42, 5, 2, 8, 40, 22, 14, 26, 10, 12, 0, 21, 4, 16, 7, 19, 8, 19, 22, 33, 41, 26, 42, 16, 34, 28, 40, 41, 15, 1, 12, 19, 15, 38, 39, 12, 12, 26};
 
-    // 1) Winrate ALL-vs-ALL
-    const auto t0 = std::chrono::steady_clock::now();
-    std::vector<double> wr_full = winrate(teams);
-    const auto t1 = std::chrono::steady_clock::now();
-    const auto ms_full = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+    Team* t1 = buildTeamFromGenome(genome, 0);
 
+    for (int i = 0; i < 5; ++i)
+        t1->getPlayer(i)->print();
 
-
-    // 2) Winrate 5 random por team
-    const auto t2 = std::chrono::steady_clock::now();
-    std::vector<double> wr_r5 = winrate_random_5(teams, 1); // o winrate_random_5(teams)
-    const auto t3 = std::chrono::steady_clock::now();
-    const auto ms_r5 = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count();
-
-    std::cout << "\n=== Timing ===\n";
-    std::cout << "Full round-robin: " << ms_full << " ms\n";
-    std::cout << "5-random per team: " << ms_r5 << " ms\n";
-    if (ms_r5 > 0) {
-        std::cout << "Speedup ~ " << (static_cast<double>(ms_full) / static_cast<double>(ms_r5)) << "x\n";
-    }
-
-    // Resumen para comparar distribución (no van a coincidir exactamente)
-    std::cout << "\n=== Sanity check ===\n";
-    std::cout << "Mean WR full: " << mean(wr_full) << "\n";
-    std::cout << "Mean WR r5  : " << mean(wr_r5) << "\n";
-
-    auto top_full = topk_indices(wr_full, 5);
-    auto top_r5   = topk_indices(wr_r5, 5);
-
-    std::cout << "\nTop-5 full:\n";
-    for (auto i : top_full) {
-        std::cout << "  Team " << i << " -> " << (wr_full[i] * 100.0) << "%\n";
-    }
-
-    std::cout << "\nTop-5 r5:\n";
-    for (auto i : top_r5) {
-        std::cout << "  Team " << i << " -> " << (wr_r5[i] * 100.0) << "%\n";
-    }
-
-    // Cleanup
-    for (Team* t : teams) delete t;
-*/
     return 0;
 }

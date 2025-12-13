@@ -23,9 +23,29 @@ int linear_softmax(const float* weights, int n, uint64_t ctx) {
 float getCounterFocus() {
     switch (instance) {
         case BALANCED: return 10.0f;
-        case LINEAR: return 10.0f;
+        case PIECEWISE: return 10.0f;
         case UNFAIR:return 10.0f;
         default: return 10.0f;
+    }
+}
+
+float stat_piecewise_exp_linear(
+    int x,               // stat_point
+    int p,               // inflection_point
+    float y0,            // f(x = 0)
+    float yp,            // f(x = p)
+    float y100,          // f(x = 100)
+    float k = 0.08f      // exponential growth (0.05–0.15)
+) {
+    if (x <= 0) return y0;
+    if (x >= 100) return y100;
+
+    if (x <= p) {
+        float num = std::exp(k * x) - 1.0f;
+        float den = std::exp(k * p) - 1.0f;
+        return y0 + (yp - y0) * (num / den);
+    } else {
+        return yp + (y100 - yp) * (x - p) / float(100 - p);
     }
 }
 
@@ -36,8 +56,14 @@ int getStatMaxHp(int stat_point) {
             const float B = 9385.0f;
             return (int)roundf(1600.0f + B * (1.0f - expf(-k * stat_point)));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 1600.0f;
+            const float yp = 6000.0f;
+            const float y100 = 10000.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -52,8 +78,14 @@ int getStatRegen(int stat_point) {
             const float B = 428.571f;
             return (int)roundf(5.0f + B * (1.0f - expf(-k * stat_point)));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 130.0f;
+            const float y100 = 350.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -69,8 +101,14 @@ int getStatAd(int stat_point) {
             const float B = 2861.85f;
             return (int)roundf(50.0f + B * (1.0f - expf(-k * stat_point)));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 50.0f;
+            const float yp = 350.0f;
+            const float y100 = 1060.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -86,8 +124,8 @@ int getStatArmor(int stat_point) {
                  + 7.325f * stat_point
                  + 80.0f);
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE:
+            return (int)roundf(80.0f + stat_point * 8.2f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -103,8 +141,14 @@ int getStatArmorPen(int stat_point) {
             const float k = 0.06915f;
             return (int)roundf(L * (1.0f - expf(-k * stat_point)));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.3f;
+            const float y100 = 0.4f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -120,8 +164,14 @@ int getStatLethality(int stat_point) {
             const float k = 0.05f;
             return (int)roundf(L * (1.0f - expf(-k * stat_point)));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 70.0f;
+            const float y100 = 110.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -138,7 +188,7 @@ int getStatAs(int stat_point) {
             const float k = 0.048664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -154,8 +204,14 @@ float getStatCrit(int stat_point) {
             const float k = 0.0693147f;
             return (1.0f - expf(-k * stat_point));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 75.0f;
+            const float y100 = 100.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -172,8 +228,14 @@ float getStatCritFactor(int stat_point) {
             const float k = 0.0463733f;
             return L - B * expf(-k * stat_point);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 1.5f;
+            const float yp = 2.32f;
+            const float y100 = 2.84f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -190,15 +252,20 @@ float getStatBleed(int stat_point) {
             const float p = 0.8239f;
             return B * powf(stat_point, p);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.0f;
+            const float yp = 0.35f;
+            const float y100 = 1.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
             return 100.0f + stat_point * 20.0f;
     }
 }
-
 
 int getStatBleedDmg(int stat_point) {
     switch (instance) {
@@ -209,8 +276,14 @@ int getStatBleedDmg(int stat_point) {
             const float p = 0.569f;
             return (int)roundf(A + B * powf(stat_point, p));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.05f;
+            const float yp = 0.15f;
+            const float y100 = 0.3f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -227,16 +300,20 @@ int getStatBleedTicks(int stat_point) {
             const float p = 0.829f;
             return (int)roundf(A + B * powf(stat_point, p));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 1.2f;
+            const float yp = 2.2f;
+            const float y100 = 5.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
 }
-
-
 
 int getStatAp(int stat_point) {
     switch (instance) {
@@ -246,8 +323,14 @@ int getStatAp(int stat_point) {
             const float k = 0.02354f;
             return (int)roundf(L * (1.0f - expf(-k * stat_point)));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 600.0f;
+            const float y100 = 1450.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -264,15 +347,14 @@ int getStatMr(int stat_point) {
             const float p = 0.7266f;
             return (int)roundf(A + B * powf(stat_point, p));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE:
+            return (int)roundf(43.0f + stat_point * 3.6f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
 }
-
 
 int getStatMrPen(int stat_point) {
     switch (instance) {
@@ -282,8 +364,14 @@ int getStatMrPen(int stat_point) {
             const float k = 0.06915f;
             return (int)roundf(L * (1.0f - expf(-k * stat_point)));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.3f;
+            const float y100 = 0.4f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -299,8 +387,15 @@ int getStatEthereal(int stat_point) {
             const float p = 0.22185f;
             return (int)roundf(B * powf(stat_point, p));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE:
+        {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 21.0f;
+            const float y100 = 30.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -316,8 +411,14 @@ int getStatAh(int stat_point) {
             const float p = 0.4804f;
             return (int)roundf(B * powf(stat_point, p));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 60.0f;
+            const float y100 = 130.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -337,8 +438,14 @@ float getStatSmite(int stat_point) {
             float denom = 1.0f - expf(-b);
             return A * (num / denom);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.79f;
+            const float y100 = 2.99f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -355,7 +462,7 @@ int getStatCdSmite(int stat_point) {
             const float k = 0.0313f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -376,15 +483,20 @@ float getStatBlast(int stat_point) {
             float denom = 1.0f - expf(-b);
             return A * (num / denom);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.26f;
+            const float y100 = 1.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
             return 100.0f + stat_point * 20.0f;
     }
 }
-
 
 int getStatCdBlast(int stat_point) {
     switch (instance) {
@@ -395,7 +507,7 @@ int getStatCdBlast(int stat_point) {
             const float k = 0.0393f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -403,7 +515,6 @@ int getStatCdBlast(int stat_point) {
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
 }
-
 
 float getStatHeal(int stat_point) {
     switch (instance) {
@@ -417,15 +528,20 @@ float getStatHeal(int stat_point) {
             float denom = 1.0f - expf(-b);
             return A * (num / denom);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.8f;
+            const float y100 = 3.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
             return 100.0f + stat_point * 20.0f;
     }
 }
-
 
 int getStatCdHeal(int stat_point) {
     switch (instance) {
@@ -436,7 +552,7 @@ int getStatCdHeal(int stat_point) {
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -457,15 +573,20 @@ float getStatStun(int stat_point) {
             float denom = 1.0f - expf(-b);
             return A * (num / denom);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.52f;
+            const float y100 = 2.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
             return 100.0f + stat_point * 20.0f;
     }
 }
-
 
 int getStatCdStun(int stat_point) {
     switch (instance) {
@@ -476,7 +597,7 @@ int getStatCdStun(int stat_point) {
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -497,8 +618,14 @@ float getStatAcc(int stat_point) {
             float denom = 1.0f - expf(-b);
             return A * (num / denom);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.0f;
+            const float yp = 0.85f;
+            const float y100 = 1.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -516,8 +643,14 @@ float getStatAccTicks(int stat_point) {
             const float p = 0.777f;
             return A + B * powf(stat_point, p);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.8f;
+            const float yp = 2.0f;
+            const float y100 = 5.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k); 
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -534,7 +667,7 @@ int getStatCdAcc(int stat_point) {
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -555,8 +688,14 @@ float getStatSlow(int stat_point) {
             float denom = 1.0f - expf(-b);
             return A * (num / denom);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.0f;
+            const float yp = 0.85f;
+            const float y100 = 1.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -574,8 +713,14 @@ float getStatSlowTicks(int stat_point) {
             const float p = 0.777f;
             return A + B * powf(stat_point, p);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.8f;
+            const float yp = 2.0f;
+            const float y100 = 5.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -592,7 +737,7 @@ int getStatCdSlow(int stat_point) {
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -613,8 +758,14 @@ float getStatShield(int stat_point) {
             float denom = 1.0f - expf(-b);
             return A * (num / denom);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.0f;
+            const float yp = 0.85f;
+            const float y100 = 1.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -632,8 +783,14 @@ float getStatShieldTicks(int stat_point) {
             const float p = 0.777f;
             return A + B * powf(stat_point, p);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.8f;
+            const float yp = 2.0f;
+            const float y100 = 5.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -650,7 +807,7 @@ int getStatCdShield(int stat_point) {
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -671,8 +828,14 @@ float getStatMark(int stat_point) {
             float denom = 1.0f - expf(-b);
             return A * (num / denom);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.0f;
+            const float yp = 0.85f;
+            const float y100 = 1.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -690,8 +853,14 @@ float getStatMarkTicks(int stat_point) {
             const float p = 0.777f;
             return A + B * powf(stat_point, p);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 12;
+            const float y0 = 0.8f;
+            const float yp = 2.0f;
+            const float y100 = 5.0f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -708,7 +877,7 @@ int getStatCdMark(int stat_point) {
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
-        case LINEAR:
+        case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
@@ -725,8 +894,14 @@ float getStatVamp(int stat_point) {
             const float p = 0.8277f;
             return B * powf(stat_point, p);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.2f;
+            const float y100 = 0.76f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -742,8 +917,14 @@ float getStatThorns(int stat_point) {
             const float p = 0.8277f;
             return B * powf(stat_point, p);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.2f;
+            const float y100 = 0.76f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -759,8 +940,14 @@ int getStatAx(int stat_point) {
             const float p = 0.847f;
             return (int)roundf(B * powf(stat_point, p));
         }
-        case LINEAR:
-            return (int)roundf(80.0f + stat_point * 25.0f);
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 270.0f;
+            const float y100 = 1054.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case UNFAIR:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -776,8 +963,14 @@ float getStatTenacity(int stat_point) {
             const float p = 0.4307f;
             return B * powf(stat_point, p);
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.35f;
+            const float y100 = 0.7f;
+            const float k = 0.1f;
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -791,8 +984,8 @@ int getStatAggro(int stat_point) {
             // f(x) = x
 			return stat_point;
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE:
+            return stat_point;
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
@@ -806,8 +999,8 @@ int getStatFocus(int stat_point) {
             // f(x) = x
 			return stat_point;
         }
-        case LINEAR:
-            return 80.0f + stat_point * 25.0f;
+        case PIECEWISE:
+            return stat_point;
         case UNFAIR:
             return 120.0f + stat_point * 15.0f;
         default:
