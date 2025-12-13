@@ -6,5 +6,5 @@ CXX_DEFINES = -DLINUX -Dcombat_EXPORTS
 
 CXX_INCLUDES = -I/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk/include -I/usr/lib/jvm/java-21-openjdk/include/linux -I/usr/lib/jvm/java-21-openjdk/include/darwin -I/usr/lib/jvm/java-21-openjdk/include/win32
 
-CXX_FLAGS = -O3 -DNDEBUG -std=gnu++20 -fPIC
+CXX_FLAGS = -O3 -DNDEBUG -std=gnu++20 -fPIC -fopenmp
 

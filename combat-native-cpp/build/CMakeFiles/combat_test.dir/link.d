@@ -10,7 +10,11 @@ bin/combat_test: \
   CMakeFiles/combat_test.dir/src/instance.cpp.o \
   CMakeFiles/combat_test.dir/src/team.cpp.o \
   CMakeFiles/combat_test.dir/src/player.cpp.o \
+  CMakeFiles/combat_test.dir/src/rng.cpp.o \
+  CMakeFiles/combat_test.dir/src/rng_context.cpp.o \
   lib/libcombat.so \
+  /usr/lib/gcc/x86_64-redhat-linux/15/libgomp.so \
+  /usr/lib64/libpthread.a \
   /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libm.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libm.so \
@@ -61,7 +65,15 @@ CMakeFiles/combat_test.dir/src/team.cpp.o:
 
 CMakeFiles/combat_test.dir/src/player.cpp.o:
 
+CMakeFiles/combat_test.dir/src/rng.cpp.o:
+
+CMakeFiles/combat_test.dir/src/rng_context.cpp.o:
+
 lib/libcombat.so:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/libgomp.so:
+
+/usr/lib64/libpthread.a:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so:
 

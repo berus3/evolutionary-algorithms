@@ -14,6 +14,10 @@ class Team {
     void setId(int id) { _team_id = id; }
     Player* getPlayer(int index);
     void setPlayer(int index, Player* p);
+    
+    Team(const Team& other);   
+    Team clone() const;        
+    
 };
 
 

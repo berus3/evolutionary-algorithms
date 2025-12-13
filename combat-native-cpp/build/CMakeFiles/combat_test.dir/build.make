@@ -184,6 +184,34 @@ CMakeFiles/combat_test.dir/src/player.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/combat_test.dir/src/player.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp -o CMakeFiles/combat_test.dir/src/player.cpp.s
 
+CMakeFiles/combat_test.dir/src/rng.cpp.o: CMakeFiles/combat_test.dir/flags.make
+CMakeFiles/combat_test.dir/src/rng.cpp.o: /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp
+CMakeFiles/combat_test.dir/src/rng.cpp.o: CMakeFiles/combat_test.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/combat_test.dir/src/rng.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/combat_test.dir/src/rng.cpp.o -MF CMakeFiles/combat_test.dir/src/rng.cpp.o.d -o CMakeFiles/combat_test.dir/src/rng.cpp.o -c /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp
+
+CMakeFiles/combat_test.dir/src/rng.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/combat_test.dir/src/rng.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp > CMakeFiles/combat_test.dir/src/rng.cpp.i
+
+CMakeFiles/combat_test.dir/src/rng.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/combat_test.dir/src/rng.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp -o CMakeFiles/combat_test.dir/src/rng.cpp.s
+
+CMakeFiles/combat_test.dir/src/rng_context.cpp.o: CMakeFiles/combat_test.dir/flags.make
+CMakeFiles/combat_test.dir/src/rng_context.cpp.o: /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp
+CMakeFiles/combat_test.dir/src/rng_context.cpp.o: CMakeFiles/combat_test.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/combat_test.dir/src/rng_context.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/combat_test.dir/src/rng_context.cpp.o -MF CMakeFiles/combat_test.dir/src/rng_context.cpp.o.d -o CMakeFiles/combat_test.dir/src/rng_context.cpp.o -c /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp
+
+CMakeFiles/combat_test.dir/src/rng_context.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/combat_test.dir/src/rng_context.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp > CMakeFiles/combat_test.dir/src/rng_context.cpp.i
+
+CMakeFiles/combat_test.dir/src/rng_context.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/combat_test.dir/src/rng_context.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp -o CMakeFiles/combat_test.dir/src/rng_context.cpp.s
+
 # Object files for target combat_test
 combat_test_OBJECTS = \
 "CMakeFiles/combat_test.dir/src/test_build.cpp.o" \
@@ -193,7 +221,9 @@ combat_test_OBJECTS = \
 "CMakeFiles/combat_test.dir/src/genome_decode.cpp.o" \
 "CMakeFiles/combat_test.dir/src/instance.cpp.o" \
 "CMakeFiles/combat_test.dir/src/team.cpp.o" \
-"CMakeFiles/combat_test.dir/src/player.cpp.o"
+"CMakeFiles/combat_test.dir/src/player.cpp.o" \
+"CMakeFiles/combat_test.dir/src/rng.cpp.o" \
+"CMakeFiles/combat_test.dir/src/rng_context.cpp.o"
 
 # External object files for target combat_test
 combat_test_EXTERNAL_OBJECTS =
@@ -206,11 +236,15 @@ bin/combat_test: CMakeFiles/combat_test.dir/src/genome_decode.cpp.o
 bin/combat_test: CMakeFiles/combat_test.dir/src/instance.cpp.o
 bin/combat_test: CMakeFiles/combat_test.dir/src/team.cpp.o
 bin/combat_test: CMakeFiles/combat_test.dir/src/player.cpp.o
+bin/combat_test: CMakeFiles/combat_test.dir/src/rng.cpp.o
+bin/combat_test: CMakeFiles/combat_test.dir/src/rng_context.cpp.o
 bin/combat_test: CMakeFiles/combat_test.dir/build.make
 bin/combat_test: CMakeFiles/combat_test.dir/compiler_depend.ts
 bin/combat_test: lib/libcombat.so
+bin/combat_test: /usr/lib/gcc/x86_64-redhat-linux/15/libgomp.so
+bin/combat_test: /usr/lib64/libpthread.a
 bin/combat_test: CMakeFiles/combat_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable bin/combat_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable bin/combat_test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/combat_test.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

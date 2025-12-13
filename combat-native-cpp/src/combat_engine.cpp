@@ -2,6 +2,8 @@
 #include <vector>
 #include <unordered_set>
 #include <cstddef> // size_t
+#include <omp.h>
+#include <algorithm>
 
 extern Instance instance;
 std::string hpBar(int hp, int maxHp, int width = 20) {
@@ -191,7 +193,7 @@ bool step(Team* team1, Team* team2) {
 	return((team1->getPlayer(0)->isAlive() || team1->getPlayer(1)->isAlive() || team1->getPlayer(2)->isAlive() || team1->getPlayer(3)->isAlive() || team1->getPlayer(4)->isAlive()) 
 		&& (team2->getPlayer(0)->isAlive() || team2->getPlayer(1)->isAlive() || team2->getPlayer(2)->isAlive() || team2->getPlayer(3)->isAlive() || team2->getPlayer(4)->isAlive()));
 }
-
+/*
 std::vector<double> winrate(std::vector<Team*> teams) {
     std::vector<int> win_count = std::vector<int>();
     for (size_t i = 0; i < teams.size(); i++) {
@@ -315,68 +317,109 @@ std::vector<double> winrate_anchor(const std::vector<Team*>& teams,
     return win_rate;
 }
 
-
+*/
 // Igual que winrate_random_5(...), pero además cada team juega contra TODOS los anchors.
-std::vector<double> winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*>& anchors, int fights_per_team) {
-    const size_t n = teams.size();
-    const size_t a = anchors.size();
+// TODO: parallelize
+std::vector<double>
+winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*>& anchors, int fights_per_team)
+{
+    const int n = (int)teams.size();
+    const int a = (int)anchors.size();
+
+    if (n == 0) return {};
+    if (n == 1 && a == 0) return {0.0};
+
+    const int k = (n <= 1) ? 0 : std::min(fights_per_team, n - 1);
 
     std::vector<int> win_count(n, 0);
     std::vector<int> games_played(n, 0);
 
-    if (n == 0) return {};
-    if (n == 1 && a == 0) return std::vector<double>(1, 0.0);
+    // TLS por thead
+    const int T = omp_get_max_threads();
+    std::vector<std::vector<int>> win_tls(T, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> games_tls(T, std::vector<int>(n, 0));
 
-    const int k = (n <= 1) ? 0 : std::min<int>(fights_per_team, (int)(n - 1));
+    // population vs k random
+    #pragma omp parallel
+    {
+        const int tid = omp_get_thread_num();
+        auto& win_local   = win_tls[tid];
+        auto& games_local = games_tls[tid];
 
-    // 1) Muestreo dentro de la población (igual que tu winrate_random_5)
-    for (size_t i = 0; i < n; ++i) {
-        std::unordered_set<size_t> chosen;
-        chosen.reserve((size_t)k * 2);
+        std::vector<char> used(n); // bitset local reutilizable
 
-        while ((int)chosen.size() < k) {
-            size_t j = (size_t)rng::randint(0, (int)n - 1);
-            if (j == i) continue;
-            if (!chosen.insert(j).second) continue;
+        #pragma omp for schedule(static)
+        for (int i = 0; i < n; ++i) {
 
-            Team* team1 = teams[i];
-            Team* team2 = teams[j];
+            std::fill(used.begin(), used.end(), 0);
 
-            FightResult result = bo3(team1, team2);
+            int picked = 0;
+            int draw   = 0;
 
-            if (result == TEAM1_WIN) win_count[i]++;
-            else                     win_count[j]++;
+            while (picked < k) {
 
-            games_played[i]++;
-            games_played[j]++;
+                uint64_t ctx = rng_ctx(
+                    GLOBAL_SEED,
+                    (uint64_t)i,
+                    (uint64_t)draw++,
+                    rng_tag::MATCHUP_RAND
+                );
+
+                int j = rng::randint(ctx, 0, n - 1);
+
+                if (j == i || used[j]) continue;
+                used[j] = 1;
+                picked++;
+
+                FightResult r = bo3_copy(teams[i], teams[j]);
+
+                if (r == TEAM1_WIN) win_local[i]++;
+                else                win_local[j]++;
+
+                games_local[i]++;
+                games_local[j]++;
+            }
         }
     }
 
-    // 2) Además: cada team vs todos los anchors
-    for (size_t i = 0; i < n; i++) {
-        Team* team = teams[i];
-        for (size_t k2 = 0; k2 < a; k2++) {
-            FightResult result = bo3(team, anchors[k2]); // TEAM1 == team
-            if (result == TEAM1_WIN) win_count[i]++;
-            games_played[i]++; // IMPORTANTE: los anchors cuentan como juegos jugados del team
+    // population vs anchors
+    #pragma omp parallel
+    {
+        const int tid = omp_get_thread_num();
+        auto& win_local   = win_tls[tid];
+        auto& games_local = games_tls[tid];
+
+        #pragma omp for schedule(static)
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < a; ++j) {
+                FightResult r = bo3_copy(teams[i], anchors[j]);
+                if (r == TEAM1_WIN) win_local[i]++;
+                games_local[i]++;
+            }
         }
     }
 
-    // 3) Winrate por team
-    std::vector<double> win_rate;
-    win_rate.reserve(n);
+    // final reduction
+    for (int t = 0; t < T; ++t) {
+        for (int i = 0; i < n; ++i) {
+            win_count[i]    += win_tls[t][i];
+            games_played[i] += games_tls[t][i];
+        }
+    }
 
-    for (size_t i = 0; i < n; ++i) {
-        double wr = (games_played[i] == 0) ? 0.0
-            : (double)win_count[i] / (double)games_played[i];
-        win_rate.push_back(wr);
+    // winrate
+    std::vector<double> win_rate(n, 0.0);
+    for (int i = 0; i < n; ++i) {
+        if (games_played[i] > 0) {
+            win_rate[i] =
+                (double)win_count[i] / (double)games_played[i];
+        }
     }
 
     return win_rate;
 }
 
 
-///
 
 
 
@@ -466,4 +509,11 @@ int64_t runLoop(int64_t n) {
 void chooseInstance(Instance i) {
 	instance = i;
 }
+
+FightResult bo3_copy(const Team* team1, const Team* team2) {
+    Team t1 = team1->clone();
+    Team t2 = team2->clone();
+    return bo3(&t1, &t2);
+}
+
 

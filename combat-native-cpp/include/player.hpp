@@ -4,6 +4,7 @@
 #include "instance.hpp"
 #include <vector>
 
+
 struct StatPoints {
     int max_hp;
     int regen;
@@ -51,6 +52,8 @@ struct StatPoints {
 };
 
 struct DynamicStats { 
+	int tick; // used for randomness
+	
     int hp;
     int next_regen;
     int next_attack;
@@ -143,7 +146,9 @@ class Player {
 	void print();
 	void act(Team* allies, Team* enemies);
 	int lastAttacked;
-	// TODO: Add methods to get/set Stats
+	
+	Player(const Player& other); 
+	Player* clone() const; 
 };
 
 #endif // PLAYER_HPP

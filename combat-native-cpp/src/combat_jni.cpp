@@ -10,10 +10,10 @@
 #include "player.hpp"
 #include "anchors.hpp"
 #include "genome_decode.hpp"
-#include "instance.hpp"   // <-- ADD THIS
+#include "instance.hpp"
+#include "rng_context.hpp"   // IMPORTANTE: GLOBAL_SEED
 
-
-	// helpers JNI
+// helpers JNI
 static void throwIAE(JNIEnv* env, const char* msg) {
     jclass ex = env->FindClass("java/lang/IllegalArgumentException");
     if (ex) env->ThrowNew(ex, msg);
@@ -24,7 +24,7 @@ static void throwISE(JNIEnv* env, const char* msg) {
     if (ex) env->ThrowNew(ex, msg);
 }
 
- // RNG seed
+// RNG seed (STATELESS RNG) Java es la fuente de verdad de la seed
 extern "C"
 JNIEXPORT void JNICALL
 Java_org_evol_RPGNativeBridge_setSeed(
@@ -32,11 +32,11 @@ Java_org_evol_RPGNativeBridge_setSeed(
     jclass,
     jint seed
 ) {
-    rng::seed(static_cast<uint32_t>(seed));
-    std::cerr << "[JNI] RNG seeded with " << seed << std::endl;
+    GLOBAL_SEED = static_cast<uint64_t>(seed);
+    std::cerr << "[JNI] GLOBAL_SEED set to " << GLOBAL_SEED << std::endl;
 }
 
- // INSTANCE selection
+// instance selection
 extern "C"
 JNIEXPORT void JNICALL
 Java_org_evol_RPGNativeBridge_setInstance(
@@ -51,12 +51,10 @@ Java_org_evol_RPGNativeBridge_setInstance(
     }
 
     chooseInstance(static_cast<Instance>(instanceId));
-
     std::cerr << "[JNI] Instance set to " << instanceId << std::endl;
 }
 
- //hardcoded anchors
-
+// hardcoded anchors
 static std::vector<Team*> g_anchors;
 
 static void initAnchorsOnce() {
@@ -69,9 +67,8 @@ static void initAnchorsOnce() {
     }
 }
 
-/* ============================================================
-   JNI evaluatePopulation
-   ============================================================ */
+// JNI evaluatePopulation
+
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
 Java_org_evol_RPGNativeBridge_evaluatePopulation(
@@ -95,7 +92,7 @@ Java_org_evol_RPGNativeBridge_evaluatePopulation(
     const jsize expected = (jsize)populationSize * (jsize)GENOME_SIZE;
 
     if (totalLen != expected) {
-        throwIAE(env, "flatPopulation length mismatch (expected popSize*500)");
+        throwIAE(env, "flatPopulation length mismatch (expected popSize*GENOME_SIZE)");
         return nullptr;
     }
 

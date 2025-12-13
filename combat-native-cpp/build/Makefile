@@ -359,6 +359,66 @@ src/player.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_test.dir/build.make CMakeFiles/combat_test.dir/src/player.cpp.s
 .PHONY : src/player.cpp.s
 
+src/rng.o: src/rng.cpp.o
+.PHONY : src/rng.o
+
+# target to build an object file
+src/rng.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/rng.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_app.dir/build.make CMakeFiles/combat_app.dir/src/rng.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_test.dir/build.make CMakeFiles/combat_test.dir/src/rng.cpp.o
+.PHONY : src/rng.cpp.o
+
+src/rng.i: src/rng.cpp.i
+.PHONY : src/rng.i
+
+# target to preprocess a source file
+src/rng.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/rng.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_app.dir/build.make CMakeFiles/combat_app.dir/src/rng.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_test.dir/build.make CMakeFiles/combat_test.dir/src/rng.cpp.i
+.PHONY : src/rng.cpp.i
+
+src/rng.s: src/rng.cpp.s
+.PHONY : src/rng.s
+
+# target to generate assembly for a file
+src/rng.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/rng.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_app.dir/build.make CMakeFiles/combat_app.dir/src/rng.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_test.dir/build.make CMakeFiles/combat_test.dir/src/rng.cpp.s
+.PHONY : src/rng.cpp.s
+
+src/rng_context.o: src/rng_context.cpp.o
+.PHONY : src/rng_context.o
+
+# target to build an object file
+src/rng_context.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/rng_context.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_app.dir/build.make CMakeFiles/combat_app.dir/src/rng_context.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_test.dir/build.make CMakeFiles/combat_test.dir/src/rng_context.cpp.o
+.PHONY : src/rng_context.cpp.o
+
+src/rng_context.i: src/rng_context.cpp.i
+.PHONY : src/rng_context.i
+
+# target to preprocess a source file
+src/rng_context.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/rng_context.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_app.dir/build.make CMakeFiles/combat_app.dir/src/rng_context.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_test.dir/build.make CMakeFiles/combat_test.dir/src/rng_context.cpp.i
+.PHONY : src/rng_context.cpp.i
+
+src/rng_context.s: src/rng_context.cpp.s
+.PHONY : src/rng_context.s
+
+# target to generate assembly for a file
+src/rng_context.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/rng_context.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_app.dir/build.make CMakeFiles/combat_app.dir/src/rng_context.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat_test.dir/build.make CMakeFiles/combat_test.dir/src/rng_context.cpp.s
+.PHONY : src/rng_context.cpp.s
+
 src/team.o: src/team.cpp.o
 .PHONY : src/team.o
 
@@ -445,6 +505,12 @@ help:
 	@echo "... src/player.o"
 	@echo "... src/player.i"
 	@echo "... src/player.s"
+	@echo "... src/rng.o"
+	@echo "... src/rng.i"
+	@echo "... src/rng.s"
+	@echo "... src/rng_context.o"
+	@echo "... src/rng_context.i"
+	@echo "... src/rng_context.s"
 	@echo "... src/team.o"
 	@echo "... src/team.i"
 	@echo "... src/team.s"

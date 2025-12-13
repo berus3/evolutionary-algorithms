@@ -1,14 +1,15 @@
 #include "../include/instance.hpp"
 
+
 Instance instance;
 
 
-int linear_softmax(const float* weights, int n) {
+int linear_softmax(const float* weights, int n, uint64_t ctx) {
     float sum = 0.0f;
     for (int i = 0; i < n; i++) {
         sum += weights[i];
     }
-    float r = rng::real01();
+    double r = rng::real01(ctx);
     float acc = 0.0f;
     for (int i = 0; i < n; i++) {
         acc += weights[i] / sum;

@@ -24,7 +24,7 @@ static std::vector<size_t> topk_indices(const std::vector<double>& v, size_t k) 
 
 int main() {
     chooseInstance(BALANCED);
-
+/*
     // Crear teams (100) con 5 players cada uno
     const int N = 100;
     std::vector<Team*> teams;
@@ -83,6 +83,6 @@ int main() {
 
     // Cleanup
     for (Team* t : teams) delete t;
-
+*/
     return 0;
 }

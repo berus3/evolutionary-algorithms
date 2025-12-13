@@ -3,6 +3,11 @@
 
 #include <math.h>
 #include <random>
+#include <cstdint>
+#include <thread>
+#include <functional>
+#include "rng.hpp"
+#include "rng_context.hpp"
 
 enum Instance {
     BALANCED,
@@ -12,26 +17,8 @@ enum Instance {
 
 extern Instance instance;
 
-namespace rng {
 
-    inline std::mt19937 gen;
-
-    inline std::uniform_real_distribution<float> dist01(0.0f, 1.0f);
-    
-    inline void seed(uint64_t s) {
-        gen.seed(static_cast<std::mt19937::result_type>(s));
-    }
-    inline float real01() {
-        return dist01(gen);
-    }
-
-    inline int randint(int x, int y) {
-        std::uniform_int_distribution<int> dist_int(x, y);
-        return dist_int(gen);
-    }
-}
-
-int linear_softmax(const float* weights, int size);
+int linear_softmax(const float* w, int n, uint64_t ctx);
 float getCounterFocus();
 
 int getStatMaxHp(int stat_point);

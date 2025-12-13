@@ -18,6 +18,20 @@ Player::Player() {
     // _init_player();    
 }
 
+Player::Player(const Player& o) {
+    _player_id = o._player_id;
+    _is_alive  = o._is_alive;
+    lastAttacked = o.lastAttacked;
+
+    _stat_points = new StatPoints(*o._stat_points);
+    _dyn_stats   = new DynamicStats(*o._dyn_stats);
+}
+
+Player* Player::clone() const {
+    return new Player(*this);
+}
+
+
 Player::~Player() {
 	delete this->_stat_points;
 	delete this->_dyn_stats;
@@ -27,6 +41,7 @@ StatPoints* Player::getStatPoints() { return _stat_points; }
 DynamicStats* Player::getDynStats() { return _dyn_stats; }
 void Player::setStatPoints(StatPoints* sp) { _stat_points = sp; }
 void Player::act(Team* allies, Team* enemies) {
+	_dyn_stats->tick++;
 	_dyn_stats->track_healed_this_tick = false;
     if (_is_alive) {
         _update_effects();
@@ -94,7 +109,15 @@ void Player::_receive_bleed() {
 }
 
 int Player::_apply_crit(int damage) {
-	if (getStatCrit(_stat_points->crit) > rng::real01()) {
+	
+	uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::CRIT
+	);
+		
+	if (rng::real01(ctx) < getStatCrit(_stat_points->crit)) {
 		damage = (int)roundf(damage * getStatCritFactor(_stat_points->crit_factor));
 	}
 	return damage;
@@ -217,9 +240,16 @@ void Player::_update_effects() {
 }
 
 void Player::_bleed(Player* target, int damage_dealt) {
-	if (getStatBleed(_stat_points->bleed) < rng::real01())
-        return;
-	 	
+		uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::BLEED
+	);
+
+	if (rng::real01(ctx) > getStatBleed(_stat_points->bleed))
+		return;
+		
 	 if (target->getDynStats()->bleed_stacks < 10) {
 		target->getDynStats()->bleed_stacks ++;
 		target->getDynStats()->bleed_accumulated_damage += (int)roundf((getStatBleedDmg(_stat_points->bleed_dmg) * damage_dealt));
@@ -400,7 +430,15 @@ Player* Player::_select_attack_target(Team* enemies) {
             getStatAggro(alive_enemies[i]->getStatPoints()->aggro) +
             getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
-    return alive_enemies[ linear_softmax(weights.data(), n) ];
+    
+	uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::SOFTMAX_ATK
+	);
+
+	return alive_enemies[linear_softmax(weights.data(), n, ctx)];
 }
 
 Player* Player::_select_slow_target(Team* enemies) {
@@ -434,7 +472,14 @@ Player* Player::_select_slow_target(Team* enemies) {
         float ratio = utility[i] / float(denom);
         weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
-    return alive_enemies[ linear_softmax(weights.data(), n) ];
+    uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::SOFTMAX_SLOW
+	);
+
+	return alive_enemies[linear_softmax(weights.data(), n, ctx)];
 }
 
 Player* Player::_select_acc_target(Team* allies) {
@@ -468,7 +513,14 @@ Player* Player::_select_acc_target(Team* allies) {
         float ratio = utility[i] / float(denom);
         weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
-    return alive_allies[ linear_softmax(weights.data(), n) ];
+    uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::SOFTMAX_ACC
+	);
+
+	return alive_allies[linear_softmax(weights.data(), n, ctx)];
 }
 
 Player* Player::_select_smite_target(Team* enemies) {
@@ -500,7 +552,14 @@ Player* Player::_select_smite_target(Team* enemies) {
             getStatAggro(alive_enemies[i]->getStatPoints()->aggro) +
             getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
-    return alive_enemies[ linear_softmax(weights.data(), n) ];
+    uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::SOFTMAX_SMITE
+	);
+
+	return alive_enemies[linear_softmax(weights.data(), n, ctx)];
 }
 
 Player* Player::_select_heal_target(Team* allies) {
@@ -532,7 +591,14 @@ Player* Player::_select_heal_target(Team* allies) {
         float ratio = frailty[i] / float(denom);
         weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
-    return alive_allies[ linear_softmax(weights.data(), n) ];
+    uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::SOFTMAX_HEAL
+	);
+
+	return alive_allies[linear_softmax(weights.data(), n, ctx)];
 }
 
 
@@ -567,7 +633,14 @@ Player* Player::_select_stun_target(Team* enemies) {
         float ratio = utility[i] / float(denom);
         weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
-    return alive_enemies[ linear_softmax(weights.data(), n) ];
+    uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::SOFTMAX_STUN
+	);
+
+	return alive_enemies[linear_softmax(weights.data(), n, ctx)];
 }
 
 
@@ -600,7 +673,14 @@ Player* Player::_select_shield_target(Team* allies) {
         float ratio = frailty[i] / float(denom);
         weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
-    return alive_allies[ linear_softmax(weights.data(), n) ];
+    uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::SOFTMAX_SHIELD
+	);
+
+	return alive_allies[linear_softmax(weights.data(), n, ctx)];
 }
 
 
@@ -633,7 +713,14 @@ Player* Player::_select_mark_target(Team* enemies) {
         float ratio = frailty[i] / float(denom);
         weights[i] = getCounterFocus() + getStatFocus(_stat_points->focus) * (1.0f - ratio);
     }
-    return alive_enemies[ linear_softmax(weights.data(), n) ];
+    uint64_t ctx = rng_ctx(
+		GLOBAL_SEED,
+		_player_id,
+		_dyn_stats->tick,
+		rng_tag::SOFTMAX_MARK
+	);
+
+	return alive_enemies[linear_softmax(weights.data(), n, ctx)];
 }
 
 void Player::_randomize_stats() {
@@ -689,9 +776,16 @@ void Player::_randomize_stats() {
 		}
 
     for (int p = 0; p < 100; p++) {
-        int index = rng::randint(0, N - 1); 
-        *stats[index] += 1;                
-    }
+		uint64_t ctx = rng_ctx(
+			GLOBAL_SEED,
+			_player_id,
+			p,
+			rng_tag::STAT_ROLL
+		);
+		int index = rng::randint(ctx, 0, N - 1);
+		*stats[index] += 1;
+	}
+
 }
 
 
@@ -760,6 +854,8 @@ void Player::print() {
 
 void Player::_init_player() {
     this->_is_alive = true;
+    this->_dyn_stats->tick = 0;
+    
     this->_dyn_stats->hp = getStatMaxHp(_stat_points->max_hp);
     this->_dyn_stats->next_regen = 50;
     this->_dyn_stats->next_attack = getStatAs(_stat_points->as);
