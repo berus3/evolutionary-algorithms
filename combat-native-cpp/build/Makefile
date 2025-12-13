@@ -142,13 +142,36 @@ test_build/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/build
 .PHONY : test_build/fast
 
+src/anchors.o: src/anchors.cpp.o
+.PHONY : src/anchors.o
+
+# target to build an object file
+src/anchors.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/anchors.cpp.o
+.PHONY : src/anchors.cpp.o
+
+src/anchors.i: src/anchors.cpp.i
+.PHONY : src/anchors.i
+
+# target to preprocess a source file
+src/anchors.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/anchors.cpp.i
+.PHONY : src/anchors.cpp.i
+
+src/anchors.s: src/anchors.cpp.s
+.PHONY : src/anchors.s
+
+# target to generate assembly for a file
+src/anchors.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/anchors.cpp.s
+.PHONY : src/anchors.cpp.s
+
 src/combat_engine.o: src/combat_engine.cpp.o
 .PHONY : src/combat_engine.o
 
 # target to build an object file
 src/combat_engine.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/combat_engine.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/combat_engine.cpp.o
 .PHONY : src/combat_engine.cpp.o
 
 src/combat_engine.i: src/combat_engine.cpp.i
@@ -157,7 +180,6 @@ src/combat_engine.i: src/combat_engine.cpp.i
 # target to preprocess a source file
 src/combat_engine.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/combat_engine.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/combat_engine.cpp.i
 .PHONY : src/combat_engine.cpp.i
 
 src/combat_engine.s: src/combat_engine.cpp.s
@@ -166,7 +188,6 @@ src/combat_engine.s: src/combat_engine.cpp.s
 # target to generate assembly for a file
 src/combat_engine.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/combat_engine.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/combat_engine.cpp.s
 .PHONY : src/combat_engine.cpp.s
 
 src/combat_jni.o: src/combat_jni.cpp.o
@@ -193,13 +214,36 @@ src/combat_jni.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/combat_jni.cpp.s
 .PHONY : src/combat_jni.cpp.s
 
+src/genome_decode.o: src/genome_decode.cpp.o
+.PHONY : src/genome_decode.o
+
+# target to build an object file
+src/genome_decode.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/genome_decode.cpp.o
+.PHONY : src/genome_decode.cpp.o
+
+src/genome_decode.i: src/genome_decode.cpp.i
+.PHONY : src/genome_decode.i
+
+# target to preprocess a source file
+src/genome_decode.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/genome_decode.cpp.i
+.PHONY : src/genome_decode.cpp.i
+
+src/genome_decode.s: src/genome_decode.cpp.s
+.PHONY : src/genome_decode.s
+
+# target to generate assembly for a file
+src/genome_decode.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/genome_decode.cpp.s
+.PHONY : src/genome_decode.cpp.s
+
 src/instance.o: src/instance.cpp.o
 .PHONY : src/instance.o
 
 # target to build an object file
 src/instance.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/instance.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/instance.cpp.o
 .PHONY : src/instance.cpp.o
 
 src/instance.i: src/instance.cpp.i
@@ -208,7 +252,6 @@ src/instance.i: src/instance.cpp.i
 # target to preprocess a source file
 src/instance.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/instance.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/instance.cpp.i
 .PHONY : src/instance.cpp.i
 
 src/instance.s: src/instance.cpp.s
@@ -217,7 +260,6 @@ src/instance.s: src/instance.cpp.s
 # target to generate assembly for a file
 src/instance.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/instance.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/instance.cpp.s
 .PHONY : src/instance.cpp.s
 
 src/player.o: src/player.cpp.o
@@ -226,7 +268,6 @@ src/player.o: src/player.cpp.o
 # target to build an object file
 src/player.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/player.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/player.cpp.o
 .PHONY : src/player.cpp.o
 
 src/player.i: src/player.cpp.i
@@ -235,7 +276,6 @@ src/player.i: src/player.cpp.i
 # target to preprocess a source file
 src/player.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/player.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/player.cpp.i
 .PHONY : src/player.cpp.i
 
 src/player.s: src/player.cpp.s
@@ -244,7 +284,6 @@ src/player.s: src/player.cpp.s
 # target to generate assembly for a file
 src/player.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/player.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/player.cpp.s
 .PHONY : src/player.cpp.s
 
 src/team.o: src/team.cpp.o
@@ -253,7 +292,6 @@ src/team.o: src/team.cpp.o
 # target to build an object file
 src/team.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/team.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/team.cpp.o
 .PHONY : src/team.cpp.o
 
 src/team.i: src/team.cpp.i
@@ -262,7 +300,6 @@ src/team.i: src/team.cpp.i
 # target to preprocess a source file
 src/team.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/team.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/team.cpp.i
 .PHONY : src/team.cpp.i
 
 src/team.s: src/team.cpp.s
@@ -271,7 +308,6 @@ src/team.s: src/team.cpp.s
 # target to generate assembly for a file
 src/team.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/src/team.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/src/team.cpp.s
 .PHONY : src/team.cpp.s
 
 src/test_build.o: src/test_build.cpp.o
@@ -308,12 +344,18 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... combat"
 	@echo "... test_build"
+	@echo "... src/anchors.o"
+	@echo "... src/anchors.i"
+	@echo "... src/anchors.s"
 	@echo "... src/combat_engine.o"
 	@echo "... src/combat_engine.i"
 	@echo "... src/combat_engine.s"
 	@echo "... src/combat_jni.o"
 	@echo "... src/combat_jni.i"
 	@echo "... src/combat_jni.s"
+	@echo "... src/genome_decode.o"
+	@echo "... src/genome_decode.i"
+	@echo "... src/genome_decode.s"
 	@echo "... src/instance.o"
 	@echo "... src/instance.i"
 	@echo "... src/instance.s"

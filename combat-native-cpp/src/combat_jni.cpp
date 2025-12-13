@@ -1,159 +1,139 @@
 #include <jni.h>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #include "org_evol_RPGNativeBridge.h"
+
 #include "combat_engine.hpp"
 #include "team.hpp"
 #include "player.hpp"
+#include "anchors.hpp"
+#include "genome_decode.hpp"
 
 /* ============================================================
-   CONSTANTES DE LA CODIFICACIÓN GENÉTICA
+   Helpers JNI
    ============================================================ */
-static constexpr int STATS_PER_PLAYER      = 43;
-static constexpr int PLAYERS_PER_TEAM      = 5;
-static constexpr int DECISIONS_PER_PLAYER  = 100;
-static constexpr int GENOME_SIZE           = DECISIONS_PER_PLAYER * PLAYERS_PER_TEAM;
-// = 500 para cada individuo
+static void throwIAE(JNIEnv* env, const char* msg) {
+    jclass ex = env->FindClass("java/lang/IllegalArgumentException");
+    if (ex) env->ThrowNew(ex, msg);
+}
 
+static void throwISE(JNIEnv* env, const char* msg) {
+    jclass ex = env->FindClass("java/lang/IllegalStateException");
+    if (ex) env->ThrowNew(ex, msg);
+}
 
 /* ============================================================
-   Construir un Team* desde una tira de 500 genes
+   ANCHORS (hardcodeados)
    ============================================================ */
-Team* buildTeamFromGenome(const int* genome) {
-    Team* team = new Team(-1);
 
-    for (int p = 0; p < PLAYERS_PER_TEAM; p++) {
+static std::vector<Team*> g_anchors;
 
-        Player* player = new Player(p);
-        StatPoints* sp = new StatPoints();
+static void initAnchorsOnce() {
+    if (!g_anchors.empty()) return;
 
-        /* buckets[stat] = cantidad de puntos gastados por el jugador p */
-        int buckets[STATS_PER_PLAYER] = {0};
-
-        int start = p * DECISIONS_PER_PLAYER;
-
-        for (int i = 0; i < DECISIONS_PER_PLAYER; i++) {
-            int statId = genome[start + i];
-            if (statId >= 0 && statId < STATS_PER_PLAYER) {
-                buckets[statId] += 1;
-            }
-        }
-
-        /* Mapear los buckets a la estructura StatPoints */
-        sp->max_hp        = buckets[0];
-        sp->regen         = buckets[1];
-        sp->ad            = buckets[2];
-        sp->armor         = buckets[3];
-        sp->armor_pen     = buckets[4];
-        sp->lethality     = buckets[5];
-        sp->as            = buckets[6];
-        sp->crit          = buckets[7];
-        sp->crit_factor   = buckets[8];
-        sp->bleed         = buckets[9];
-        sp->bleed_dmg     = buckets[10];
-        sp->bleed_ticks   = buckets[11];
-        sp->ap            = buckets[12];
-        sp->mr            = buckets[13];
-        sp->mr_pen        = buckets[14];
-        sp->ethereal      = buckets[15];
-        sp->ah            = buckets[16];
-        sp->smite         = buckets[17];
-        sp->cd_smite      = buckets[18];
-        sp->blast         = buckets[19];
-        sp->cd_blast      = buckets[20];
-        sp->heal          = buckets[21];
-        sp->cd_heal       = buckets[22];
-        sp->stun          = buckets[23];
-        sp->cd_stun       = buckets[24];
-        sp->acc           = buckets[25];
-        sp->acc_ticks     = buckets[26];
-        sp->cd_acc        = buckets[27];
-        sp->slow          = buckets[28];
-        sp->slow_ticks    = buckets[29];
-        sp->cd_slow       = buckets[30];
-        sp->shield        = buckets[31];
-        sp->shield_ticks  = buckets[32];
-        sp->cd_shield     = buckets[33];
-        sp->mark          = buckets[34];
-        sp->mark_ticks    = buckets[35];
-        sp->cd_mark       = buckets[36];
-        sp->vamp          = buckets[37];
-        sp->thorns        = buckets[38];
-        sp->ax            = buckets[39];
-        sp->tenacity      = buckets[40];
-        sp->aggro         = buckets[41];
-        sp->focus         = buckets[42];
-
-        player->setStatPoints(sp);
-        player->_init_player();
-
-        team->setPlayer(p, player);
+    g_anchors.reserve(ANCHOR_COUNT);
+    for (int a = 0; a < ANCHOR_COUNT; a++) {
+        Team* t = buildTeamFromGenome(ANCHOR_GENOMES[a], 10000 + a);
+        g_anchors.push_back(t);
     }
-
-    return team;
 }
 
 
 /* ============================================================
-   JNI evaluatePopulation — Round-robin y winrates
+   JNI evaluatePopulation — usa combat_engine::winrate_* con anchors
    ============================================================ */
-
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
-Java_org_evol_RPGNativeBridge_evaluatePopulation
-(
+Java_org_evol_RPGNativeBridge_evaluatePopulation(
     JNIEnv* env,
     jclass,
     jintArray flatPopulation,
     jint populationSize
 ) {
-    jsize totalLen = env->GetArrayLength(flatPopulation);
+    if (flatPopulation == nullptr) {
+        throwIAE(env, "flatPopulation is null");
+        return nullptr;
+    }
+    if (populationSize <= 0) {
+        throwIAE(env, "populationSize must be > 0");
+        return nullptr;
+    }
 
-    if (totalLen != populationSize * GENOME_SIZE) {
-        jdoubleArray out = env->NewDoubleArray(populationSize);
-        std::vector<jdouble> zeros(populationSize, 0.0);
-        env->SetDoubleArrayRegion(out, 0, populationSize, zeros.data());
-        return out;
+    // init anchors 1 vez
+    initAnchorsOnce();
+
+    jsize totalLen = env->GetArrayLength(flatPopulation);
+    const jsize expected = (jsize)populationSize * (jsize)GENOME_SIZE;
+
+    static bool printedOnce = false;
+    if (!printedOnce) {
+        printedOnce = true;
+        std::cerr << "[JNI] popSize=" << (int)populationSize
+                  << " totalLen=" << (int)totalLen
+                  << " expected=" << (int)expected
+                  << " GENOME_SIZE=" << GENOME_SIZE
+                  << " anchors=" << (int)g_anchors.size()
+                  << std::endl;
+    }
+
+    if (totalLen != expected) {
+        throwIAE(env, "flatPopulation length mismatch (expected popSize*500)");
+        return nullptr;
     }
 
     jint* data = env->GetIntArrayElements(flatPopulation, nullptr);
+    if (data == nullptr) {
+        throwISE(env, "GetIntArrayElements returned null");
+        return nullptr;
+    }
 
-    /* Construcción de equipos */
+    static bool printedIntsOnce = false;
+    if (!printedIntsOnce) {
+        printedIntsOnce = true;
+        std::cerr << "[JNI] first 20 genes: ";
+        for (int i = 0; i < 20; i++) std::cerr << data[i] << " ";
+        std::cerr << std::endl;
+    }
+
+    // Construcción de equipos
     std::vector<Team*> teams;
-    teams.reserve(populationSize);
+    teams.reserve((size_t)populationSize);
 
     for (int i = 0; i < populationSize; i++) {
-        int* genome_i = data + (i * GENOME_SIZE);
-        Team* t = buildTeamFromGenome(genome_i);
-        t->setId(i);
+        const int* genome_i = reinterpret_cast<const int*>(data + (i * GENOME_SIZE));
+        Team* t = buildTeamFromGenome(genome_i, i);
         teams.push_back(t);
     }
 
-    /* Round-robin */
-    std::vector<jdouble> wins(populationSize, 0.0);
+    // Calcular winrate incluyendo anchors:
+    // - Random-k dentro de población + todos los anchors
+    std::vector<double> wr = winrate_anchor_random_k(teams, g_anchors, 5);
 
-    for (int i = 0; i < populationSize; i++) {
-        for (int j = i + 1; j < populationSize; j++) {
-            FightResult r = bo3(teams[i], teams[j]);
-            if (r == TEAM1_WIN) wins[i]++;
-            else wins[j]++;
-        }
-    }
-
-    /* Winrate */
-    std::vector<jdouble> winrate(populationSize, 0.0);
-    double totalMatches = (populationSize - 1);
-
-    for (int i = 0; i < populationSize; i++) {
-        winrate[i] = wins[i] / totalMatches;
-    }
-
-    /* Output JNI */
-    jdoubleArray out = env->NewDoubleArray(populationSize);
-    env->SetDoubleArrayRegion(out, 0, populationSize, winrate.data());
+    // (alternativa: round-robin completo + anchors)
+    // std::vector<double> wr = winrate_anchor(teams, g_anchors);
 
     env->ReleaseIntArrayElements(flatPopulation, data, 0);
+
+    if ((int)wr.size() != populationSize) {
+        for (Team* t : teams) delete t;
+        throwISE(env, "winrate_anchor_* returned vector size != populationSize");
+        return nullptr;
+    }
+
+    jdoubleArray out = env->NewDoubleArray(populationSize);
+    if (out == nullptr) {
+        for (Team* t : teams) delete t;
+        throwISE(env, "NewDoubleArray failed");
+        return nullptr;
+    }
+
+    std::vector<jdouble> jwr(populationSize);
+    for (int i = 0; i < populationSize; i++) {
+        jwr[i] = (jdouble)wr[i];
+    }
+    env->SetDoubleArrayRegion(out, 0, populationSize, jwr.data());
 
     for (Team* t : teams) delete t;
 

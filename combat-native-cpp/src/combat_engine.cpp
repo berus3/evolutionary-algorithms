@@ -1,5 +1,7 @@
 #include "../include/combat_engine.hpp"
-
+#include <vector>
+#include <unordered_set>
+#include <cstddef> // size_t
 
 extern Instance instance;
 std::string hpBar(int hp, int maxHp, int width = 20) {
@@ -215,6 +217,169 @@ std::vector<double> winrate(std::vector<Team*> teams) {
     }
     return win_rate;
 }
+
+
+std::vector<double> winrate_random_5(std::vector<Team*> teams, int fights_per_team = 5) {
+    const size_t n = teams.size();
+    std::vector<int> win_count(n, 0);
+    std::vector<int> games_played(n, 0);
+
+    if (n <= 1) {
+        return std::vector<double>(n, 0.0);
+    }
+
+    const int k = std::min<int>(fights_per_team, static_cast<int>(n - 1));
+
+    for (size_t i = 0; i < n; ++i) {
+        std::unordered_set<size_t> chosen;
+        chosen.reserve(static_cast<size_t>(k) * 2);
+
+        while (static_cast<int>(chosen.size()) < k) {
+            size_t j = static_cast<size_t>(rng::randint(0, static_cast<int>(n - 1)));
+            if (j == i) continue;
+            if (!chosen.insert(j).second) continue; // ya elegido
+
+            Team* team1 = teams[i];
+            Team* team2 = teams[j];
+
+            FightResult result = bo3(team1, team2);
+
+            // TEAM1 == team1 (teams[i])
+            if (result == TEAM1_WIN) {
+                win_count[i]++;
+            } else {
+                win_count[j]++;
+            }
+
+            games_played[i]++;
+            games_played[j]++;
+        }
+    }
+
+    std::vector<double> win_rate;
+    win_rate.reserve(n);
+    for (size_t i = 0; i < n; ++i) {
+        double wr = (games_played[i] == 0)
+            ? 0.0
+            : static_cast<double>(win_count[i]) / static_cast<double>(games_played[i]);
+        win_rate.push_back(wr);
+    }
+    return win_rate;
+}
+
+
+
+
+///
+
+
+// Igual que winrate(...), pero además cada team juega contra TODOS los anchors.
+std::vector<double> winrate_anchor(const std::vector<Team*>& teams,
+                                   const std::vector<Team*>& anchors) {
+    const size_t n = teams.size();
+    const size_t a = anchors.size();
+
+    std::vector<int> win_count(n, 0);
+
+    // 1) Round-robin dentro de la población (igual que tu winrate)
+    for (size_t i = 0; i < n; i++) {
+        Team* team1 = teams[i];
+        for (size_t j = i + 1; j < n; j++) {
+            Team* team2 = teams[j];
+            FightResult result = bo3(team1, team2);
+            if (result == TEAM1_WIN) win_count[i]++;
+            else                     win_count[j]++;
+        }
+    }
+
+    // 2) Cada team vs todos los anchors
+    for (size_t i = 0; i < n; i++) {
+        Team* team = teams[i];
+        for (size_t k = 0; k < a; k++) {
+            FightResult result = bo3(team, anchors[k]); // TEAM1 == team
+            if (result == TEAM1_WIN) win_count[i]++;
+        }
+    }
+
+    // 3) Winrate: total de games jugados por team = (n-1) + a
+    std::vector<double> win_rate;
+    win_rate.reserve(n);
+
+    const double denom = (n == 0) ? 0.0 : (double)((n > 0 ? (n - 1) : 0) + a);
+
+    for (size_t i = 0; i < n; i++) {
+        double wr = (denom == 0.0) ? 0.0 : (double)win_count[i] / denom;
+        win_rate.push_back(wr);
+    }
+
+    return win_rate;
+}
+
+
+// Igual que winrate_random_5(...), pero además cada team juega contra TODOS los anchors.
+std::vector<double> winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*>& anchors, int fights_per_team) {
+    const size_t n = teams.size();
+    const size_t a = anchors.size();
+
+    std::vector<int> win_count(n, 0);
+    std::vector<int> games_played(n, 0);
+
+    if (n == 0) return {};
+    if (n == 1 && a == 0) return std::vector<double>(1, 0.0);
+
+    const int k = (n <= 1) ? 0 : std::min<int>(fights_per_team, (int)(n - 1));
+
+    // 1) Muestreo dentro de la población (igual que tu winrate_random_5)
+    for (size_t i = 0; i < n; ++i) {
+        std::unordered_set<size_t> chosen;
+        chosen.reserve((size_t)k * 2);
+
+        while ((int)chosen.size() < k) {
+            size_t j = (size_t)rng::randint(0, (int)n - 1);
+            if (j == i) continue;
+            if (!chosen.insert(j).second) continue;
+
+            Team* team1 = teams[i];
+            Team* team2 = teams[j];
+
+            FightResult result = bo3(team1, team2);
+
+            if (result == TEAM1_WIN) win_count[i]++;
+            else                     win_count[j]++;
+
+            games_played[i]++;
+            games_played[j]++;
+        }
+    }
+
+    // 2) Además: cada team vs todos los anchors
+    for (size_t i = 0; i < n; i++) {
+        Team* team = teams[i];
+        for (size_t k2 = 0; k2 < a; k2++) {
+            FightResult result = bo3(team, anchors[k2]); // TEAM1 == team
+            if (result == TEAM1_WIN) win_count[i]++;
+            games_played[i]++; // IMPORTANTE: los anchors cuentan como juegos jugados del team
+        }
+    }
+
+    // 3) Winrate por team
+    std::vector<double> win_rate;
+    win_rate.reserve(n);
+
+    for (size_t i = 0; i < n; ++i) {
+        double wr = (games_played[i] == 0) ? 0.0
+            : (double)win_count[i] / (double)games_played[i];
+        win_rate.push_back(wr);
+    }
+
+    return win_rate;
+}
+
+
+///
+
+
+
 
 FightResult bo3(Team* team1, Team* team2) {
 	int wins_team_1 = 0;

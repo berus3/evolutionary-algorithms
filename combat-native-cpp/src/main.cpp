@@ -1,146 +1,88 @@
 #include "../include/main.hpp"
+#include <chrono>
+#include <algorithm>
+#include <numeric>
+#include <iostream>
+
+// helpers para imprimir
+static double mean(const std::vector<double>& v) {
+    if (v.empty()) return 0.0;
+    return std::accumulate(v.begin(), v.end(), 0.0) / static_cast<double>(v.size());
+}
+
+static std::vector<size_t> topk_indices(const std::vector<double>& v, size_t k) {
+    std::vector<size_t> idx(v.size());
+    std::iota(idx.begin(), idx.end(), 0);
+    if (k > idx.size()) k = idx.size();
+    std::partial_sort(
+        idx.begin(), idx.begin() + k, idx.end(),
+        [&](size_t a, size_t b) { return v[a] > v[b]; }
+    );
+    idx.resize(k);
+    return idx;
+}
 
 int main() {
     chooseInstance(BALANCED);
 
-		Team* t1 = new Team(1);
-		Team* t2 = new Team(2);
-		for (int i = 0; i < 5; i++) {
-			t1->setPlayer(i, new Player(i));
-			t2->setPlayer(i, new Player(i+5));
-		}
-		/*
-		std::cout << "ap " << getStatAp(t1->getPlayer(0)->getStatPoints()->ap) << "\n";
-		std::cout << "ax "<< getStatAx(t1->getPlayer(0)->getStatPoints()->ax) << "\n";
-		std::cout << "acc "<< getStatAcc(t1->getPlayer(0)->getStatPoints()->acc) << "\n";
-		std::cout << "acc ticks" << getStatAccTicks(t1->getPlayer(0)->getStatPoints()->acc_ticks) << "\n";
-		std::cout << "cd acc " << getStatCdAcc(t1->getPlayer(0)->getStatPoints()->cd_acc) << "\n";
-		std::cout << "ah " << getStatAh(t1->getPlayer(0)->getStatPoints()->ah) << "\n";
-		Player* target = t1->getPlayer(0);
-		int ticks_duracion_acc = (getStatAp(target->getStatPoints()->ap) + getStatAx(target->getStatPoints()->ax)) * getStatAccTicks(target->getStatPoints()->acc_ticks); // (ap + ax) * acc ticks
-		int reduccion_as = getStatAs(target->getStatPoints()->as) * getStatAcc(target->getStatPoints()->acc); // ally_as * acc
-		int reduccion_ah = getStatAh(target->getStatPoints()->ah) * getStatAcc(target->getStatPoints()->acc); // ally_ah * acc
-		int cooldown = target->_haste(getStatCdAcc(target->getStatPoints()->cd_acc));
-		std::cout << "el acc dura " << ticks_duracion_acc << " ticks y se tiene cada " << cooldown  << " ticks" << "\n";
-		*/
-		/*
-		//Player 0: adc
-		t1->getPlayer(0)->getStatPoints()->ad = 25;
-		t1->getPlayer(0)->getStatPoints()->as = 20;
-		t1->getPlayer(0)->getStatPoints()->crit = 20;
-		t1->getPlayer(0)->getStatPoints()->crit_factor = 15;
-		t1->getPlayer(0)->getStatPoints()->focus = 20;	
-		
-		//Player 1: tanque
-		t1->getPlayer(1)->getStatPoints()->max_hp = 20;
-		t1->getPlayer(1)->getStatPoints()->thorns = 20;
-		t1->getPlayer(1)->getStatPoints()->aggro = 20;
-		t1->getPlayer(1)->getStatPoints()->armor = 20;
-		t1->getPlayer(1)->getStatPoints()->mr = 20;
-		
-		//Player 2: supp peel
-		t1->getPlayer(2)->getStatPoints()->ap = 30;
-		t1->getPlayer(2)->getStatPoints()->heal = 30;
-		t1->getPlayer(2)->getStatPoints()->cd_heal = 20;
-		t1->getPlayer(2)->getStatPoints()->focus = 10;
-		t1->getPlayer(2)->getStatPoints()->shield = 5;
-		t1->getPlayer(2)->getStatPoints()->cd_shield = 5;
-		
-		//Player 3: bruiser
-		t1->getPlayer(3)->getStatPoints()->ax = 30;
-		t1->getPlayer(3)->getStatPoints()->vamp = 20;
-		t1->getPlayer(3)->getStatPoints()->mark = 20;
-		t1->getPlayer(3)->getStatPoints()->cd_mark = 20;
-		t1->getPlayer(3)->getStatPoints()->mark_ticks = 10;
-		
-		//Player 4: mago
-		t1->getPlayer(4)->getStatPoints()->ap = 40;
-		t1->getPlayer(4)->getStatPoints()->blast = 40;
-		t1->getPlayer(4)->getStatPoints()->cd_blast = 20;
-		
-		*/
-		
-        //Player 0: adc
-        t1->getPlayer(0)->getStatPoints()->ad = 20;
-        t1->getPlayer(0)->getStatPoints()->crit = 20;
-        t1->getPlayer(0)->getStatPoints()->crit_factor = 20;
-        t1->getPlayer(0)->getStatPoints()->focus = 40;
+    // Crear teams (100) con 5 players cada uno
+    const int N = 100;
+    std::vector<Team*> teams;
+    teams.reserve(N);
+
+    for (int i = 0; i < N; ++i) {
+        Team* t = new Team(i);
+        for (int j = 0; j < 5; ++j) {
+            t->setPlayer(j, new Player(j + i * 5)); // ids únicos (opcional)
+        }
+        // si tu lógica requiere init explícito:
+        for (int j = 0; j < 5; ++j) {
+            t->getPlayer(j)->_init_player();
+        }
+        teams.push_back(t);
+    }
+
+    // 1) Winrate ALL-vs-ALL
+    const auto t0 = std::chrono::steady_clock::now();
+    std::vector<double> wr_full = winrate(teams);
+    const auto t1 = std::chrono::steady_clock::now();
+    const auto ms_full = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
 
-        //Player 1: tanque
-        t1->getPlayer(1)->getStatPoints()->max_hp = 40;
-        t1->getPlayer(1)->getStatPoints()->aggro = 50;
-        t1->getPlayer(1)->getStatPoints()->regen = 10;
-        //Player 2: tanque
-        t1->getPlayer(2)->getStatPoints()->max_hp = 40;
-        t1->getPlayer(2)->getStatPoints()->aggro = 50;
-        t1->getPlayer(2)->getStatPoints()->regen = 10;
-        //Player 3: tanque
-        t1->getPlayer(3)->getStatPoints()->max_hp = 40;
-        t1->getPlayer(3)->getStatPoints()->aggro = 50;
-        t1->getPlayer(3)->getStatPoints()->regen = 10;
-        //Player 4: tanque
-        t1->getPlayer(4)->getStatPoints()->max_hp = 40;
-        t1->getPlayer(4)->getStatPoints()->aggro = 50;
-        t1->getPlayer(4)->getStatPoints()->regen = 10;
-		//Player 0: adc
-        t2->getPlayer(0)->getStatPoints()->ad = 20;
-        t2->getPlayer(0)->getStatPoints()->as = 20;
-        t2->getPlayer(0)->getStatPoints()->crit = 20;
-        t2->getPlayer(0)->getStatPoints()->crit_factor = 20;
-        t2->getPlayer(0)->getStatPoints()->focus = 20;
 
+    // 2) Winrate 5 random por team
+    const auto t2 = std::chrono::steady_clock::now();
+    std::vector<double> wr_r5 = winrate_random_5(teams, 1); // o winrate_random_5(teams)
+    const auto t3 = std::chrono::steady_clock::now();
+    const auto ms_r5 = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count();
 
-        //Player 1: tanque
-        t2->getPlayer(1)->getStatPoints()->max_hp = 40;
-        t2->getPlayer(1)->getStatPoints()->aggro = 60;
+    std::cout << "\n=== Timing ===\n";
+    std::cout << "Full round-robin: " << ms_full << " ms\n";
+    std::cout << "5-random per team: " << ms_r5 << " ms\n";
+    if (ms_r5 > 0) {
+        std::cout << "Speedup ~ " << (static_cast<double>(ms_full) / static_cast<double>(ms_r5)) << "x\n";
+    }
 
-        //Player 2: supp peel
-        t2->getPlayer(2)->getStatPoints()->focus = 20;
-        t2->getPlayer(2)->getStatPoints()->ah = 20;
-        t2->getPlayer(2)->getStatPoints()->ap = 20;
-        t2->getPlayer(2)->getStatPoints()->heal = 20;
-        t2->getPlayer(2)->getStatPoints()->acc = 20;
+    // Resumen para comparar distribución (no van a coincidir exactamente)
+    std::cout << "\n=== Sanity check ===\n";
+    std::cout << "Mean WR full: " << mean(wr_full) << "\n";
+    std::cout << "Mean WR r5  : " << mean(wr_r5) << "\n";
 
-        //Player 3: bruiser
-        t2->getPlayer(3)->getStatPoints()->ad = 15;
-        t2->getPlayer(3)->getStatPoints()->max_hp = 20;
-        t2->getPlayer(3)->getStatPoints()->vamp = 50;
-        t2->getPlayer(3)->getStatPoints()->aggro = 10;
-        t2->getPlayer(3)->getStatPoints()->armor_pen = 5;
+    auto top_full = topk_indices(wr_full, 5);
+    auto top_r5   = topk_indices(wr_r5, 5);
 
-        //Player 4: mago
-        t2->getPlayer(4)->getStatPoints()->ap = 30;
-        t2->getPlayer(4)->getStatPoints()->smite = 20;
-        t2->getPlayer(4)->getStatPoints()->focus = 10;
-        t2->getPlayer(4)->getStatPoints()->ah = 20;
-        t2->getPlayer(4)->getStatPoints()->mark = 20;
+    std::cout << "\nTop-5 full:\n";
+    for (auto i : top_full) {
+        std::cout << "  Team " << i << " -> " << (wr_full[i] * 100.0) << "%\n";
+    }
 
-		
-		for (int i = 0; i < 5; i++) {
-			t1->getPlayer(i)->_init_player();
-			t2->getPlayer(i)->_init_player();
-		}
-		std::vector<Team*> teams = std::vector<Team*>();
-		for (int i = 0; i < 100; ++i) {
-			teams.push_back(new Team(i));
-			for (int j = 0; j < 5; ++j) {
-				teams[i]->setPlayer(j, new Player(j));
-			}
-		}
-		std::vector<double> results = winrate(teams);
-		for (int i = 0; i < 100; ++i) {
-			std::cout << "Team " << i << " wins: " << (results[i]*100) << "%\n";
-		}
-		for (int i = 0; i < 100; ++i) {
-			delete teams[i];
-		}
+    std::cout << "\nTop-5 r5:\n";
+    for (auto i : top_r5) {
+        std::cout << "  Team " << i << " -> " << (wr_r5[i] * 100.0) << "%\n";
+    }
 
-		// fight(t1, t2);
-		
-		
-		delete t1;
-		delete t2;
+    // Cleanup
+    for (Team* t : teams) delete t;
 
     return 0;
 }

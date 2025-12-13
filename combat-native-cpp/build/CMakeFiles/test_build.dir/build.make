@@ -86,83 +86,19 @@ CMakeFiles/test_build.dir/src/test_build.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/test_build.dir/src/test_build.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/test_build.cpp -o CMakeFiles/test_build.dir/src/test_build.cpp.s
 
-CMakeFiles/test_build.dir/src/team.cpp.o: CMakeFiles/test_build.dir/flags.make
-CMakeFiles/test_build.dir/src/team.cpp.o: /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp
-CMakeFiles/test_build.dir/src/team.cpp.o: CMakeFiles/test_build.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/test_build.dir/src/team.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_build.dir/src/team.cpp.o -MF CMakeFiles/test_build.dir/src/team.cpp.o.d -o CMakeFiles/test_build.dir/src/team.cpp.o -c /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp
-
-CMakeFiles/test_build.dir/src/team.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/test_build.dir/src/team.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp > CMakeFiles/test_build.dir/src/team.cpp.i
-
-CMakeFiles/test_build.dir/src/team.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/test_build.dir/src/team.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp -o CMakeFiles/test_build.dir/src/team.cpp.s
-
-CMakeFiles/test_build.dir/src/player.cpp.o: CMakeFiles/test_build.dir/flags.make
-CMakeFiles/test_build.dir/src/player.cpp.o: /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp
-CMakeFiles/test_build.dir/src/player.cpp.o: CMakeFiles/test_build.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/test_build.dir/src/player.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_build.dir/src/player.cpp.o -MF CMakeFiles/test_build.dir/src/player.cpp.o.d -o CMakeFiles/test_build.dir/src/player.cpp.o -c /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp
-
-CMakeFiles/test_build.dir/src/player.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/test_build.dir/src/player.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp > CMakeFiles/test_build.dir/src/player.cpp.i
-
-CMakeFiles/test_build.dir/src/player.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/test_build.dir/src/player.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp -o CMakeFiles/test_build.dir/src/player.cpp.s
-
-CMakeFiles/test_build.dir/src/instance.cpp.o: CMakeFiles/test_build.dir/flags.make
-CMakeFiles/test_build.dir/src/instance.cpp.o: /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp
-CMakeFiles/test_build.dir/src/instance.cpp.o: CMakeFiles/test_build.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test_build.dir/src/instance.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_build.dir/src/instance.cpp.o -MF CMakeFiles/test_build.dir/src/instance.cpp.o.d -o CMakeFiles/test_build.dir/src/instance.cpp.o -c /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp
-
-CMakeFiles/test_build.dir/src/instance.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/test_build.dir/src/instance.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp > CMakeFiles/test_build.dir/src/instance.cpp.i
-
-CMakeFiles/test_build.dir/src/instance.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/test_build.dir/src/instance.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp -o CMakeFiles/test_build.dir/src/instance.cpp.s
-
-CMakeFiles/test_build.dir/src/combat_engine.cpp.o: CMakeFiles/test_build.dir/flags.make
-CMakeFiles/test_build.dir/src/combat_engine.cpp.o: /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp
-CMakeFiles/test_build.dir/src/combat_engine.cpp.o: CMakeFiles/test_build.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/test_build.dir/src/combat_engine.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_build.dir/src/combat_engine.cpp.o -MF CMakeFiles/test_build.dir/src/combat_engine.cpp.o.d -o CMakeFiles/test_build.dir/src/combat_engine.cpp.o -c /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp
-
-CMakeFiles/test_build.dir/src/combat_engine.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/test_build.dir/src/combat_engine.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp > CMakeFiles/test_build.dir/src/combat_engine.cpp.i
-
-CMakeFiles/test_build.dir/src/combat_engine.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/test_build.dir/src/combat_engine.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp -o CMakeFiles/test_build.dir/src/combat_engine.cpp.s
-
 # Object files for target test_build
 test_build_OBJECTS = \
-"CMakeFiles/test_build.dir/src/test_build.cpp.o" \
-"CMakeFiles/test_build.dir/src/team.cpp.o" \
-"CMakeFiles/test_build.dir/src/player.cpp.o" \
-"CMakeFiles/test_build.dir/src/instance.cpp.o" \
-"CMakeFiles/test_build.dir/src/combat_engine.cpp.o"
+"CMakeFiles/test_build.dir/src/test_build.cpp.o"
 
 # External object files for target test_build
 test_build_EXTERNAL_OBJECTS =
 
 test_build: CMakeFiles/test_build.dir/src/test_build.cpp.o
-test_build: CMakeFiles/test_build.dir/src/team.cpp.o
-test_build: CMakeFiles/test_build.dir/src/player.cpp.o
-test_build: CMakeFiles/test_build.dir/src/instance.cpp.o
-test_build: CMakeFiles/test_build.dir/src/combat_engine.cpp.o
 test_build: CMakeFiles/test_build.dir/build.make
 test_build: CMakeFiles/test_build.dir/compiler_depend.ts
 test_build: libcombat.so
 test_build: CMakeFiles/test_build.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable test_build"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test_build"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/test_build.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -144,7 +144,16 @@ CMakeFiles/combat.dir/src/combat_jni.cpp.o: \
  /usr/include/c++/15/bits/locale_facets.tcc \
  /usr/include/c++/15/bits/basic_ios.tcc \
  /usr/include/c++/15/bits/ostream.tcc /usr/include/c++/15/istream \
- /usr/include/c++/15/bits/istream.tcc \
+ /usr/include/c++/15/bits/istream.tcc /usr/include/c++/15/algorithm \
+ /usr/include/c++/15/bits/stl_algo.h \
+ /usr/include/c++/15/bits/algorithmfwd.h \
+ /usr/include/c++/15/bits/stl_heap.h \
+ /usr/include/c++/15/bits/uniform_int_dist.h \
+ /usr/include/c++/15/bits/stl_tempbuf.h \
+ /usr/include/c++/15/bits/ranges_algo.h \
+ /usr/include/c++/15/bits/ranges_algobase.h \
+ /usr/include/c++/15/pstl/glue_algorithm_defs.h \
+ /usr/include/c++/15/pstl/execution_defs.h \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/org_evol_RPGNativeBridge.h \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/combat_engine.hpp \
  /usr/lib/gcc/x86_64-redhat-linux/15/include/stdint.h \
@@ -173,19 +182,13 @@ CMakeFiles/combat.dir/src/combat_jni.cpp.o: \
  /usr/include/c++/15/tr1/poly_laguerre.tcc \
  /usr/include/c++/15/tr1/riemann_zeta.tcc /usr/include/c++/15/random \
  /usr/include/c++/15/cstdint /usr/include/c++/15/bits/random.h \
- /usr/include/c++/15/bits/uniform_int_dist.h \
  /usr/include/c++/15/x86_64-redhat-linux/bits/opt_random.h \
  /usr/include/c++/15/bits/random.tcc /usr/include/c++/15/numeric \
  /usr/include/c++/15/bits/stl_numeric.h \
- /usr/include/c++/15/pstl/glue_numeric_defs.h \
- /usr/include/c++/15/pstl/execution_defs.h /usr/include/c++/15/chrono \
+ /usr/include/c++/15/pstl/glue_numeric_defs.h /usr/include/c++/15/chrono \
  /usr/include/c++/15/bits/chrono.h /usr/include/c++/15/ratio \
  /usr/include/c++/15/ctime /usr/include/c++/15/bits/parse_numbers.h \
  /usr/include/c++/15/sstream /usr/include/c++/15/bits/sstream.tcc \
- /usr/include/c++/15/bits/stl_algo.h \
- /usr/include/c++/15/bits/algorithmfwd.h \
- /usr/include/c++/15/bits/stl_heap.h \
- /usr/include/c++/15/bits/stl_tempbuf.h \
  /usr/include/c++/15/bits/shared_ptr.h \
  /usr/include/c++/15/bits/shared_ptr_base.h \
  /usr/include/c++/15/bits/allocated_ptr.h \
@@ -205,9 +208,7 @@ CMakeFiles/combat.dir/src/combat_jni.cpp.o: \
  /usr/include/c++/15/optional \
  /usr/include/c++/15/bits/enable_special_members.h \
  /usr/include/c++/15/span /usr/include/c++/15/bits/monostate.h \
- /usr/include/c++/15/bits/formatfwd.h \
- /usr/include/c++/15/bits/ranges_algobase.h \
- /usr/include/c++/15/bits/unicode.h \
+ /usr/include/c++/15/bits/formatfwd.h /usr/include/c++/15/bits/unicode.h \
  /usr/include/c++/15/bits/unicode-data.h /usr/include/c++/15/thread \
  /usr/include/c++/15/stop_token /usr/include/c++/15/atomic \
  /usr/include/c++/15/bits/atomic_base.h \
@@ -231,12 +232,12 @@ CMakeFiles/combat.dir/src/combat_jni.cpp.o: \
  /usr/include/c++/15/bits/atomic_timed_wait.h \
  /usr/include/c++/15/bits/this_thread_sleep.h /usr/include/sys/time.h \
  /usr/include/semaphore.h /usr/include/bits/semaphore.h \
- /usr/include/c++/15/algorithm /usr/include/c++/15/bits/ranges_algo.h \
- /usr/include/c++/15/pstl/glue_algorithm_defs.h /usr/include/c++/15/map \
- /usr/include/c++/15/bits/stl_tree.h \
+ /usr/include/c++/15/map /usr/include/c++/15/bits/stl_tree.h \
  /usr/include/c++/15/bits/node_handle.h \
  /usr/include/c++/15/bits/stl_map.h \
  /usr/include/c++/15/bits/stl_multimap.h \
  /usr/include/c++/15/bits/erase_if.h \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/team.hpp \
- /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/player.hpp
+ /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/player.hpp \
+ /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/anchors.hpp \
+ /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/genome_decode.hpp

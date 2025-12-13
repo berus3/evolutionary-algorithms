@@ -6,6 +6,8 @@ libcombat.so: \
   CMakeFiles/combat.dir/src/instance.cpp.o \
   CMakeFiles/combat.dir/src/team.cpp.o \
   CMakeFiles/combat.dir/src/player.cpp.o \
+  CMakeFiles/combat.dir/src/anchors.cpp.o \
+  CMakeFiles/combat.dir/src/genome_decode.cpp.o \
   /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libm.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libm.so \
@@ -44,6 +46,10 @@ CMakeFiles/combat.dir/src/instance.cpp.o:
 CMakeFiles/combat.dir/src/team.cpp.o:
 
 CMakeFiles/combat.dir/src/player.cpp.o:
+
+CMakeFiles/combat.dir/src/anchors.cpp.o:
+
+CMakeFiles/combat.dir/src/genome_decode.cpp.o:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so:
 

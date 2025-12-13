@@ -138,11 +138,9 @@ CMakeFiles/test_build.dir/src/test_build.cpp.o: \
  /usr/include/c++/15/bits/locale_facets.tcc \
  /usr/include/c++/15/bits/basic_ios.tcc \
  /usr/include/c++/15/bits/ostream.tcc /usr/include/c++/15/istream \
- /usr/include/c++/15/bits/istream.tcc /usr/include/c++/15/vector \
- /usr/include/c++/15/bits/stl_uninitialized.h \
- /usr/include/c++/15/bits/stl_vector.h \
- /usr/include/c++/15/bits/stl_bvector.h \
- /usr/include/c++/15/bits/vector.tcc \
+ /usr/include/c++/15/bits/istream.tcc \
+ /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/anchors.hpp \
+ /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/genome_decode.hpp \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/team.hpp \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/player.hpp \
  /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/instance.hpp \
@@ -169,71 +167,14 @@ CMakeFiles/test_build.dir/src/test_build.cpp.o: \
  /usr/lib/gcc/x86_64-redhat-linux/15/include/stdint.h \
  /usr/include/stdint.h /usr/include/bits/stdint-uintn.h \
  /usr/include/bits/stdint-least.h /usr/include/c++/15/bits/random.h \
+ /usr/include/c++/15/vector /usr/include/c++/15/bits/stl_uninitialized.h \
+ /usr/include/c++/15/bits/stl_vector.h \
+ /usr/include/c++/15/bits/stl_bvector.h \
+ /usr/include/c++/15/bits/vector.tcc \
  /usr/include/c++/15/bits/uniform_int_dist.h \
  /usr/include/c++/15/x86_64-redhat-linux/bits/opt_random.h \
  /usr/include/c++/15/bits/random.tcc /usr/include/c++/15/numeric \
  /usr/include/c++/15/bits/stl_numeric.h \
  /usr/include/c++/15/pstl/glue_numeric_defs.h \
  /usr/include/c++/15/pstl/execution_defs.h \
- /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/player.hpp \
- /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/combat_engine.hpp \
- /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/team.hpp \
- /usr/include/c++/15/chrono /usr/include/c++/15/bits/chrono.h \
- /usr/include/c++/15/ratio /usr/include/c++/15/ctime \
- /usr/include/c++/15/bits/parse_numbers.h /usr/include/c++/15/sstream \
- /usr/include/c++/15/bits/sstream.tcc /usr/include/c++/15/bits/stl_algo.h \
- /usr/include/c++/15/bits/algorithmfwd.h \
- /usr/include/c++/15/bits/stl_heap.h \
- /usr/include/c++/15/bits/stl_tempbuf.h \
- /usr/include/c++/15/bits/shared_ptr.h \
- /usr/include/c++/15/bits/shared_ptr_base.h \
- /usr/include/c++/15/bits/allocated_ptr.h \
- /usr/include/c++/15/bits/unique_ptr.h \
- /usr/include/c++/15/ext/aligned_buffer.h \
- /usr/include/c++/15/ext/concurrence.h /usr/include/c++/15/bits/align.h \
- /usr/include/c++/15/bits/chrono_io.h /usr/include/c++/15/iomanip \
- /usr/include/c++/15/locale \
- /usr/include/c++/15/bits/locale_facets_nonio.h \
- /usr/include/c++/15/x86_64-redhat-linux/bits/time_members.h \
- /usr/include/c++/15/x86_64-redhat-linux/bits/messages_members.h \
- /usr/include/libintl.h /usr/include/c++/15/bits/codecvt.h \
- /usr/include/c++/15/bits/locale_facets_nonio.tcc \
- /usr/include/c++/15/bits/locale_conv.h \
- /usr/include/c++/15/bits/quoted_string.h /usr/include/c++/15/format \
- /usr/include/c++/15/array /usr/include/c++/15/charconv \
- /usr/include/c++/15/optional \
- /usr/include/c++/15/bits/enable_special_members.h \
- /usr/include/c++/15/span /usr/include/c++/15/bits/monostate.h \
- /usr/include/c++/15/bits/formatfwd.h \
- /usr/include/c++/15/bits/ranges_algobase.h \
- /usr/include/c++/15/bits/unicode.h \
- /usr/include/c++/15/bits/unicode-data.h /usr/include/c++/15/thread \
- /usr/include/c++/15/stop_token /usr/include/c++/15/atomic \
- /usr/include/c++/15/bits/atomic_base.h \
- /usr/include/c++/15/bits/atomic_lockfree_defines.h \
- /usr/include/c++/15/bits/atomic_wait.h /usr/include/c++/15/climits \
- /usr/lib/gcc/x86_64-redhat-linux/15/include/limits.h \
- /usr/lib/gcc/x86_64-redhat-linux/15/include/syslimits.h \
- /usr/include/limits.h /usr/include/bits/posix1_lim.h \
- /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
- /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
- /usr/include/bits/uio_lim.h /usr/include/unistd.h \
- /usr/include/bits/posix_opt.h /usr/include/bits/environments.h \
- /usr/include/bits/confname.h /usr/include/bits/getopt_posix.h \
- /usr/include/bits/getopt_core.h /usr/include/bits/unistd_ext.h \
- /usr/include/linux/close_range.h /usr/include/syscall.h \
- /usr/include/sys/syscall.h /usr/include/asm/unistd.h \
- /usr/include/asm/unistd_64.h /usr/include/bits/syscall.h \
- /usr/include/c++/15/bits/std_mutex.h \
- /usr/include/c++/15/bits/std_thread.h /usr/include/c++/15/semaphore \
- /usr/include/c++/15/bits/semaphore_base.h \
- /usr/include/c++/15/bits/atomic_timed_wait.h \
- /usr/include/c++/15/bits/this_thread_sleep.h /usr/include/sys/time.h \
- /usr/include/semaphore.h /usr/include/bits/semaphore.h \
- /usr/include/c++/15/algorithm /usr/include/c++/15/bits/ranges_algo.h \
- /usr/include/c++/15/pstl/glue_algorithm_defs.h /usr/include/c++/15/map \
- /usr/include/c++/15/bits/stl_tree.h \
- /usr/include/c++/15/bits/node_handle.h \
- /usr/include/c++/15/bits/stl_map.h \
- /usr/include/c++/15/bits/stl_multimap.h \
- /usr/include/c++/15/bits/erase_if.h
+ /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include/player.hpp

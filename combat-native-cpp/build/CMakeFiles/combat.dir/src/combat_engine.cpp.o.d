@@ -234,4 +234,7 @@ CMakeFiles/combat.dir/src/combat_engine.cpp.o: \
  /usr/include/c++/15/bits/node_handle.h \
  /usr/include/c++/15/bits/stl_map.h \
  /usr/include/c++/15/bits/stl_multimap.h \
- /usr/include/c++/15/bits/erase_if.h
+ /usr/include/c++/15/bits/erase_if.h /usr/include/c++/15/unordered_set \
+ /usr/include/c++/15/bits/unordered_set.h \
+ /usr/include/c++/15/bits/hashtable.h \
+ /usr/include/c++/15/bits/hashtable_policy.h

@@ -3,10 +3,6 @@ test_build: \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/crti.o \
   /usr/lib/gcc/x86_64-redhat-linux/15/crtbegin.o \
   CMakeFiles/test_build.dir/src/test_build.cpp.o \
-  CMakeFiles/test_build.dir/src/team.cpp.o \
-  CMakeFiles/test_build.dir/src/player.cpp.o \
-  CMakeFiles/test_build.dir/src/instance.cpp.o \
-  CMakeFiles/test_build.dir/src/combat_engine.cpp.o \
   libcombat.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libm.so \
@@ -43,14 +39,6 @@ test_build: \
 /usr/lib/gcc/x86_64-redhat-linux/15/crtbegin.o:
 
 CMakeFiles/test_build.dir/src/test_build.cpp.o:
-
-CMakeFiles/test_build.dir/src/team.cpp.o:
-
-CMakeFiles/test_build.dir/src/player.cpp.o:
-
-CMakeFiles/test_build.dir/src/instance.cpp.o:
-
-CMakeFiles/test_build.dir/src/combat_engine.cpp.o:
 
 libcombat.so:
 

@@ -5,18 +5,24 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude -fPIC \
 SRC_DIR = src
 BUILD_DIR = build
 
-SRCS = $(wildcard $(SRC_DIR)/*.cpp)
-OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
+# todo menos los que tienen main()
+COMMON_SRCS = $(filter-out $(SRC_DIR)/main.cpp $(SRC_DIR)/test_build.cpp, $(wildcard $(SRC_DIR)/*.cpp))
+COMMON_OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(COMMON_SRCS))
 
-TARGET = combat_app
-SHARED_LIB = libcombat.so
+APP_TARGET  = combat_app
+TEST_TARGET = combat_test
+SHARED_LIB  = libcombat.so
 
-all: $(TARGET) $(SHARED_LIB)
+all: $(APP_TARGET) $(TEST_TARGET) $(SHARED_LIB)
 
-$(TARGET): $(OBJS)
+$(APP_TARGET): $(COMMON_OBJS) $(BUILD_DIR)/main.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(SHARED_LIB): $(OBJS)
+$(TEST_TARGET): $(COMMON_OBJS) $(BUILD_DIR)/test_build.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+# la .so NO debe incluir main()
+$(SHARED_LIB): $(COMMON_OBJS)
 	$(CXX) -shared -o $@ $^
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
@@ -26,6 +32,6 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET) $(SHARED_LIB)
+	rm -rf $(BUILD_DIR) $(APP_TARGET) $(TEST_TARGET) $(SHARED_LIB)
 
 .PHONY: all clean

@@ -88,12 +88,12 @@ clean: CMakeFiles/test_build.dir/clean
 CMakeFiles/combat.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target combat"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Built target combat"
 .PHONY : CMakeFiles/combat.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/combat.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles 8
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/combat.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles 0
 .PHONY : CMakeFiles/combat.dir/rule
@@ -105,7 +105,7 @@ combat: CMakeFiles/combat.dir/rule
 # codegen rule for target.
 CMakeFiles/combat.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/combat.dir/build.make CMakeFiles/combat.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Finished codegen for target combat"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Finished codegen for target combat"
 .PHONY : CMakeFiles/combat.dir/codegen
 
 # clean rule for target.
@@ -120,12 +120,12 @@ CMakeFiles/combat.dir/clean:
 CMakeFiles/test_build.dir/all: CMakeFiles/combat.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=7,8,9,10,11,12 "Built target test_build"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=9,10 "Built target test_build"
 .PHONY : CMakeFiles/test_build.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/test_build.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles 12
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles 10
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_build.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles 0
 .PHONY : CMakeFiles/test_build.dir/rule
@@ -137,7 +137,7 @@ test_build: CMakeFiles/test_build.dir/rule
 # codegen rule for target.
 CMakeFiles/test_build.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_build.dir/build.make CMakeFiles/test_build.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=7,8,9,10,11,12 "Finished codegen for target test_build"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/build/CMakeFiles --progress-num=9,10 "Finished codegen for target test_build"
 .PHONY : CMakeFiles/test_build.dir/codegen
 
 # clean rule for target.

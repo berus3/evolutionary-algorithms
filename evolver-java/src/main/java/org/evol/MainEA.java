@@ -28,9 +28,9 @@ public class MainEA {
         SelectionOperator<List<IntegerSolution>, IntegerSolution> selection = new BinaryTournamentSelection<>();
 
         // mutation decay parameters
-        double p0    = 0.01;     // initial mutation rate
-        double pMin  = 0.0005;   // minimum mutation rate
-        double alpha = 0.97;     // decay factor per generation
+        double p0    = 0.1;     // initial mutation rate
+        double pMin  = 0.002;   // minimum mutation rate
+        double alpha = 0.9;     // decay factor per generation
 
         ArenaEvaluator evaluator = new ArenaEvaluator();
         LoggerEA logger = new LoggerEA("logs/fitness.csv");
