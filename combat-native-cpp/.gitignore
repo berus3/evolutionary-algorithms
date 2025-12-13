@@ -1,0 +1,4 @@
+/build/
+/combat-native-cpp/build/
+/*.o
+/*.so
