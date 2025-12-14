@@ -1,6 +1,6 @@
 org/evol/HallOfFame.class
-org/evol/ArenaEvaluator.class
 org/evol/RPGProblem.class
+org/evol/ArenaEvaluator.class
 org/evol/HallOfFame$Entry.class
 org/evol/RunConfig.class
 org/evol/BlockUniformCrossover.class

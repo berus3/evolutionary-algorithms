@@ -69,11 +69,11 @@ public class MainEA {
         final double alpha = cfg.alpha;
 
         // early stopping
-        final int plateauWindow = 100;
+        final int plateauWindow = 20;
         final double epsilon = 1e-4;
 
         // similarity
-        final double lambdaSimilarity = 0.30;
+        final double lambdaSimilarity = 0.3;
 
         double bestEver = Double.POSITIVE_INFINITY;
         int noImprovementCount = 0;
@@ -132,6 +132,11 @@ public class MainEA {
         // Evolution loop
         // ------------------------------------------------------------
         for (int gen = 1; gen <= generations; gen++) {
+
+			int genSeed = cfg.seed + gen;
+			JMetalRandom.getInstance().setSeed(genSeed);
+			RPGNativeBridge.setSeed(genSeed);
+
 
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
             MutationOperator<IntegerSolution> mutation =
@@ -234,12 +239,12 @@ public class MainEA {
     public static void main(String[] args) {
         RunConfig cfg = new RunConfig(
                 123456,
-                100,
+                50,
                 0.05,
                 0.002,
                 0.90,
                 0.75,
-                RPGInstance.PIECEWISE
+                RPGInstance.EXPONENTIAL
         );
         run(cfg);
     }
