@@ -47,31 +47,21 @@ public class LoggerEA {
             String path = basePath.replace(".csv", "_" + timestamp + ".csv");
             writer = new FileWriter(path);
 
-            // ===============================
-            // Metadata header
-            // ===============================
             writer.write("# seed=" + seed + "\n");
             writer.write("# instance=" + instance.name() + "\n");
             writer.write("# popSize=" + popSize + "\n");
             writer.write("# generations=" + generations + "\n");
-            writer.write("# crossover=BlockUniformCrossover(p=" + crossoverProb + ")\n");
-            writer.write("# mutation=FlipMutation(p0=" + p0 +
-                         ",pMin=" + pMin +
-                         ",alpha=" + alpha + ")\n");
-            writer.write("# selection=NaryTournament(k=" + tournamentK + ")\n");
+            writer.write("# crossover=BlockUniform(p=" + crossoverProb + ")\n");
+            writer.write("# mutation=p0=" + p0 + ",pMin=" + pMin + ",alpha=" + alpha + "\n");
+            writer.write("# tournamentK=" + tournamentK + "\n");
             writer.write("# elitism=" + elitismCount + "\n");
             writer.write("# lambda_similarity=" + lambdaSimilarity + "\n");
             writer.write("# fights_per_team=" + fightsPerTeam + "\n");
             writer.write("# anchors=" + anchorCount + "\n");
 
-            // ===============================
-            // CSV header
-            // ===============================
             writer.write(
-                    "gen,changes," +
-                    "best_fitness,best_winrate,best_similarity," +
-                    "avg_fitness,worst_fitness," +
-                    "best_genome\n"
+                    "gen,changes,best_fitness,best_winrate,best_similarity," +
+                    "avg_fitness,worst_fitness,best_genome\n"
             );
             writer.flush();
 
@@ -90,7 +80,6 @@ public class LoggerEA {
         for (var s : pop) {
             double f = s.objectives()[0];
             sum += f;
-
             if (f < best) {
                 best = f;
                 bestSol = s;
@@ -100,16 +89,8 @@ public class LoggerEA {
 
         double avg = sum / pop.size();
 
-        double bestWinrate = Double.NaN;
-        double bestSimilarity = Double.NaN;
-
-        if (bestSol != null) {
-            Object wr = bestSol.attributes().get("winrate");
-            Object sim = bestSol.attributes().get("similarity");
-
-            if (wr instanceof Double) bestWinrate = (Double) wr;
-            if (sim instanceof Double) bestSimilarity = (Double) sim;
-        }
+        double wr = (double) bestSol.attributes().getOrDefault("winrate", Double.NaN);
+        double sim = (double) bestSol.attributes().getOrDefault("similarity", Double.NaN);
 
         String genomeStr = serializeGenome(bestSol);
 
@@ -124,8 +105,8 @@ public class LoggerEA {
                     gen + "," +
                     changeCount + "," +
                     fmt(best) + "," +
-                    fmt(bestWinrate) + "," +
-                    fmt(bestSimilarity) + "," +
+                    fmt(wr) + "," +
+                    fmt(sim) + "," +
                     fmt(avg) + "," +
                     fmt(worst) + "," +
                     "\"" + lastBestGenome + "\"\n"
@@ -137,45 +118,59 @@ public class LoggerEA {
     }
 
     // ===============================
-    // Final TOP-K summary
+    // TOP-K population
     // ===============================
     public void writeTopIndividuals(List<IntegerSolution> population, int topK) {
-        String outPath = basePath.replace(
-                ".csv",
-                "_TOP" + topK + "_" + timestamp + ".csv"
-        );
-
+        String out = basePath.replace(".csv", "_TOP" + topK + "_" + timestamp + ".csv");
         population.sort(Comparator.comparingDouble(s -> s.objectives()[0]));
 
-        try (FileWriter fw = new FileWriter(outPath)) {
-
+        try (FileWriter fw = new FileWriter(out)) {
             fw.write("rank,fitness,winrate,genome\n");
-
             for (int i = 0; i < Math.min(topK, population.size()); i++) {
-                IntegerSolution s = population.get(i);
-
-                double fitness = s.objectives()[0];
-                double winrate = (double) s.attributes()
-                        .getOrDefault("winrate", Double.NaN);
-
+                var s = population.get(i);
                 fw.write(
                         (i + 1) + "," +
-                        fmt(fitness) + "," +
-                        fmt(winrate) + "," +
+                        fmt(s.objectives()[0]) + "," +
+                        fmt((double) s.attributes().getOrDefault("winrate", Double.NaN)) + "," +
                         "\"" + serializeGenome(s) + "\"\n"
                 );
             }
-
-            fw.flush();
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     // ===============================
-    // Runtime footer
+    // Hall of Fame
     // ===============================
+    public void writeHallOfFame(HallOfFame hof) {
+        String out = basePath.replace(".csv", "_HOF_" + timestamp + ".csv");
+
+        try (FileWriter fw = new FileWriter(out)) {
+            fw.write("rank,fitness,winrate,genome\n");
+
+            hof.getEntries().stream()
+                    .sorted((a, b) -> Double.compare(b.fitness, a.fitness))
+                    .forEachOrdered(e -> {
+                        try {
+                            double wr = (double) e.sol.attributes()
+                                    .getOrDefault("winrate", Double.NaN);
+
+                            fw.write(
+                                    fmt(e.fitness) + "," +
+                                    fmt(wr) + "," +
+                                    "\"" + serializeGenome(e.sol) + "\"\n"
+                            );
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void writeRuntime(double seconds) {
         try {
             writer.write("# runtime_seconds=" +
@@ -193,21 +188,16 @@ public class LoggerEA {
     }
 
     private String serializeGenome(IntegerSolution sol) {
-        if (sol == null) return "";
-
-        List<Integer> v = sol.variables();
+        var v = sol.variables();
         StringBuilder sb = new StringBuilder();
-
         for (int i = 0; i < v.size(); i++) {
             sb.append(v.get(i));
-            if (i < v.size() - 1) sb.append(' ');
+            if (i + 1 < v.size()) sb.append(' ');
         }
         return sb.toString();
     }
 
     public void close() {
-        try {
-            writer.close();
-        } catch (IOException ignored) {}
+        try { writer.close(); } catch (IOException ignored) {}
     }
 }

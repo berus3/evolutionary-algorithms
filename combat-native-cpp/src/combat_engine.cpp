@@ -320,8 +320,7 @@ std::vector<double> winrate_anchor(const std::vector<Team*>& teams,
 */
 // Igual que winrate_random_5(...), pero además cada team juega contra TODOS los anchors.
 // TODO: parallelize
-std::vector<double>
-winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*>& anchors, int fights_per_team)
+std::vector<double> winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*>& anchors, const std::vector<Team*>& hof, int fights_per_team)
 {
     const int n = (int)teams.size();
     const int a = (int)anchors.size();
@@ -399,6 +398,28 @@ winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*
             }
         }
     }
+
+	// population vs HoF
+	#pragma omp parallel
+	{
+		const int tid = omp_get_thread_num();
+		auto& win_local   = win_tls[tid];
+		auto& games_local = games_tls[tid];
+
+		#pragma omp for schedule(static)
+		for (int i = 0; i < n; ++i) {
+			for (int h = 0; h < hof.size(); ++h) {
+				FightResult r = bo3_copy(teams[i], hof[h]);
+
+				if (r == TEAM1_WIN)
+					win_local[i]++;
+
+				games_local[i]++;
+			}
+		}
+	}
+
+
 
     // final reduction
     for (int t = 0; t < T; ++t) {

@@ -9,6 +9,7 @@ import org.uma.jmetal.util.comparator.ObjectiveComparator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,17 +26,13 @@ public class MainEA {
 
         // RNG seed
         int seed = 123456;
-
         JMetalRandom.getInstance().setSeed(seed);
         RPGNativeBridge.setSeed(seed);
-
         System.out.println("[SEED] " + seed);
 
         // instance
         RPGInstance instance = RPGInstance.PIECEWISE;
-
         RPGNativeBridge.setInstance(instance.id);
-
         System.out.println("[INSTANCE] " + instance);
 
         // START TIMER
@@ -44,7 +41,6 @@ public class MainEA {
         RPGProblem problem = new RPGProblem();
 
         // operators
-        
         double crossoverProb = 0.75;
         CrossoverOperator<IntegerSolution> crossover =
                 new BlockUniformCrossover(crossoverProb);
@@ -57,24 +53,20 @@ public class MainEA {
                 );
 
         // mutation decay
-
-        double p0    = 0.30;
-        double pMin  = 0.02;
+        double p0 = 0.05;
+        double pMin = 0.002;
         double alpha = 0.90;
 
         // EA parameters
-
         final int popSize = 100;
         final int generations = 100;
         final int elitismCount = 3;
 
-        // early stopping (plateau)
-       
+        // early stopping
         final int plateauWindow = 100;
         final double epsilon = 1e-4;
-        
-        // lambda (for similarity)
-        
+
+        // similarity
         double lambdaSimilarity = 0.30;
 
         double bestEver = Double.POSITIVE_INFINITY;
@@ -85,7 +77,7 @@ public class MainEA {
 
         LoggerEA logger = new LoggerEA(
                 "logs/fitness.csv",
-    -            seed,
+                seed,
                 instance,
                 popSize,
                 generations,
@@ -94,20 +86,27 @@ public class MainEA {
                 pMin,
                 alpha,
                 lambdaSimilarity,
-                5,              // fights per team
+                20,              // fights per team
                 5,              // anchors
                 tournamentK,
                 elitismCount
         );
 
+        // -----------------------------
+        // Hall of Fame
+        // -----------------------------
+        HallOfFame hof = new HallOfFame(5);
+
         // init population
-     
         List<IntegerSolution> population = new ArrayList<>(popSize);
         for (int i = 0; i < popSize; i++) {
             population.add(problem.createSolution());
         }
 
+        // evaluate gen 0
         evaluator.evaluate(population, problem);
+        insertBestIntoHoF(population, hof);
+
         logger.log(0, population);
         printGeneration(0, population);
 
@@ -116,7 +115,6 @@ public class MainEA {
                 .min().orElse(Double.POSITIVE_INFINITY);
 
         // evolution loop
-       
         for (int gen = 1; gen <= generations; gen++) {
 
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
@@ -155,33 +153,31 @@ public class MainEA {
                         .distinct().count();
 
                 System.out.println(
-                        "OBJ   | min=" + f(min) +
+                        "OBJ | min=" + f(min) +
                         " max=" + f(max) +
                         " distinct=" + distinct
                 );
             }
 
             // elitism (mu + lambda)
-            
-            population.sort((a, b) ->
-                    Double.compare(a.objectives()[0], b.objectives()[0]));
-            offspring.sort((a, b) ->
-                    Double.compare(a.objectives()[0], b.objectives()[0]));
+            population.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
+            offspring.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
 
             List<IntegerSolution> nextGen = new ArrayList<>(popSize);
 
             for (int i = 0; i < elitismCount; i++) {
                 nextGen.add(population.get(i));
             }
-
             for (int i = 0; i < popSize - elitismCount; i++) {
                 nextGen.add(offspring.get(i));
             }
 
             population = nextGen;
 
-            // early stopping check
-           
+            // HoF update (best of generation)
+            insertBestIntoHoF(population, hof);
+
+            // early stopping
             double currentBest = population.get(0).objectives()[0];
 
             if (bestEver - currentBest > epsilon) {
@@ -193,7 +189,7 @@ public class MainEA {
 
             if (noImprovementCount >= plateauWindow) {
                 System.out.println(
-                        "[EARLY STOP] No significant improvement for " +
+                        "[EARLY STOP] No improvement for " +
                         plateauWindow + " generations. Stopping at gen " + gen
                 );
                 logger.log(gen, population);
@@ -206,25 +202,36 @@ public class MainEA {
         }
 
         // END TIMER
-       
         long endTimeNs = System.nanoTime();
         double runtimeSeconds =
                 (endTimeNs - startTimeNs) / 1_000_000_000.0;
 
-        // final TOP-10 summary
-       
+        // summaries
         logger.writeTopIndividuals(population, 10);
-
+        logger.writeHallOfFame(hof);
         logger.writeRuntime(runtimeSeconds);
         logger.close();
     }
 
-    // pretty print generation
+    // hof helper
+    private static void insertBestIntoHoF(
+            List<IntegerSolution> population,
+            HallOfFame hof) {
 
+        IntegerSolution best = population.stream()
+                .min(Comparator.comparingDouble(s -> s.objectives()[0]))
+                .orElse(null);
+
+        if (best != null) {
+            hof.tryInsert(best);
+        }
+    }
+
+    // pretty print
     private static void printGeneration(int gen, List<IntegerSolution> pop) {
 
         IntegerSolution best = pop.stream()
-                .min((a, b) -> Double.compare(a.objectives()[0], b.objectives()[0]))
+                .min(Comparator.comparingDouble(s -> s.objectives()[0]))
                 .orElse(null);
 
         if (best == null) return;

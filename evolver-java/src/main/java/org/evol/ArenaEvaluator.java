@@ -24,9 +24,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
     }
 
     @Override
-    public List<IntegerSolution> evaluate(
-            List<IntegerSolution> population,
-            Problem<IntegerSolution> problem) {
+    public List<IntegerSolution> evaluate(List<IntegerSolution> population, Problem<IntegerSolution> problem) {
 
         final int popSize = population.size();
         final int genomeSize = RPGProblem.GENOME_SIZE; // 500
@@ -88,15 +86,29 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
         // local similarity (- 1)
         double[] similarity = new double[popSize];
 
-		// campeón real
-		int best = order[popSize - 1];
-		similarity[best] = 0.0;
+        int K = 10; // ventana
 
-		for (int pos = 0; pos < popSize - 1; pos++) {
+		for (int pos = 0; pos < popSize; pos++) {
 			int i = order[pos];
-			int j = order[pos + 1];
-			similarity[i] = cosineSimilarity(buckets[i], buckets[j]);
+			double sum = 0.0;
+			int cnt = 0;
+
+			for (int d = 1; d <= K; d++) {
+				if (pos - d >= 0) {
+					int j = order[pos - d];
+					sum += cosineSimilarity(buckets[i], buckets[j]);
+					cnt++;
+				}
+				if (pos + d < popSize) {
+					int j = order[pos + d];
+					sum += cosineSimilarity(buckets[i], buckets[j]);
+					cnt++;
+				}
+			}
+
+			similarity[i] = (cnt == 0) ? 0.0 : sum / cnt;
 		}
+
 
 
 

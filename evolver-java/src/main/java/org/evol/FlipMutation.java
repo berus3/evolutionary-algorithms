@@ -16,6 +16,7 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
             {7, 8},              // crit, crit_factor
             {9, 10, 11},         // bleed, bleed_dmg, bleed_ticks
             {21, 22},            // heal, cd_heal
+            {23, 24},            // heal, cd_heal
             {31, 32, 33},        // shield, shield_ticks, cd_shield
             {17, 18},            // smite, cd_smite
             {19, 20},            // blast, cd_blast
@@ -71,8 +72,8 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
     };
 
     // intensity
-    private static final double P_GROUP_REINFORCE = 0.15;
-    private static final double P_DEP_REINFORCE   = 0.15;
+    private static final double P_GROUP_REINFORCE = 0.05;
+    private static final double P_DEP_REINFORCE   = 0.05;
 
     public FlipMutation(double mutationRate) {
         this.mutationRate = mutationRate;

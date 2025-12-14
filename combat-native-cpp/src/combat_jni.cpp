@@ -62,7 +62,7 @@ static void initAnchorsOnce() {
 
     g_anchors.reserve(ANCHOR_COUNT);
     for (int a = 0; a < ANCHOR_COUNT; a++) {
-        Team* t = buildTeamFromGenome(ANCHOR_GENOMES[a], 10000 + a);
+        Team* t = buildTeamFromGenome(ANCHOR_GENOMES[a], 10000 + a); //TODO revisar
         g_anchors.push_back(t);
     }
 }
@@ -110,8 +110,8 @@ Java_org_evol_RPGNativeBridge_evaluatePopulation(
         teams.push_back(buildTeamFromGenome(genome_i, i));
     }
 
-    std::vector<double> wr =
-        winrate_anchor_random_k(teams, g_anchors, 5);
+    static const std::vector<Team*> empty_hof;
+	std::vector<double> wr = winrate_anchor_random_k(teams, g_anchors, empty_hof, 20);
 
     env->ReleaseIntArrayElements(flatPopulation, data, 0);
 
