@@ -72,11 +72,16 @@ public class MainEA {
        
         final int plateauWindow = 20;
         final double epsilon = 1e-4;
+        
+        // lambda (for similarity)
+        
+        double lambdaSimilarity = 0.30;
 
         double bestEver = Double.POSITIVE_INFINITY;
         int noImprovementCount = 0;
 
         ArenaEvaluator evaluator = new ArenaEvaluator();
+        evaluator.setLambdaSimilarity(lambdaSimilarity);
 
         LoggerEA logger = new LoggerEA(
                 "logs/fitness.csv",
@@ -88,7 +93,7 @@ public class MainEA {
                 p0,
                 pMin,
                 alpha,
-                ArenaEvaluator.LAMBDA_SIMILARITY,
+                lambdaSimilarity,
                 5,              // fights per team
                 5,              // anchors
                 tournamentK,

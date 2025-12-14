@@ -30,6 +30,16 @@ public class RPGProblem extends AbstractIntegerProblem {
         variableBounds(lower, upper);
     }
 
+    /** Devuelve el índice del jugador al que pertenece el gen */
+    public static int playerOfGene(int geneIndex) {
+        return geneIndex / DECISIONS_PER_PLAYER;
+    }
+
+    /** Devuelve el rango [start, end) de genes de un jugador */
+    public static int playerBaseIndex(int player) {
+        return player * DECISIONS_PER_PLAYER;
+    }
+
     @Override
     public IntegerSolution evaluate(IntegerSolution solution) {
         // ArenaEvaluator asigns objectives

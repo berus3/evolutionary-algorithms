@@ -11,7 +11,13 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
 
     private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
 
-    public static final double LAMBDA_SIMILARITY = 0.80;
+    public double lambdaSimilarity;
+
+	public void setLambdaSimilarity(double lambda) {
+        if (lambda < 0.0)
+            throw new IllegalArgumentException("lambda must be >= 0");
+        this.lambdaSimilarity = lambda;
+    }
 
     private static String f(double x) {
         return String.format(Locale.US, "%.3f", x);
@@ -79,27 +85,20 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
                 .mapToInt(i -> i)
                 .toArray();
 
-        // local similarity (+- 1)
+        // local similarity (- 1)
         double[] similarity = new double[popSize];
 
-        for (int pos = 0; pos < popSize; pos++) {
-            int i = order[pos];
-            double sum = 0.0;
-            int cnt = 0;
+		// campeón real
+		int best = order[popSize - 1];
+		similarity[best] = 0.0;
 
-            if (pos > 0) {
-                int j = order[pos - 1];
-                sum += cosineSimilarity(buckets[i], buckets[j]);
-                cnt++;
-            }
-            if (pos < popSize - 1) {
-                int j = order[pos + 1];
-                sum += cosineSimilarity(buckets[i], buckets[j]);
-                cnt++;
-            }
+		for (int pos = 0; pos < popSize - 1; pos++) {
+			int i = order[pos];
+			int j = order[pos + 1];
+			similarity[i] = cosineSimilarity(buckets[i], buckets[j]);
+		}
 
-            similarity[i] = (cnt == 0) ? 0.0 : sum / cnt;
-        }
+
 
         // fitness = winrate - lambda * sim
         double minWR = Double.POSITIVE_INFINITY;
@@ -108,7 +107,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
         for (int i = 0; i < popSize; i++) {
             double wr = winrates[i];
             double sim = similarity[i];
-            double fitness = wr - LAMBDA_SIMILARITY * sim;
+            double fitness = wr - lambdaSimilarity * sim;
 
             population.get(i).objectives()[0] = -fitness;
 
@@ -124,7 +123,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
             System.out.println(
                     "WINRATE | min=" + f(minWR) +
                     " max=" + f(maxWR) +
-                    " λ=" + LAMBDA_SIMILARITY
+                    " λ=" + lambdaSimilarity
             );
         }
 
