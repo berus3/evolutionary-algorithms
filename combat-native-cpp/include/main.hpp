@@ -2,3 +2,8 @@
 #include <iostream>
 #include "combat_engine.hpp"
 #include "genome_decode.hpp"
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <stdexcept>

@@ -33,7 +33,6 @@ public class MainEA {
 
         // instance
         RPGInstance instance = RPGInstance.PIECEWISE;
-
         RPGNativeBridge.setInstance(instance.id);
 
         System.out.println("[INSTANCE] " + instance);
