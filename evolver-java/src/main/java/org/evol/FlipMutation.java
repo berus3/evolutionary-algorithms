@@ -26,7 +26,7 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
             {25, 26, 27},        // acc, acc_ticks, cd_acc
             {28, 29, 30},        // slow, slow_ticks, cd_slow
             {34, 35, 36},        // mark, mark_ticks, cd_mark
-            {0,1,3,13, 38},        // max_hp, regen, mr, armor
+            {0,1,3,13, 38},        // max_hp, regen, mr, armor, thors
             {39}, 				// ax
             {40}, 				// tenacity
             
@@ -88,8 +88,8 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
     };
 
     // intensity
-    private static final double P_GROUP_REINFORCE = 0.25f;
-    private static final double P_DEP_REINFORCE   = 0.6f;
+    private static final double P_GROUP_REINFORCE = 0.15f;
+    private static final double P_DEP_REINFORCE   = 0.15f;
 
     public FlipMutation(double mutationRate) {
         this.mutationRate = mutationRate;

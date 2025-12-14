@@ -61,7 +61,7 @@ public class MainEA {
         // ------------------------------------------------------------
         final int popSize = cfg.popSize;
         final int generations = 100;
-        final int elitismCount = 3;
+        final int elitismCount = 2;
 
         // mutation decay
         final double p0 = cfg.p0;
@@ -69,11 +69,11 @@ public class MainEA {
         final double alpha = cfg.alpha;
 
         // early stopping
-        final int plateauWindow = 20;
+        final int plateauWindow = 100;
         final double epsilon = 1e-4;
 
         // similarity
-        final double lambdaSimilarity = 0.61;
+        final double lambdaSimilarity = 0.30;
 
         double bestEver = Double.POSITIVE_INFINITY;
         int noImprovementCount = 0;
@@ -133,9 +133,12 @@ public class MainEA {
         // ------------------------------------------------------------
         for (int gen = 1; gen <= generations; gen++) {
 
-			int genSeed = cfg.seed + gen;
-			JMetalRandom.getInstance().setSeed(genSeed);
-			RPGNativeBridge.setSeed(genSeed);
+            int genSeed = cfg.seed + gen;
+            JMetalRandom.getInstance().setSeed(genSeed);
+            RPGNativeBridge.setSeed(genSeed);
+
+			// REEVALUAR TODA LA POBLACIÓN CADA GENERACIÓN
+			evaluator.evaluate(population, problem);
 
 
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
@@ -181,16 +184,25 @@ public class MainEA {
             }
 
             // elitism (μ + λ)
+            // ordenar padres
             population.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
-            offspring.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
 
+            // 1) élites
             List<IntegerSolution> nextGen = new ArrayList<>(popSize);
+            List<IntegerSolution> elites = population.subList(0, elitismCount);
+            nextGen.addAll(elites);
 
-            for (int i = 0; i < elitismCount; i++) {
-                nextGen.add(population.get(i));
-            }
+            // 2) pool competitivo: padres no-élite + hijos
+            List<IntegerSolution> pool = new ArrayList<>();
+            pool.addAll(population.subList(elitismCount, population.size()));
+            pool.addAll(offspring);
+
+            // 3) seleccionar los mejores (100 - k)
+            pool.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
+
+            // agregar los mejores 97 (de los 197)
             for (int i = 0; i < popSize - elitismCount; i++) {
-                nextGen.add(offspring.get(i));
+                nextGen.add(pool.get(i));
             }
 
             population = nextGen;
@@ -240,7 +252,7 @@ public class MainEA {
         RunConfig cfg = new RunConfig(
                 123456,
                 50,
-                0.05,
+                0.1,
                 0.02,
                 0.95,
                 0.75,
