@@ -71,8 +71,8 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
     };
 
     // intensity
-    private static final double P_GROUP_REINFORCE = 0.40;
-    private static final double P_DEP_REINFORCE   = 0.25;
+    private static final double P_GROUP_REINFORCE = 0.15;
+    private static final double P_DEP_REINFORCE   = 0.15;
 
     public FlipMutation(double mutationRate) {
         this.mutationRate = mutationRate;

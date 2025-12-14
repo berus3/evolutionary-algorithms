@@ -1,0 +1,12 @@
+# seed=-123456
+# instance=PIECEWISE
+# popSize=100
+# generations=100
+# crossover=BlockUniformCrossover(p=0.75)
+# mutation=FlipMutation(p0=0.3,pMin=0.02,alpha=0.9)
+# selection=NaryTournament(k=3)
+# elitism=3
+# lambda_similarity=0.3
+# fights_per_team=5
+# anchors=5
+gen,changes,best_fitness,best_winrate,best_similarity,avg_fitness,worst_fitness,best_genome

@@ -70,7 +70,7 @@ public class MainEA {
 
         // early stopping (plateau)
        
-        final int plateauWindow = 20;
+        final int plateauWindow = 100;
         final double epsilon = 1e-4;
         
         // lambda (for similarity)
