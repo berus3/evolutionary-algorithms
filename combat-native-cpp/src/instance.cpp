@@ -56,7 +56,7 @@ float stat_exponential(
     int x,
     float y0,
     float y20,
-    float k = 0.02f
+    float k = 0.01f
 ) {
     const float xmax = 20.0f;
 
@@ -76,9 +76,9 @@ int getStatMaxHp(int stat_point) {
         }
         case PIECEWISE: {
             const int p = 20;
-            const float y0 = 1.0f;
+            const float y0 = 40.0f;
             const float yp = 5000.0f;
-            const float y100 = 120000.0f;
+            const float y100 = 15000.0f;
             const float k = 0.15f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }

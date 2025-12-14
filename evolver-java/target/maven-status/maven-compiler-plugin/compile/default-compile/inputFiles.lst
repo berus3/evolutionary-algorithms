@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/ArenaEvaluator.java
 /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/Benchmark.java
 /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/BlockUniformCrossover.java
@@ -12,3 +13,17 @@
 /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/RPGProblem.java
 /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/RunConfig.java
 /home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/TestJNI.java
+=======
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/RPGInstance.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/LoggerEA.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/FlipMutation.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/RPGNativeBridge.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/Benchmark.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/BlockUniformCrossover.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/ArenaEvaluator.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/HallOfFame.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/MainEA.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/RPGProblem.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/TestJNI.java
+/home/bruno/AE/algoritmos-evolutivos-grupo-c/evolver-java/src/main/java/org/evol/Poc.java
+>>>>>>> 6a2440d (chores)
