@@ -1,5 +1,0 @@
-/home/bruno/AE/algoritmos-evolutivos-grupo-c/build/CMakeFiles/combat.dir
-/home/bruno/AE/algoritmos-evolutivos-grupo-c/build/CMakeFiles/combat_app.dir
-/home/bruno/AE/algoritmos-evolutivos-grupo-c/build/CMakeFiles/combat_test.dir
-/home/bruno/AE/algoritmos-evolutivos-grupo-c/build/CMakeFiles/edit_cache.dir
-/home/bruno/AE/algoritmos-evolutivos-grupo-c/build/CMakeFiles/rebuild_cache.dir
