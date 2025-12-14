@@ -14,7 +14,8 @@ enum Instance {
     BALANCED,
     PIECEWISE,
     EXPONENTIAL,
-    SUPPORT_LIKE_PIECEWISE
+    SUPPORT_LIKE_PIECEWISE,
+    FULL_DMG_PIECEWISE
 };
 
 extern Instance instance;
