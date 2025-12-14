@@ -51,6 +51,7 @@ float stat_piecewise_exp_linear(
 }
 
 
+
 float stat_exponential(
     int x,
     float y0,
@@ -75,10 +76,10 @@ int getStatMaxHp(int stat_point) {
         }
         case PIECEWISE: {
             const int p = 20;
-            const float y0 = 1600.0f;
-            const float yp = 6000.0f;
-            const float y100 = 10000.0f;
-            const float k = 0.1f;
+            const float y0 = 1.0f;
+            const float yp = 5000.0f;
+            const float y100 = 120000.0f;
+            const float k = 0.15f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
         case EXPONENTIAL: {
@@ -151,7 +152,8 @@ int getStatArmor(int stat_point) {
                  + 80.0f);
         }
         case PIECEWISE:
-            return (int)roundf(80.0f + stat_point * 8.2f);
+            return (int)roundf(80.0f + stat_point * 16.0f);
+            // return (int)roundf(80.0f + stat_point * 8.2f);
         case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
@@ -159,26 +161,26 @@ int getStatArmor(int stat_point) {
     }
 }
 
-int getStatArmorPen(int stat_point) {
+float getStatArmorPen(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.4005 * (1 - exp(-0.06915 * x))
             const float L = 0.4005f;
             const float k = 0.06915f;
-            return (int)roundf(L * (1.0f - expf(-k * stat_point)));
+            return L * (1.0f - expf(-k * stat_point));
         }
         case PIECEWISE: {
             const int p = 20;
             const float y0 = 0.0f;
-            const float yp = 0.3f;
-            const float y100 = 0.4f;
+            const float yp = 0.5f;
+            const float y100 = 0.7f;
             const float k = 0.1f;
-            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
         case EXPONENTIAL: {
             const float y0 = 0.0f;
             const float yp = 0.3f;
-            return (int)roundf(stat_exponential(stat_point, y0, yp));
+            return stat_exponential(stat_point, y0, yp);
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -406,7 +408,7 @@ int getStatMr(int stat_point) {
             return (int)roundf(A + B * powf(stat_point, p));
         }
         case PIECEWISE:
-            return (int)roundf(43.0f + stat_point * 3.6f);
+            return (int)roundf(43.0f + stat_point * 10.0f);
         case EXPONENTIAL: {
             const float y0 = 0.0f;
             const float yp = 154.0f;
@@ -417,26 +419,26 @@ int getStatMr(int stat_point) {
     }
 }
 
-int getStatMrPen(int stat_point) {
+float getStatMrPen(int stat_point) {
     switch (instance) {
         case BALANCED: {
             // f(x) = 0.4005 * (1 - exp(-0.06915 * x))
             const float L = 0.4005f;
             const float k = 0.06915f;
-            return (int)roundf(L * (1.0f - expf(-k * stat_point)));
+            return L * (1.0f - expf(-k * stat_point));
         }
         case PIECEWISE: {
             const int p = 20;
             const float y0 = 0.0f;
-            const float yp = 0.3f;
-            const float y100 = 0.4f;
+            const float yp = 0.5f;
+            const float y100 = 0.7f;
             const float k = 0.1f;
-            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+            return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
         case EXPONENTIAL: {
             const float y0 = 0.0f;
             const float yp = 0.3f;
-            return (int)roundf(stat_exponential(stat_point, y0, yp));
+            return stat_exponential(stat_point, y0, yp);
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -655,7 +657,7 @@ float getStatStun(int stat_point) {
         case PIECEWISE: {
             const int p = 20;
             const float y0 = 0.0f;
-            const float yp = 0.52f;
+            const float yp = 1.0f;
             const float y100 = 2.0f;
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
@@ -1063,7 +1065,7 @@ int getStatAx(int stat_point) {
         case PIECEWISE: {
             const int p = 20;
             const float y0 = 0.0f;
-            const float yp = 270.0f;
+            const float yp = 170.0f;
             const float y100 = 1054.0f;
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
@@ -1110,8 +1112,14 @@ int getStatAggro(int stat_point) {
             // f(x) = x
 			return stat_point;
         }
-        case PIECEWISE:
-            return stat_point;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 170.0f;
+            const float y100 = 1054.0f;
+            const float k = 0.1f;
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case EXPONENTIAL: {
             const float y0 = 0.0f;
             const float yp = 0.5f;
@@ -1128,8 +1136,14 @@ int getStatFocus(int stat_point) {
             // f(x) = x
 			return stat_point;
         }
-        case PIECEWISE:
-            return stat_point;
+        case PIECEWISE: {
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 170.0f;
+            const float y100 = 1054.0f;
+            const float k = 0.1f;
+            return 2*(int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
         case EXPONENTIAL: {
             const float y0 = 0.0f;
             const float yp = 0.5f;

@@ -27,3 +27,5 @@ replay_pid*
 ./combat-native-cpp/build/
 
 ./evolver-java/target/
+
+./evolver-java/native/
