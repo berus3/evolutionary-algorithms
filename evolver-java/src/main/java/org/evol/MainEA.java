@@ -22,28 +22,32 @@ public class MainEA {
         return String.format(Locale.US, "%.4f", x);
     }
 
-    public static void main(String[] args) {
+    // ============================================================
+    // ENTRY POINT FOR GRID SEARCH
+    // ============================================================
+    public static void run(RunConfig cfg) {
 
-        // RNG seed
-        int seed = 123456;
-        JMetalRandom.getInstance().setSeed(seed);
-        RPGNativeBridge.setSeed(seed);
-        System.out.println("[SEED] " + seed);
+        // ------------------------------------------------------------
+        // RNG + instance
+        // ------------------------------------------------------------
+        JMetalRandom.getInstance().setSeed(cfg.seed);
+        RPGNativeBridge.setSeed(cfg.seed);
+        RPGNativeBridge.setInstance(cfg.instance.id);
 
-        // instance
-        RPGInstance instance = RPGInstance.PIECEWISE;
-        RPGNativeBridge.setInstance(instance.id);
-        System.out.println("[INSTANCE] " + instance);
+        System.out.println("[RUN] " + cfg.tag());
 
-        // START TIMER
         long startTimeNs = System.nanoTime();
 
+        // ------------------------------------------------------------
+        // Problem
+        // ------------------------------------------------------------
         RPGProblem problem = new RPGProblem();
 
-        // operators
-        double crossoverProb = 0.75;
+        // ------------------------------------------------------------
+        // Operators
+        // ------------------------------------------------------------
         CrossoverOperator<IntegerSolution> crossover =
-                new BlockUniformCrossover(crossoverProb);
+                new BlockUniformCrossover(cfg.crossoverProb);
 
         int tournamentK = 3;
         SelectionOperator<List<IntegerSolution>, IntegerSolution> selection =
@@ -52,22 +56,24 @@ public class MainEA {
                         new ObjectiveComparator<>(0)
                 );
 
-        // mutation decay
-        double p0 = 0.05;
-        double pMin = 0.002;
-        double alpha = 0.90;
-
+        // ------------------------------------------------------------
         // EA parameters
-        final int popSize = 100;
+        // ------------------------------------------------------------
+        final int popSize = cfg.popSize;
         final int generations = 100;
         final int elitismCount = 3;
+
+        // mutation decay
+        final double p0 = cfg.p0;
+        final double pMin = cfg.pMin;
+        final double alpha = cfg.alpha;
 
         // early stopping
         final int plateauWindow = 100;
         final double epsilon = 1e-4;
 
         // similarity
-        double lambdaSimilarity = 0.30;
+        final double lambdaSimilarity = 0.30;
 
         double bestEver = Double.POSITIVE_INFINITY;
         int noImprovementCount = 0;
@@ -75,35 +81,42 @@ public class MainEA {
         ArenaEvaluator evaluator = new ArenaEvaluator();
         evaluator.setLambdaSimilarity(lambdaSimilarity);
 
+        // ------------------------------------------------------------
+        // Logger (UNIQUE per config)
+        // ------------------------------------------------------------
         LoggerEA logger = new LoggerEA(
-                "logs/fitness.csv",
-                seed,
-                instance,
+                "logs/fitness_" + cfg.tag() + ".csv",
+                cfg.seed,
+                cfg.instance,
                 popSize,
                 generations,
-                crossoverProb,
+                cfg.crossoverProb,
                 p0,
                 pMin,
                 alpha,
                 lambdaSimilarity,
                 20,              // fights per team
-                5,              // anchors
+                5,               // anchors
                 tournamentK,
                 elitismCount
         );
 
-        // -----------------------------
+        // ------------------------------------------------------------
         // Hall of Fame
-        // -----------------------------
+        // ------------------------------------------------------------
         HallOfFame hof = new HallOfFame(5);
 
-        // init population
+        // ------------------------------------------------------------
+        // Init population
+        // ------------------------------------------------------------
         List<IntegerSolution> population = new ArrayList<>(popSize);
         for (int i = 0; i < popSize; i++) {
             population.add(problem.createSolution());
         }
 
-        // evaluate gen 0
+        // ------------------------------------------------------------
+        // Gen 0
+        // ------------------------------------------------------------
         evaluator.evaluate(population, problem);
         insertBestIntoHoF(population, hof);
 
@@ -112,9 +125,12 @@ public class MainEA {
 
         bestEver = population.stream()
                 .mapToDouble(s -> s.objectives()[0])
-                .min().orElse(Double.POSITIVE_INFINITY);
+                .min()
+                .orElse(Double.POSITIVE_INFINITY);
 
-        // evolution loop
+        // ------------------------------------------------------------
+        // Evolution loop
+        // ------------------------------------------------------------
         for (int gen = 1; gen <= generations; gen++) {
 
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
@@ -159,7 +175,7 @@ public class MainEA {
                 );
             }
 
-            // elitism (mu + lambda)
+            // elitism (μ + λ)
             population.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
             offspring.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
 
@@ -174,7 +190,7 @@ public class MainEA {
 
             population = nextGen;
 
-            // HoF update (best of generation)
+            // HoF update
             insertBestIntoHoF(population, hof);
 
             // early stopping
@@ -187,33 +203,50 @@ public class MainEA {
                 noImprovementCount++;
             }
 
-            if (noImprovementCount >= plateauWindow) {
-                System.out.println(
-                        "[EARLY STOP] No improvement for " +
-                        plateauWindow + " generations. Stopping at gen " + gen
-                );
-                logger.log(gen, population);
-                printGeneration(gen, population);
-                break;
-            }
-
             logger.log(gen, population);
             printGeneration(gen, population);
+
+            if (noImprovementCount >= plateauWindow) {
+                System.out.println(
+                        "[EARLY STOP] plateau " + plateauWindow +
+                        " at gen " + gen
+                );
+                break;
+            }
         }
 
-        // END TIMER
+        // ------------------------------------------------------------
+        // Finish
+        // ------------------------------------------------------------
         long endTimeNs = System.nanoTime();
         double runtimeSeconds =
                 (endTimeNs - startTimeNs) / 1_000_000_000.0;
 
-        // summaries
         logger.writeTopIndividuals(population, 10);
         logger.writeHallOfFame(hof);
         logger.writeRuntime(runtimeSeconds);
         logger.close();
     }
 
-    // hof helper
+    // ============================================================
+    // Optional standalone run (debug / single run)
+    // ============================================================
+    public static void main(String[] args) {
+        RunConfig cfg = new RunConfig(
+                123456,
+                100,
+                0.05,
+                0.002,
+                0.90,
+                0.75,
+                RPGInstance.PIECEWISE
+        );
+        run(cfg);
+    }
+
+    // ============================================================
+    // Helpers
+    // ============================================================
     private static void insertBestIntoHoF(
             List<IntegerSolution> population,
             HallOfFame hof) {
@@ -227,7 +260,6 @@ public class MainEA {
         }
     }
 
-    // pretty print
     private static void printGeneration(int gen, List<IntegerSolution> pop) {
 
         IntegerSolution best = pop.stream()
@@ -244,7 +276,7 @@ public class MainEA {
 
         System.out.printf(
                 Locale.US,
-                "GEN %3d | fitness=%6s | winrate=%6s | sim=%5s%n%n",
+                "GEN %3d | fitness=%6s | winrate=%6s | sim=%5s%n",
                 gen,
                 f(fitness),
                 f(winrate),

@@ -2,11 +2,13 @@ org/evol/HallOfFame.class
 org/evol/RPGProblem.class
 org/evol/ArenaEvaluator.class
 org/evol/HallOfFame$Entry.class
+org/evol/RunConfig.class
 org/evol/BlockUniformCrossover.class
 org/evol/Poc.class
 org/evol/LoggerEA.class
 org/evol/TestJNI.class
 org/evol/MainEA.class
+org/evol/GridRunner.class
 org/evol/FlipMutation.class
 org/evol/RPGNativeBridge.class
 org/evol/RPGInstance.class

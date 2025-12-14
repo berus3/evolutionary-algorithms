@@ -24,7 +24,9 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
     }
 
     @Override
-    public List<IntegerSolution> evaluate(List<IntegerSolution> population, Problem<IntegerSolution> problem) {
+    public List<IntegerSolution> evaluate(
+            List<IntegerSolution> population,
+            Problem<IntegerSolution> problem) {
 
         final int popSize = population.size();
         final int genomeSize = RPGProblem.GENOME_SIZE; // 500
@@ -83,7 +85,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
                 .mapToInt(i -> i)
                 .toArray();
 
-        // local similarity (- 1)
+        // local similarity (10)
         double[] similarity = new double[popSize];
 
         int K = 10; // ventana
