@@ -20,10 +20,9 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
             {31, 32, 33},        // shield, shield_ticks, cd_shield
             {17, 18},            // smite, cd_smite
             {19, 20},            // blast, cd_blast
-            {12, 16},            // ap, ah
-            {5, 4},            // lethality, armor_pen
+            {12, 16},            // ap, ah         
             {15,14},            // ethereal, mr_pen
-            {2, 6, 37},            // ad, as, vamp
+            {2, 6, 37, 5, 4},     // ad, as, vamp, lethality, armor_pen
             {25, 26, 27},        // acc, acc_ticks, cd_acc
             {28, 29, 30},        // slow, slow_ticks, cd_slow
             {34, 35, 36},        // mark, mark_ticks, cd_mark
@@ -37,19 +36,20 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
     // Dependencias DIRIGIDAS (asimétricas)
     // Formato: { stat_dependiente, soporte1, soporte2, ... }
     private static final int[][] DIRECTED_DEPENDENCIES = {
-            {9, 2},      // bleed -> ad
-            {10, 2},     // bleed_dmg -> ad
-            {11, 2},     // bleed_ticks -> ad
+            {10, 9},      // bleed_dmg -> bleed
+            {11, 9},     // bleed_ticks -> bleed
+            {9, 2},     // bleed -> ad
 
             {4, 2},          // armor_pen -> ad
             {0, 41},          // max_hp -> aggro
             
             {7, 2},          // crit_ -> ad
+            {8, 7},          // crit_factor -> crit
             
             {5, 2},          // lethality -> ad
 
             {14, 12},        // mr_pen -> ap
-            {15, 12},        // ethereal -> ap
+            {15, 17, 19},  // ethereal -> smite, blast
 
             {21, 12},    // heal -> ap
             {22, 21},    // cd_heal -> heal 
@@ -88,7 +88,7 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
     };
 
     // intensity
-    private static final double P_GROUP_REINFORCE = 0.6f;
+    private static final double P_GROUP_REINFORCE = 0.25f;
     private static final double P_DEP_REINFORCE   = 0.6f;
 
     public FlipMutation(double mutationRate) {

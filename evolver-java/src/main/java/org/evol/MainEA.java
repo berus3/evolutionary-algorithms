@@ -241,8 +241,8 @@ public class MainEA {
                 123456,
                 50,
                 0.05,
-                0.002,
-                0.90,
+                0.02,
+                0.95,
                 0.75,
                 RPGInstance.PIECEWISE
         );
