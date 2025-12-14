@@ -849,6 +849,7 @@ void Player::print() {
     std::cout << "end_mark: " <<_dyn_stats->end_mark << "\n";
     std::cout << "shield_resistance: " <<_dyn_stats->shield_resistance << "\n";
     std::cout << "mark_resistance: " <<_dyn_stats->mark_resistance << "\n";
+    std::cout << "armor: " << getStatArmor(_stat_points->armor) << "\n";
 }
 
 

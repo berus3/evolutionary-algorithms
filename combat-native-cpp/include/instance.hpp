@@ -6,13 +6,14 @@
 #include <cstdint>
 #include <thread>
 #include <functional>
+#include <algorithm>
 #include "rng.hpp"
 #include "rng_context.hpp"
 
 enum Instance {
     BALANCED,
     PIECEWISE,
-    UNFAIR
+    EXPONENTIAL
 };
 
 extern Instance instance;

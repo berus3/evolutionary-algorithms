@@ -189,7 +189,7 @@ bool step(Team* team1, Team* team2) {
     team1->getPlayer(4)->act(team1, team2);
     team2->getPlayer(4)->act(team2, team1);
 
-	//print_battlefield(team1, team2);
+	// print_battlefield(team1, team2);
 	return((team1->getPlayer(0)->isAlive() || team1->getPlayer(1)->isAlive() || team1->getPlayer(2)->isAlive() || team1->getPlayer(3)->isAlive() || team1->getPlayer(4)->isAlive()) 
 		&& (team2->getPlayer(0)->isAlive() || team2->getPlayer(1)->isAlive() || team2->getPlayer(2)->isAlive() || team2->getPlayer(3)->isAlive() || team2->getPlayer(4)->isAlive()));
 }
@@ -516,7 +516,7 @@ FightResult fight(Team* team1, Team* team2) {
             else 
 				return TEAM2_WIN;
         }
-	//	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		// std::this_thread::sleep_for(std::chrono::milliseconds(10));
     } while (!end);
     std::cout << "Fight ended in " << it << " iterations.\n";
     return TEAM1_WIN;

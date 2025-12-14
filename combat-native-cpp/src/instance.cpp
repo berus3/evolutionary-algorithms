@@ -24,7 +24,7 @@ float getCounterFocus() {
     switch (instance) {
         case BALANCED: return 10.0f;
         case PIECEWISE: return 10.0f;
-        case UNFAIR:return 10.0f;
+        case EXPONENTIAL:return 10.0f;
         default: return 10.0f;
     }
 }
@@ -39,7 +39,8 @@ float stat_piecewise_exp_linear(
 ) {
     if (x <= 0) return y0;
     if (x >= 100) return y100;
-
+    // k = 2.0f;
+    // k = 2.0f;
     if (x <= p) {
         float num = std::exp(k * x) - 1.0f;
         float den = std::exp(k * p) - 1.0f;
@@ -48,6 +49,36 @@ float stat_piecewise_exp_linear(
         return yp + (y100 - yp) * (x - p) / float(100 - p);
     }
 }
+
+float stat_exponential(
+    int x,
+    float y0,
+    float y20,
+    float k = 0.02f
+) {
+    const float xmax = 20.0f;
+
+    float num   = expf(k * x) - 1.0f;
+    float denom = expf(k * xmax) - 1.0f;
+
+    return y0 + (y20 - y0) * (num / denom);
+}
+
+
+float stat_exponential(
+    int x,
+    float y0,
+    float y20,
+    float k = 0.02f
+) {
+    const float xmax = 20.0f;
+
+    float num   = expf(k * x) - 1.0f;
+    float denom = expf(k * xmax) - 1.0f;
+
+    return y0 + (y20 - y0) * (num / denom);
+}
+
 
 int getStatMaxHp(int stat_point) {
     switch (instance) {
@@ -64,8 +95,11 @@ int getStatMaxHp(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 1600.0f;
+            const float yp = 6000.0f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -86,8 +120,11 @@ int getStatRegen(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 130.0f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -109,8 +146,11 @@ int getStatAd(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 50.0f;
+            const float yp = 350.0f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -126,7 +166,7 @@ int getStatArmor(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 8.2f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -149,8 +189,11 @@ int getStatArmorPen(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.3f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -172,8 +215,11 @@ int getStatLethality(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 70.0f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -190,8 +236,8 @@ int getStatAs(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL:
+            return (int)roundf(80.0f + stat_point * 25.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -207,13 +253,20 @@ float getStatCrit(int stat_point) {
         case PIECEWISE: {
             const int p = 20;
             const float y0 = 0.0f;
-            const float yp = 75.0f;
-            const float y100 = 100.0f;
+            const float yp = 0.75f;
+            const float y100 = 1.0f;
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.75f;
+            float ret = stat_exponential(stat_point, y0, yp);
+            if (ret < 1.0f) {
+                return ret;
+            }
+            return 1.0f;
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -236,8 +289,11 @@ float getStatCritFactor(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 1.5f;
+            const float yp = 2.32f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -260,8 +316,15 @@ float getStatBleed(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.35f;
+            float ret = stat_exponential(stat_point, y0, yp);
+            if (ret < 1.0f) {
+                return ret;
+            }
+            return 1.0f;
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -284,8 +347,11 @@ int getStatBleedDmg(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.05f;
+            const float yp = 0.15f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -308,8 +374,11 @@ int getStatBleedTicks(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 1.2f;
+            const float yp = 2.2f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -331,8 +400,11 @@ int getStatAp(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 600.0f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -349,8 +421,11 @@ int getStatMr(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(43.0f + stat_point * 3.6f);
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 154.0f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -372,8 +447,11 @@ int getStatMrPen(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.3f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -396,8 +474,11 @@ int getStatEthereal(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 21.0f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -419,8 +500,11 @@ int getStatAh(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 60.0f;
+            return (int)roundf(stat_exponential(stat_point, y0, yp));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -446,8 +530,11 @@ float getStatSmite(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.79f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -464,7 +551,7 @@ int getStatCdSmite(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -491,8 +578,11 @@ float getStatBlast(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.26f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -509,7 +599,7 @@ int getStatCdBlast(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -536,8 +626,11 @@ float getStatHeal(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.8f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -554,7 +647,7 @@ int getStatCdHeal(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -581,8 +674,11 @@ float getStatStun(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.52f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -599,7 +695,7 @@ int getStatCdStun(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -626,8 +722,11 @@ float getStatAcc(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.85f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -651,8 +750,11 @@ float getStatAccTicks(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k); 
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.8f;
+            const float yp = 2.0f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -669,7 +771,7 @@ int getStatCdAcc(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -696,8 +798,11 @@ float getStatSlow(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.85f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -721,8 +826,11 @@ float getStatSlowTicks(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.8f;
+            const float yp = 2.0f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -739,7 +847,7 @@ int getStatCdSlow(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -766,8 +874,11 @@ float getStatShield(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.85f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -791,8 +902,11 @@ float getStatShieldTicks(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.8f;
+            const float yp = 2.0f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -809,7 +923,7 @@ int getStatCdShield(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -836,8 +950,11 @@ float getStatMark(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.85f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -861,8 +978,11 @@ float getStatMarkTicks(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.8f;
+            const float yp = 2.0f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -879,7 +999,7 @@ int getStatCdMark(int stat_point) {
         }
         case PIECEWISE:
             return (int)roundf(80.0f + stat_point * 25.0f);
-        case UNFAIR:
+        case EXPONENTIAL:
             return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -902,8 +1022,15 @@ float getStatVamp(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.2f;
+            float ret = stat_exponential(stat_point, y0, yp);
+            if (ret < 1.0f) {
+                return ret;
+            }
+            return 1.0f;
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -925,8 +1052,15 @@ float getStatThorns(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.2f;
+            float ret = stat_exponential(stat_point, y0, yp);
+            if (ret < 1.0f) {
+                return ret;
+            }
+            return 1.0f;
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -948,8 +1082,11 @@ int getStatAx(int stat_point) {
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
-        case UNFAIR:
-            return (int)roundf(120.0f + stat_point * 15.0f);
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 270.0f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -971,8 +1108,11 @@ float getStatTenacity(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.35f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -986,8 +1126,11 @@ int getStatAggro(int stat_point) {
         }
         case PIECEWISE:
             return stat_point;
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.5f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1001,8 +1144,11 @@ int getStatFocus(int stat_point) {
         }
         case PIECEWISE:
             return stat_point;
-        case UNFAIR:
-            return 120.0f + stat_point * 15.0f;
+        case EXPONENTIAL: {
+            const float y0 = 0.0f;
+            const float yp = 0.5f;
+            return stat_exponential(stat_point, y0, yp);
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }

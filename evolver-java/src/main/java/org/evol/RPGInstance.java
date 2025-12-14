@@ -3,7 +3,8 @@ package org.evol;
 public enum RPGInstance {
     BALANCED(0),
     PIECEWISE(1),
-    UNFAIR(2);
+    EXPONENTIAL(2),
+    UNFAIR(3);
 
     public final int id;
 
