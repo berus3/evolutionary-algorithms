@@ -111,7 +111,7 @@ Java_org_evol_RPGNativeBridge_evaluatePopulation(
     }
 
     static const std::vector<Team*> empty_hof;
-	std::vector<double> wr = winrate_anchor_random_k(teams, g_anchors, empty_hof, 20);
+	std::vector<double> wr = winrate_anchor_random_k(teams, g_anchors, empty_hof, 10);
 
     env->ReleaseIntArrayElements(flatPopulation, data, 0);
 

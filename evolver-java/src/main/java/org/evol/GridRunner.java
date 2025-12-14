@@ -27,7 +27,7 @@ public class GridRunner {
                     pop,
                     p0,
                     0.002,
-                    0.90,
+                    0.95,
                     cross,
                     inst
             );

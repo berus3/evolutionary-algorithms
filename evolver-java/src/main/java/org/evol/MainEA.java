@@ -73,7 +73,7 @@ public class MainEA {
         final double epsilon = 1e-4;
 
         // similarity
-        final double lambdaSimilarity = 0.3;
+        final double lambdaSimilarity = 0.61;
 
         double bestEver = Double.POSITIVE_INFINITY;
         int noImprovementCount = 0;
@@ -95,7 +95,7 @@ public class MainEA {
                 pMin,
                 alpha,
                 lambdaSimilarity,
-                20,              // fights per team
+                10,              // fights per team
                 5,               // anchors
                 tournamentK,
                 elitismCount
@@ -244,7 +244,7 @@ public class MainEA {
                 0.002,
                 0.90,
                 0.75,
-                RPGInstance.EXPONENTIAL
+                RPGInstance.PIECEWISE
         );
         run(cfg);
     }

@@ -39,7 +39,8 @@ float stat_piecewise_exp_linear(
 ) {
     if (x <= 0) return y0;
     if (x >= 100) return y100;
-    // k = 2.0f;
+    //k = 0.25f;
+    //p = 20.0f;
     // k = 2.0f;
     if (x <= p) {
         float num = std::exp(k * x) - 1.0f;
@@ -1063,7 +1064,7 @@ int getStatAx(int stat_point) {
             return (int)roundf(B * powf(stat_point, p));
         }
         case PIECEWISE: {
-            const int p = 20;
+            const int p = 40;
             const float y0 = 0.0f;
             const float yp = 170.0f;
             const float y100 = 1054.0f;
