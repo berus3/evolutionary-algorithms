@@ -1,0 +1,147 @@
+[
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/anchors.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/anchors.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/anchors.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/combat_engine.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/combat_jni.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_jni.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_jni.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/genome_decode.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/genome_decode.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/genome_decode.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/instance.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/team.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/player.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/rng.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++ -DLINUX -Dcombat_EXPORTS -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIC -fopenmp -std=gnu++20 -o CMakeFiles/combat.dir/src/rng_context.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/main.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/main.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/main.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/anchors.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/anchors.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/anchors.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/combat_engine.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/combat_jni.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_jni.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_jni.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/genome_decode.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/genome_decode.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/genome_decode.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/instance.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/team.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/player.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/rng.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_app.dir/src/rng_context.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/test_build.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/test_build.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/test_build.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/anchors.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/anchors.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/anchors.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/combat_engine.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_engine.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/combat_jni.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_jni.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/combat_jni.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/genome_decode.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/genome_decode.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/genome_decode.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/instance.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/instance.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/team.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/team.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/player.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/player.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/rng.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng.cpp"
+},
+{
+  "directory": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/build",
+  "command": "/usr/bin/g++  -I/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/include -I/usr/lib/jvm/java-21-openjdk-amd64/include -I/usr/lib/jvm/java-21-openjdk-amd64/include/linux -I/usr/lib/jvm/java-21-openjdk-amd64/include/darwin -I/usr/lib/jvm/java-21-openjdk-amd64/include/win32 -g -fPIE -fopenmp -std=gnu++20 -o CMakeFiles/combat_test.dir/src/rng_context.cpp.o -c /home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp",
+  "file": "/home/bruno/AE/algoritmos-evolutivos-grupo-c/combat-native-cpp/src/rng_context.cpp"
+}
+]
