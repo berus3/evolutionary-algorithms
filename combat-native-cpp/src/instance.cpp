@@ -50,20 +50,6 @@ float stat_piecewise_exp_linear(
     }
 }
 
-float stat_exponential(
-    int x,
-    float y0,
-    float y20,
-    float k = 0.02f
-) {
-    const float xmax = 20.0f;
-
-    float num   = expf(k * x) - 1.0f;
-    float denom = expf(k * xmax) - 1.0f;
-
-    return y0 + (y20 - y0) * (num / denom);
-}
-
 
 float stat_exponential(
     int x,
