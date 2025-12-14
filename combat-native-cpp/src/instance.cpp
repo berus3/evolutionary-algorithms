@@ -40,6 +40,7 @@ float stat_piecewise_exp_linear(
     if (x <= 0) return y0;
     if (x >= 100) return y100;
     // k = 2.0f;
+    // k = 2.0f;
     if (x <= p) {
         float num = std::exp(k * x) - 1.0f;
         float den = std::exp(k * p) - 1.0f;
@@ -48,6 +49,21 @@ float stat_piecewise_exp_linear(
         return yp + (y100 - yp) * (x - p) / float(100 - p);
     }
 }
+
+float stat_exponential(
+    int x,
+    float y0,
+    float y20,
+    float k = 0.02f
+) {
+    const float xmax = 20.0f;
+
+    float num   = expf(k * x) - 1.0f;
+    float denom = expf(k * xmax) - 1.0f;
+
+    return y0 + (y20 - y0) * (num / denom);
+}
+
 
 float stat_exponential(
     int x,
@@ -149,12 +165,9 @@ int getStatArmor(int stat_point) {
                  + 80.0f);
         }
         case PIECEWISE:
-            return (int)round(80.0f + stat_point * 8.2f);
-        case EXPONENTIAL: {
-            const float y0 = 80.0f;
-            const float yp = 230.0f;
-            return (int)roundf(stat_exponential(stat_point, y0, yp));
-        }
+            return (int)roundf(80.0f + stat_point * 8.2f);
+        case EXPONENTIAL:
+            return (int)roundf(120.0f + stat_point * 15.0f);
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -174,7 +187,7 @@ int getStatArmorPen(int stat_point) {
             const float yp = 0.3f;
             const float y100 = 0.4f;
             const float k = 0.1f;
-            return (int)std::roundf(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k));
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
         case EXPONENTIAL: {
             const float y0 = 0.0f;
@@ -432,7 +445,7 @@ int getStatMrPen(int stat_point) {
             const float yp = 0.3f;
             const float y100 = 0.4f;
             const float k = 0.1f;
-            return (int)std::roundf(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k));
+            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
         case EXPONENTIAL: {
             const float y0 = 0.0f;
