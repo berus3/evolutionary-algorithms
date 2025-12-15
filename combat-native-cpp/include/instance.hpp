@@ -15,7 +15,8 @@ enum Instance {
     PIECEWISE,
     EXPONENTIAL,
     SUPPORT_LIKE_PIECEWISE,
-    FULL_DMG_PIECEWISE
+    FULL_DMG_PIECEWISE,
+    LINEAR
 };
 
 extern Instance instance;

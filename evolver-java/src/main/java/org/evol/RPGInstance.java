@@ -6,7 +6,7 @@ public enum RPGInstance {
     EXPONENTIAL(2),
     SUPPORT_LIKE_PIECEWISE(3),
     FULL_DAMAGE_PIECEWISE(4),
-    UNFAIR(5);
+    LINEAR(5);
 
     public final int id;
 
