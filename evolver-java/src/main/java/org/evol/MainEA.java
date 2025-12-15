@@ -61,7 +61,7 @@ public class MainEA {
         // ------------------------------------------------------------
         final int popSize = cfg.popSize;
         final int generations = 100;
-        final int elitismCount = 2;
+        final int elitismCount = 4;
 
         // mutation decay
         final double p0 = cfg.p0;
@@ -137,9 +137,8 @@ public class MainEA {
             JMetalRandom.getInstance().setSeed(genSeed);
             RPGNativeBridge.setSeed(genSeed);
 
-			// REEVALUAR TODA LA POBLACIÓN CADA GENERACIÓN
-			evaluator.evaluate(population, problem);
-
+            // REEVALUAR TODA LA POBLACIÓN CADA GENERACIÓN
+            evaluator.evaluate(population, problem);
 
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
             MutationOperator<IntegerSolution> mutation =
@@ -183,34 +182,74 @@ public class MainEA {
                 );
             }
 
-            // elitism (μ + λ)
-            // ordenar padres
+            // ========================================================
+            // Crowding Replacement (μ + λ)  <<< ÚNICO CAMBIO REAL
+            // ========================================================
+
+            final int CF = 5; // crowding factor fijo
+
+            // ordenar padres (igual que antes)
             population.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
 
-            // 1) élites
-            List<IntegerSolution> nextGen = new ArrayList<>(popSize);
-            List<IntegerSolution> elites = population.subList(0, elitismCount);
-            nextGen.addAll(elites);
+            // 1) élites (COPIA)
+            List<IntegerSolution> elites =
+                    new ArrayList<>(population.subList(0, elitismCount));
 
-            // 2) pool competitivo: padres no-élite + hijos
-            List<IntegerSolution> pool = new ArrayList<>();
-            pool.addAll(population.subList(elitismCount, population.size()));
-            pool.addAll(offspring);
+            // 2) individuos reemplazables
+            List<IntegerSolution> replaceable =
+                    new ArrayList<>(population.subList(elitismCount, population.size()));
 
-            // 3) seleccionar los mejores (100 - k)
-            pool.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
+            // 3) crowding replacement hijo por hijo
+            for (IntegerSolution child : offspring) {
 
-            // agregar los mejores 97 (de los 197)
-            for (int i = 0; i < popSize - elitismCount; i++) {
-                nextGen.add(pool.get(i));
+                double childWr = (double) child.attributes()
+                        .getOrDefault("winrate", Double.NaN);
+
+                if (Double.isNaN(childWr) || replaceable.isEmpty()) continue;
+
+                // vecindario por cercanía de winrate
+                replaceable.sort(Comparator.comparingDouble(p -> {
+                    double wr = (double) p.attributes()
+                            .getOrDefault("winrate", Double.NaN);
+                    return Double.isNaN(wr)
+                            ? Double.POSITIVE_INFINITY
+                            : Math.abs(wr - childWr);
+                }));
+
+                int m = Math.min(CF, replaceable.size());
+
+                int victimIndex = -1;
+                double bestD = Double.POSITIVE_INFINITY;
+
+                for (int i = 0; i < m; i++) {
+                    double d = distanceD(child, replaceable.get(i));
+                    if (d < bestD) {
+                        bestD = d;
+                        victimIndex = i;
+                    }
+                }
+
+                if (victimIndex < 0) continue;
+
+                IntegerSolution victim = replaceable.get(victimIndex);
+
+                if (child.objectives()[0] < victim.objectives()[0]) {
+                    replaceable.set(victimIndex, child);
+                }
             }
 
+            // reconstruir población (rol idéntico al nextGen original)
+            List<IntegerSolution> nextGen = new ArrayList<>(popSize);
+            nextGen.addAll(elites);
+            nextGen.addAll(replaceable);
             population = nextGen;
 
-            // HoF update
+            // --------------------------------------------------------
+            // Lo que sigue ES IDÉNTICO a tu código
+            // --------------------------------------------------------
+
             insertBestIntoHoF(population, hof);
 
-            // early stopping
             double currentBest = population.get(0).objectives()[0];
 
             if (bestEver - currentBest > epsilon) {
@@ -252,7 +291,7 @@ public class MainEA {
         RunConfig cfg = new RunConfig(
                 123456,
                 50,
-                0.1,
+                0.,
                 0.02,
                 0.95,
                 0.75,
@@ -262,8 +301,16 @@ public class MainEA {
     }
 
     // ============================================================
-    // Helpers
+    // Helpers (NUEVO: solo esto)
     // ============================================================
+    private static double distanceD(IntegerSolution a, IntegerSolution b) {
+        int diff = 0;
+        for (int i = 0; i < a.variables().size(); i++) {
+            if (!a.variables().get(i).equals(b.variables().get(i))) diff++;
+        }
+        return diff;
+    }
+
     private static void insertBestIntoHoF(
             List<IntegerSolution> population,
             HallOfFame hof) {

@@ -173,7 +173,7 @@ public class LoggerEA {
 
     public void writeRuntime(double seconds) {
         try {
-            writer.write("# runtime_seconds=" +
+            writer.write("# Elitism = 4, runtime_seconds=" +
                     String.format(Locale.US, "%.3f", seconds) + "\n");
             writer.flush();
         } catch (IOException e) {
