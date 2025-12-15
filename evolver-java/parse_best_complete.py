@@ -4,7 +4,7 @@ from collections import defaultdict
 import statistics
 
 LOG_DIR = Path("calibration_1")   # ajustá si hace falta
-OUT_FILE = "top10_best_stats_calib_1.csv"
+OUT_FILE = "top10_best_stats_by_config.csv"
 
 def parse_filename(name: str):
     if "_TOP10_" not in name or not name.endswith(".csv"):
@@ -25,6 +25,9 @@ def parse_filename(name: str):
     return {
         "inst": kv["inst"],
         "seed": int(kv["seed"]),
+        "pop": kv.get("pop"),
+        "p0": kv.get("p0"),
+        "cross": kv.get("cross"),
     }
 
 def read_best_individual(path: Path):
@@ -36,7 +39,7 @@ def read_best_individual(path: Path):
                 return float(row["fitness"]), float(row["winrate"])
     return None
 
-# inst -> list[(fitness, winrate)]
+# config -> list[(fitness, winrate)]
 data = defaultdict(list)
 
 for file in LOG_DIR.iterdir():
@@ -48,30 +51,31 @@ for file in LOG_DIR.iterdir():
     if best is None:
         continue
 
-    data[info["inst"]].append(best)
+    config = f"pop={info['pop']},p0={info['p0']},cross={info['cross']},inst={info['inst']}"
+    data[config].append(best)
 
 with open(OUT_FILE, "w", newline="") as f:
     w = csv.writer(f)
     w.writerow([
-        "inst",
-        "n_seeds",
-        "fitness_mean",
+        "configuracion",
+        "fitness_promedio",
         "fitness_std",
-        "winrate_mean",
+        "winrate_promedio",
         "winrate_std",
+        "n_seeds",
     ])
 
-    for inst, values in sorted(data.items()):
+    for config, values in sorted(data.items()):
         fitness_vals = [v[0] for v in values]
         winrate_vals = [v[1] for v in values]
 
         w.writerow([
-            inst,
-            len(values),
+            config,
             statistics.mean(fitness_vals),
             statistics.stdev(fitness_vals) if len(fitness_vals) > 1 else 0.0,
             statistics.mean(winrate_vals),
             statistics.stdev(winrate_vals) if len(winrate_vals) > 1 else 0.0,
+            len(values)
         ])
 
 print(f"[OK] {OUT_FILE} generado")
