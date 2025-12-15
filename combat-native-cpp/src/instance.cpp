@@ -67,6 +67,13 @@ float stat_exponential(
     return y0 + (y20 - y0) * (num / denom);
 }
 
+float linear(
+    int x,
+    float m,
+    float n
+) {
+    return (m*x)+n;
+}
 
 int getStatMaxHp(int stat_point) {
     switch (instance) {
@@ -97,12 +104,17 @@ int getStatMaxHp(int stat_point) {
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
         case FULL_DMG_PIECEWISE: {
-            const int p = 25;
+            const int p = 40;
             const float y0 = 100.0f;
-            const float yp = 1200.0f;
-            const float y100 = 3500.0f;
-            const float k = 0.13f;
+            const float yp = 50000.0f;
+            const float y100 = 120000.0f;
+            const float k = 0.2f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -144,6 +156,11 @@ int getStatRegen(int stat_point) {
             const float y100 = 80.0f;
             const float k = 0.2f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -187,6 +204,11 @@ int getStatAd(int stat_point) {
             const float k = 0.085f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -209,6 +231,11 @@ int getStatArmor(int stat_point) {
             return (int)roundf(100.0f + stat_point * 17.0f);
         case FULL_DMG_PIECEWISE:
             return (int)roundf(80.0f + stat_point * 7.5f);
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -250,6 +277,11 @@ float getStatArmorPen(int stat_point) {
             const float y100 = 0.85f;
             const float k = 0.085f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -293,6 +325,11 @@ int getStatLethality(int stat_point) {
             const float k = 0.15f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -332,6 +369,11 @@ int getStatAs(int stat_point) {
             const float D = 153.0f;
             const float k = 0.068664f;
             return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -378,6 +420,11 @@ float getStatCrit(int stat_point) {
             const float k = 0.09f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -420,6 +467,11 @@ float getStatCritFactor(int stat_point) {
             const float y100 = 4.2f;
             const float k = 0.085f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return 100.0f + stat_point * 20.0f;
@@ -468,6 +520,11 @@ float getStatBleed(int stat_point) {
             const float k = 0.10f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -510,6 +567,11 @@ int getStatBleedDmg(int stat_point) {
             const float y100 = 0.80f;
             const float k = 0.09f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -554,6 +616,11 @@ int getStatBleedTicks(int stat_point) {
             const float k = 0.085f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -596,6 +663,11 @@ int getStatAp(int stat_point) {
             const float k = 0.085f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -621,6 +693,11 @@ int getStatMr(int stat_point) {
             return (int)roundf(50.0f + stat_point * 12.0f);
         case FULL_DMG_PIECEWISE:
             return (int)roundf(45.0f + stat_point * 6.5f);
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -662,6 +739,11 @@ float getStatMrPen(int stat_point) {
             const float y100 = 0.85f;
             const float k = 0.085f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -707,6 +789,11 @@ int getStatEthereal(int stat_point) {
             const float k = 0.08f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -748,6 +835,11 @@ int getStatAh(int stat_point) {
             const float y100 = 130.0f;
             const float k = 0.1f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -795,6 +887,11 @@ float getStatSmite(int stat_point) {
             const float k = 0.09f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -836,6 +933,11 @@ int getStatCdSmite(int stat_point) {
             const float D = 550.0f;
             const float k = 0.0313f;
             return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -883,6 +985,11 @@ float getStatBlast(int stat_point) {
             const float k = 0.12f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -925,6 +1032,11 @@ int getStatCdBlast(int stat_point) {
             const float k = 0.0300f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -958,8 +1070,8 @@ float getStatHeal(int stat_point) {
         case SUPPORT_LIKE_PIECEWISE: {
             const int p = 25;
             const float y0 = 0.0f;
-            const float yp = 3.5f;
-            const float y100 = 8.0f;
+            const float yp = 6.0f;
+            const float y100 = 13.0f;
             const float k = 0.05f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
@@ -970,6 +1082,11 @@ float getStatHeal(int stat_point) {
             const float y100 = 1.6f;
             const float k = 0.15f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return 100.0f + stat_point * 20.0f;
@@ -1001,9 +1118,9 @@ int getStatCdHeal(int stat_point) {
         }
         case SUPPORT_LIKE_PIECEWISE:  {
             // f(x) = 150 + 450 * exp(-0.038664 * x)
-            const float C = 100.0f;
-            const float D = 370.0f;
-            const float k = 0.065297f;
+            const float C = 80.0f;
+            const float D = 290.0f;
+            const float k = 0.25297f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
         case FULL_DMG_PIECEWISE:  {
@@ -1012,6 +1129,11 @@ int getStatCdHeal(int stat_point) {
             const float D = 450.0f;
             const float k = 0.045297f;
             return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -1059,6 +1181,11 @@ float getStatStun(int stat_point) {
             const float k = 0.10f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1098,6 +1225,11 @@ int getStatCdStun(int stat_point) {
             const float D = 700.0f;
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -1145,6 +1277,11 @@ float getStatAcc(int stat_point) {
             const float k = 0.10f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1189,6 +1326,11 @@ float getStatAccTicks(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k); 
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1230,6 +1372,11 @@ int getStatCdAcc(int stat_point) {
             const float D = 300.0f;
             const float k = 0.038789f;
             return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -1277,6 +1424,11 @@ float getStatSlow(int stat_point) {
             const float k = 0.10f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1321,6 +1473,11 @@ float getStatSlowTicks(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1363,6 +1520,11 @@ int getStatCdSlow(int stat_point) {
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
     }
@@ -1394,11 +1556,11 @@ float getStatShield(int stat_point) {
             return stat_exponential(stat_point, y0, yp);
         }
         case SUPPORT_LIKE_PIECEWISE: {
-            const int p = 25;
+            const int p = 35;
             const float y0 = 0.0f;
             const float yp = 3.5f;
             const float y100 = 8.0f;
-            const float k = 0.13f;
+            const float k = 0.09f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
         case FULL_DMG_PIECEWISE: {
@@ -1408,6 +1570,11 @@ float getStatShield(int stat_point) {
             const float y100 = 1.6f;
             const float k = 0.15f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return 100.0f + stat_point * 20.0f;
@@ -1438,7 +1605,7 @@ float getStatShieldTicks(int stat_point) {
             return stat_exponential(stat_point, y0, yp);
         }
         case SUPPORT_LIKE_PIECEWISE: {
-            const int p = 12;
+            const int p = 20;
             const float y0 = 0.8f;
             const float yp = 2.0f;
             const float y100 = 5.0f;
@@ -1446,12 +1613,17 @@ float getStatShieldTicks(int stat_point) {
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
         case FULL_DMG_PIECEWISE: {
-            const int p = 12;
-            const float y0 = 0.8f;
-            const float yp = 2.0f;
-            const float y100 = 5.0f;
+            const int p = 20;
+            const float y0 = 0.0f;
+            const float yp = 0.7f;
+            const float y100 = 1.0f;
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return 100.0f + stat_point * 20.0f;
@@ -1485,7 +1657,7 @@ int getStatCdShield(int stat_point) {
             // f(x) = 100 + 300 * exp(-0.038664 * x)
             const float C = 100.0f;
             const float D = 300.0f;
-            const float k = 0.038664f;
+            const float k = 0.039664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
         case FULL_DMG_PIECEWISE: {
@@ -1494,6 +1666,11 @@ int getStatCdShield(int stat_point) {
             const float D = 300.0f;
             const float k = 0.038664f;
             return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -1526,7 +1703,7 @@ float getStatMark(int stat_point) {
             return stat_exponential(stat_point, y0, yp);
         }
         case SUPPORT_LIKE_PIECEWISE: {
-            const int p = 12;
+            const int p = 35;
             const float y0 = 0.0f;
             const float yp = 0.85f;
             const float y100 = 1.0f;
@@ -1536,10 +1713,15 @@ float getStatMark(int stat_point) {
         case FULL_DMG_PIECEWISE: {
             const int p = 30;
             const float y0 = 0.0f;
-            const float yp = 0.6f;
-            const float y100 = 1.2f;
-            const float k = 0.10f;
+            const float yp = 0.2f;
+            const float y100 = 0.3f;
+            const float k = 0.15f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return 100.0f + stat_point * 20.0f;
@@ -1585,6 +1767,11 @@ float getStatMarkTicks(int stat_point) {
             const float k = 0.1f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1617,15 +1804,20 @@ int getStatCdMark(int stat_point) {
             // f(x) = 100 + 300 * exp(-0.038664 * x)
             const float C = 100.0f;
             const float D = 300.0f;
-            const float k = 0.038664f;
+            const float k = 0.039664f;
             return (int)roundf(C + D * expf(-k * stat_point));
         }
         case FULL_DMG_PIECEWISE: {
             // f(x) = 100 + 300 * exp(-0.038664 * x)
             const float C = 100.0f;
             const float D = 300.0f;
-            const float k = 0.038664f;
+            const float k = 0.018664f;
             return (int)roundf(C + D * expf(-k * stat_point));
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -1673,6 +1865,11 @@ float getStatVamp(int stat_point) {
             const float k = 0.11f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1719,6 +1916,11 @@ float getStatThorns(int stat_point) {
             const float k = 0.13f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
@@ -1746,11 +1948,11 @@ int getStatAx(int stat_point) {
             return stat_exponential(stat_point, y0, yp);
         }
         case SUPPORT_LIKE_PIECEWISE: {
-            const int p = 20;
+            const int p = 35;
             const float y0 = 0.0f;
             const float yp = 80.0f;
             const float y100 = 200.0f;
-            const float k = 0.05f;
+            const float k = 0.12f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point,p,y0,yp,y100,k)+0.5);
         }
         case FULL_DMG_PIECEWISE: {
@@ -1760,6 +1962,11 @@ int getStatAx(int stat_point) {
             const float y100 = 2000.0f;
             const float k = 0.2f;
             return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
+        }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
         }
         default:
             return (int)roundf(100.0f + stat_point * 20.0f);
@@ -1803,87 +2010,20 @@ float getStatTenacity(int stat_point) {
             const float k = 0.12f;
             return stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k);
         }
+        case LINEAR: {
+            float m = 20.0f;
+            float n = 100.0f;
+            return (int)roundf(linear(stat_point, m, n));
+        }
         default:
             return 100.0f + stat_point * 20.0f;
     }
 }
 
 int getStatAggro(int stat_point) {
-    switch (instance) {
-        case BALANCED: {
-            // f(x) = x
-			return stat_point;
-        }
-        case PIECEWISE: {
-            const int p = 20;
-            const float y0 = 0.0f;
-            const float yp = 170.0f;
-            const float y100 = 1054.0f;
-            const float k = 0.1f;
-            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
-        }
-        case EXPONENTIAL: {
-            const float y0 = 0.0f;
-            const float yp = 0.5f;
-            return stat_exponential(stat_point, y0, yp);
-        }
-        case SUPPORT_LIKE_PIECEWISE: {
-            const int p = 20;
-            const float y0 = 0.0f;
-            const float yp = 170.0f;
-            const float y100 = 1054.0f;
-            const float k = 0.1f;
-            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
-        }
-        case FULL_DMG_PIECEWISE: {
-            const int p = 20;
-            const float y0 = 0.0f;
-            const float yp = 170.0f;
-            const float y100 = 1054.0f;
-            const float k = 0.1f;
-            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
-        }
-        default:
-            return 100.0f + stat_point * 20.0f;
-    }
+    return stat_point;
 }
 
 int getStatFocus(int stat_point) {
-    switch (instance) {
-        case BALANCED: {
-            // f(x) = x
-			return stat_point;
-        }
-        case PIECEWISE: {
-            const int p = 20;
-            const float y0 = 0.0f;
-            const float yp = 170.0f;
-            const float y100 = 1054.0f;
-            const float k = 0.1f;
-            return 2*(int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
-        }
-        case EXPONENTIAL: {
-            const float y0 = 0.0f;
-            const float yp = 0.5f;
-            return stat_exponential(stat_point, y0, yp);
-        }
-        case SUPPORT_LIKE_PIECEWISE: {
-            const int p = 20;
-            const float y0 = 0.0f;
-            const float yp = 300.0f;
-            const float y100 = 1500.0f;
-            const float k = 0.12f;
-            return (int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5f);
-        }
-        case FULL_DMG_PIECEWISE: {
-            const int p = 20;
-            const float y0 = 0.0f;
-            const float yp = 170.0f;
-            const float y100 = 1054.0f;
-            const float k = 0.1f;
-            return 2*(int)std::floor(stat_piecewise_exp_linear(stat_point, p, y0, yp, y100, k) + 0.5);
-        }
-        default:
-            return 100.0f + stat_point * 20.0f;
-    }
+    return stat_point;
 }

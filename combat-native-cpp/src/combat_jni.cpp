@@ -44,7 +44,7 @@ Java_org_evol_RPGNativeBridge_setInstance(
     jclass,
     jint instanceId
 ) {
-    if (instanceId < 0 || instanceId > 2) {
+    if (instanceId < 0 || instanceId > 5) {
         std::cerr << "[JNI] Invalid instance id: "
                   << instanceId << std::endl;
         return;

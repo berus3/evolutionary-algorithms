@@ -29,3 +29,15 @@ replay_pid*
 ./evolver-java/target/
 
 ./evolver-java/native/
+# Java / Maven
+target/
+*.class
+
+# JNI / native
+*.so
+*.dll
+*.dylib
+native/
+
+# logs
+*.log
