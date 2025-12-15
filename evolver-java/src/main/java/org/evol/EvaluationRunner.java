@@ -21,10 +21,10 @@ public class EvaluationRunner {
     private static final int FIGHTS_PER_REFERENCE = 10;
 
     private static final Path REF_PATH =
-            Paths.get("evaluation_popSize_50/reference_tiers.csv");
+            Paths.get("evaluation_popSize_100/reference_tiers.csv");
 
     private static final Path LOG_DIR =
-            Paths.get("evaluation_popSize_50/results");
+            Paths.get("evaluation_popSize_100/results");
 
     public static void main(String[] args) throws Exception {
 
@@ -36,7 +36,7 @@ public class EvaluationRunner {
         for (RPGInstance instance : INSTANCES) {
 
             Path out = LOG_DIR.resolve(
-                    "evaluation_popSize_50_" + instance.name() + ".csv");
+                    "evaluation_popSize_100_" + instance.name() + ".csv");
 
             try (PrintWriter pw = new PrintWriter(Files.newBufferedWriter(out))) {
 
@@ -107,12 +107,12 @@ public class EvaluationRunner {
     }
 
     private static int[] loadBestAeGenome(int seed, RPGInstance inst) throws IOException {
-        Path p = findFile("evaluation_popSize_50", "TOP50", seed, inst);
+        Path p = findFile("evaluation_popSize_100", "TOP100", seed, inst);
 
         try (BufferedReader br = Files.newBufferedReader(p)) {
             br.readLine(); // header
             String line = br.readLine(); // best
-            if (line == null) throw new IllegalStateException("Empty TOP50");
+            if (line == null) throw new IllegalStateException("Empty TOP100");
 
             String[] parts = line.split(",", 4);
             return parseGenome(parts[parts.length - 1]);
@@ -120,34 +120,40 @@ public class EvaluationRunner {
     }
 
     private static int[] loadFinalPopulation(int seed, RPGInstance inst) throws IOException {
-        Path p = findFile("evaluation_popSize_50", "TOP50", seed, inst);
+        Path p = findFile("evaluation_popSize_100", "TOP100", seed, inst);
         return loadGenomesFromCsv(p);
     }
 
     private static int[] loadHallOfFame(int seed, RPGInstance inst) throws IOException {
-        Path p = findFile("evaluation_popSize_50", "HOF", seed, inst);
+        Path p = findFile("evaluation_popSize_100", "HOF", seed, inst);
         return p == null ? new int[0] : loadGenomesFromCsv(p);
     }
 
-    private static double loadBestAeFitness(int seed, RPGInstance inst) throws IOException {
-        Path p = findFile("evaluation_popSize_50", null, seed, inst);
-        double best = Double.POSITIVE_INFINITY;
+    private static double loadBestAeFitness(int seed, RPGInstance inst)
+        throws IOException {
 
-        try (BufferedReader br = Files.newBufferedReader(p)) {
-            String header = br.readLine();
-            String[] h = header.split(",");
-            int fitCol = Arrays.asList(h).indexOf("fitness");
-            if (fitCol < 0) throw new IllegalStateException("fitness column not found");
+    Path p = findFile(
+            "evaluation_popSize_100",
+            "TOP100",
+            seed,
+            inst
+    );
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("#") || line.isBlank()) continue;
-                String[] parts = line.split(",");
-                best = Math.min(best, Double.parseDouble(parts[fitCol]));
-            }
-        }
-        return best;
+    try (BufferedReader br = Files.newBufferedReader(p)) {
+        String header = br.readLine(); // rank,fitness,winrate,genome
+        if (header == null)
+            throw new IllegalStateException("Empty TOP100 file: " + p.getFileName());
+
+        String line = br.readLine(); // rank 1
+        if (line == null)
+            throw new IllegalStateException("No data in TOP100 file: " + p.getFileName());
+
+        String[] parts = line.split(",", 4);
+
+        // parts[1] = fitness
+        return Double.parseDouble(parts[1]);
     }
+}
 
     // =========================================================
     // HELPERS
@@ -172,37 +178,30 @@ public class EvaluationRunner {
     List<int[]> genomes = new ArrayList<>();
 
     try (BufferedReader br = Files.newBufferedReader(p)) {
-        String header = br.readLine();
-        if (header == null)
-            throw new IllegalStateException("Empty CSV: " + p);
-
-        String[] cols = header.split(",");
-        int genomeCol = -1;
-
-        for (int i = 0; i < cols.length; i++) {
-            if (cols[i].equalsIgnoreCase("genome")) {
-                genomeCol = i;
-                break;
-            }
-        }
-
-        if (genomeCol == -1)
-            throw new IllegalStateException(
-                    "CSV has no genome column: " + p.getFileName());
-
+        String header = br.readLine(); // header
         String line;
-        while ((line = br.readLine()) != null) {
-            if (line.isBlank()) continue;
 
-            String[] parts = line.split(",", cols.length);
-            String genomeStr = parts[genomeCol]
+        while ((line = br.readLine()) != null) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("#"))
+                continue;
+
+            // separar SOLO por la última coma
+            int lastComma = line.lastIndexOf(',');
+            if (lastComma < 0)
+                throw new IllegalStateException(
+                        "No comma found in line of " + p.getFileName());
+
+            String genomePart = line.substring(lastComma + 1)
                     .replace("\"", "")
                     .trim();
 
-            String[] genes = genomeStr.split("\\s+");
+            String[] genes = genomePart.split("\\s+");
+
             if (genes.length != RPGProblem.GENOME_SIZE)
                 throw new IllegalStateException(
-                        "Invalid genome size in " + p.getFileName());
+                        "Invalid genome size (" + genes.length +
+                        ") in " + p.getFileName());
 
             int[] g = new int[genes.length];
             for (int i = 0; i < genes.length; i++)
@@ -214,7 +213,6 @@ public class EvaluationRunner {
 
     return flatten(genomes);
 }
-
 
     private static int[] parseGenome(String s) {
         String[] g = s.replace("\"", "").trim().split("\\s+");

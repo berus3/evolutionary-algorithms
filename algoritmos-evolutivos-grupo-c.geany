@@ -27,7 +27,7 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=215
+current_page=221
 FILE_NAME_0=17417;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fcombat_engine.cpp;0;4
 FILE_NAME_1=4601;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fplayer.cpp;0;4
 FILE_NAME_2=538;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fcombat-native-cpp%2Fsrc%2Fteam.cpp;0;4
@@ -154,7 +154,7 @@ FILE_NAME_122=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Fal
 FILE_NAME_123=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fcalibration_popSize%2F_results_inst%3DPIECEWISE_pop%3D50_p0%3D0.05_cross%3D0.25.csv;0;4
 FILE_NAME_124=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fcalibration_popSize%2F_results_inst%3DBALANCED_pop%3D100_p0%3D0.05_cross%3D0.25.csv;0;4
 FILE_NAME_125=104;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fcalibration_popSize%2F_results_inst%3DPIECEWISE_pop%3D100_p0%3D0.05_cross%3D0.25.csv;0;4
-FILE_NAME_126=890;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FEvaluationRunner.java;0;4
+FILE_NAME_126=5555;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FEvaluationRunner.java;0;4
 FILE_NAME_127=468;C++;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fnative%2Forg_evol_RPGNativeBridge.h;0;4
 FILE_NAME_128=5562;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_50%2Ffitness_seed%3D31_pop%3D50_p0%3D0.050_cross%3D0.25_inst%3DFULL_DAMAGE_PIECEWISE_HOF_20251215_1444.csv;0;4
 FILE_NAME_129=6918;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_50%2Ffitness_seed%3D31_pop%3D50_p0%3D0.050_cross%3D0.25_inst%3DSUPPORT_LIKE_PIECEWISE_HOF_20251215_1444.csv;0;4
@@ -172,7 +172,13 @@ FILE_NAME_140=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Fal
 FILE_NAME_141=115;Java;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fevol%2FGridRunner.java;0;4
 FILE_NAME_142=6854;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_seed%3D31_pop%3D100_p0%3D0.050_cross%3D0.25_inst%3DSUPPORT_LIKE_PIECEWISE_HOF_20251215_1745.csv;0;4
 FILE_NAME_143=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Flogs%2Ffitness_seed%3D31_pop%3D100_p0%3D0.050_cross%3D0.25_inst%3DFULL_DAMAGE_PIECEWISE_20251215_1746.csv;0;4
-FILE_NAME_144=6707;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_50%2Freference_tiers.csv;0;4
+FILE_NAME_144=6708;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_50%2Freference_tiers.csv;0;4
+FILE_NAME_145=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_50%2Ffitness_seed%3D31_pop%3D50_p0%3D0.050_cross%3D0.25_inst%3DFULL_DAMAGE_PIECEWISE_20251215_1444.csv;0;4
+FILE_NAME_146=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_100%2Ffitness_seed%3D31_pop%3D100_p0%3D0.050_cross%3D0.25_inst%3DLINEAR_TOP100_20251215_1747.csv;0;4
+FILE_NAME_147=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_50%2Fresults%2Fevaluation_popSize_50_FULL_DAMAGE_PIECEWISE.csv;0;4
+FILE_NAME_148=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_100%2Fresults%2Fevaluation_popSize_100_FULL_DAMAGE_PIECEWISE.csv;0;4
+FILE_NAME_149=998;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_100%2Fresults%2Fevaluation_popSize_100_LINEAR.csv;0;4
+FILE_NAME_150=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fpolizer%2FDesktop%2FFing%2FAE%2Falgoritmos-evolutivos-grupo-c%2Fevolver-java%2Fevaluation_popSize_100%2Fresults%2Fevaluation_popSize_100_SUPPORT_LIKE_PIECEWISE.csv;0;4
 
 [VTE]
 last_dir=/home/polizer/Desktop/Fing/AE/algoritmos-evolutivos-grupo-c/evolver-java
