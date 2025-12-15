@@ -12,4 +12,16 @@ public class RPGNativeBridge {
     public static native void setSeed(int seed);
     
     public static native void setInstance(int instanceId);
+    
+    public static native double[] evaluateReferences(
+            int[] flatReferences,
+            int refCount,
+            int[] flatPopulation,
+            int popCount,
+            int[] flatHallOfFame,
+            int hofCount,
+            int fightsPerRef
+    );
+    
+    
 }

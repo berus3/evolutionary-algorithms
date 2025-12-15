@@ -1,4 +1,0 @@
-configuracion,fitness_promedio,fitness_std,winrate_promedio,winrate_std,n_seeds
-"pop=50,p0=0.050,cross=0.25,inst=BALANCED",0.8815133333333334,0.010058612138904613,1.0,0.0,30
-"pop=50,p0=0.050,cross=0.25,inst=EXPONENTIAL",0.88099,0.015286377753659838,1.0,0.0,30
-"pop=50,p0=0.050,cross=0.25,inst=PIECEWISE",0.82044,0.016826059427628,0.9842966666666667,0.025717087883261634,30

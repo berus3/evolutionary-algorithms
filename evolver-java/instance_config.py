@@ -2,13 +2,13 @@ import csv
 from pathlib import Path
 
 # ===== PARAMETROS =====
-LOG_DIR = Path("calibration_1")
-INST = "BALANCED"
-POP = "50"
-P0 = "0.002"
-CROSS = "0.75"
+LOG_DIR = Path("calibration_popSize")
+INST = "PIECEWISE"
+POP = "100"
+P0 = "0.05"
+CROSS = "0.25"
 
-OUT_FILE = f"results_inst={INST}_pop={POP}_p0={P0}_cross={CROSS}.csv"
+OUT_FILE = f"_results_inst={INST}_pop={POP}_p0={P0}_cross={CROSS}.csv"
 # ======================
 
 def matches_config(name: str) -> bool:

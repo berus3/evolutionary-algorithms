@@ -539,3 +539,136 @@ FightResult bo3_copy(const Team* team1, const Team* team2) {
 }
 
 
+std::vector<double>
+winrate_reference_vs_population_anchor_hof(
+    const std::vector<Team*>& references,
+    const std::vector<Team*>& population,
+    const std::vector<Team*>& anchors,
+    const std::vector<Team*>& hof,
+    int fights_per_ref
+) {
+    const int R = (int)references.size();
+    const int P = (int)population.size();
+    const int A = (int)anchors.size();
+    const int H = (int)hof.size();
+
+    if (R == 0) return {};
+
+    const int k = (P <= 0) ? 0 : std::min(fights_per_ref, P);
+
+    std::vector<int> win_count(R, 0);
+    std::vector<int> games_played(R, 0);
+
+    // TLS
+    omp_set_num_threads(16);
+    const int T = omp_get_max_threads();
+    std::vector<std::vector<int>> win_tls(T, std::vector<int>(R, 0));
+    std::vector<std::vector<int>> games_tls(T, std::vector<int>(R, 0));
+
+    // =========================================================
+    // references vs k random population
+    // =========================================================
+    #pragma omp parallel
+    {
+        const int tid = omp_get_thread_num();
+        auto& win_local   = win_tls[tid];
+        auto& games_local = games_tls[tid];
+
+        std::vector<char> used(P);
+
+        #pragma omp for schedule(static)
+        for (int i = 0; i < R; ++i) {
+
+            if (k == 0) continue;
+
+            std::fill(used.begin(), used.end(), 0);
+            int picked = 0;
+            int draw   = 0;
+
+            while (picked < k) {
+
+                uint64_t ctx = rng_ctx(
+                    GLOBAL_SEED,
+                    (uint64_t)i,
+                    (uint64_t)draw++,
+                    rng_tag::MATCHUP_RAND
+                );
+
+                int j = rng::randint(ctx, 0, P - 1);
+                if (used[j]) continue;
+
+                used[j] = 1;
+                picked++;
+
+                FightResult r = bo3_copy(references[i], population[j]);
+
+                if (r == TEAM1_WIN) win_local[i]++;
+                games_local[i]++;
+            }
+        }
+    }
+
+    // =========================================================
+    // references vs anchors
+    // =========================================================
+    #pragma omp parallel
+    {
+        const int tid = omp_get_thread_num();
+        auto& win_local   = win_tls[tid];
+        auto& games_local = games_tls[tid];
+
+        #pragma omp for schedule(static)
+        for (int i = 0; i < R; ++i) {
+            for (int a = 0; a < A; ++a) {
+                FightResult r = bo3_copy(references[i], anchors[a]);
+                if (r == TEAM1_WIN) win_local[i]++;
+                games_local[i]++;
+            }
+        }
+    }
+
+    // =========================================================
+    // references vs Hall of Fame
+    // =========================================================
+    #pragma omp parallel
+    {
+        const int tid = omp_get_thread_num();
+        auto& win_local   = win_tls[tid];
+        auto& games_local = games_tls[tid];
+
+        #pragma omp for schedule(static)
+        for (int i = 0; i < R; ++i) {
+            for (int h = 0; h < H; ++h) {
+                FightResult r = bo3_copy(references[i], hof[h]);
+                if (r == TEAM1_WIN) win_local[i]++;
+                games_local[i]++;
+            }
+        }
+    }
+
+    // =========================================================
+    // reduction
+    // =========================================================
+    for (int t = 0; t < T; ++t) {
+        for (int i = 0; i < R; ++i) {
+            win_count[i]    += win_tls[t][i];
+            games_played[i] += games_tls[t][i];
+        }
+    }
+
+    // =========================================================
+    // winrate final (solo referencias)
+    // =========================================================
+    std::vector<double> win_rate(R, 0.0);
+    for (int i = 0; i < R; ++i) {
+        if (games_played[i] > 0) {
+            win_rate[i] =
+                (double)win_count[i] / (double)games_played[i];
+        }
+    }
+
+    return win_rate;
+}
+
+
+

@@ -133,3 +133,95 @@ Java_org_evol_RPGNativeBridge_evaluatePopulation(
     for (Team* t : teams) delete t;
     return out;
 }
+
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_org_evol_RPGNativeBridge_evaluateReferences(
+    JNIEnv* env,
+    jclass,
+    jintArray flatReferences,
+    jint refCount,
+    jintArray flatPopulation,
+    jint popCount,
+    jintArray flatHof,
+    jint hofCount,
+    jint fightsPerRef
+) {
+    if (!flatReferences || !flatPopulation) {
+        throwIAE(env, "null array");
+        return nullptr;
+    }
+
+    initAnchorsOnce();
+
+    // -----------------------------
+    // Sanity checks
+    // -----------------------------
+    if (env->GetArrayLength(flatReferences) != refCount * GENOME_SIZE ||
+        env->GetArrayLength(flatPopulation) != popCount * GENOME_SIZE ||
+        (hofCount > 0 &&
+         env->GetArrayLength(flatHof) != hofCount * GENOME_SIZE)) {
+        throwIAE(env, "array length mismatch");
+        return nullptr;
+    }
+
+    jint* refData = env->GetIntArrayElements(flatReferences, nullptr);
+    jint* popData = env->GetIntArrayElements(flatPopulation, nullptr);
+    jint* hofData = (hofCount > 0)
+        ? env->GetIntArrayElements(flatHof, nullptr)
+        : nullptr;
+
+    if (!refData || !popData || (hofCount > 0 && !hofData)) {
+        throwISE(env, "GetIntArrayElements failed");
+        return nullptr;
+    }
+
+    // -----------------------------
+    // Build teams
+    // -----------------------------
+    std::vector<Team*> refs, pop, hof;
+    refs.reserve(refCount);
+    pop.reserve(popCount);
+    hof.reserve(hofCount);
+
+    for (int i = 0; i < refCount; i++)
+        refs.push_back(buildTeamFromGenome(
+            refData + i * GENOME_SIZE, 20000 + i));
+
+    for (int i = 0; i < popCount; i++)
+        pop.push_back(buildTeamFromGenome(
+            popData + i * GENOME_SIZE, i));
+
+    for (int i = 0; i < hofCount; i++)
+        hof.push_back(buildTeamFromGenome(
+            hofData + i * GENOME_SIZE, 30000 + i));
+
+    // -----------------------------
+    // Core evaluation
+    // -----------------------------
+    std::vector<double> wr =
+        winrate_reference_vs_population_anchor_hof(
+            refs, pop, g_anchors, hof, fightsPerRef);
+
+    // -----------------------------
+    // Cleanup
+    // -----------------------------
+    env->ReleaseIntArrayElements(flatReferences, refData, 0);
+    env->ReleaseIntArrayElements(flatPopulation, popData, 0);
+    if (hofData)
+        env->ReleaseIntArrayElements(flatHof, hofData, 0);
+
+    for (Team* t : refs) delete t;
+    for (Team* t : pop)  delete t;
+    for (Team* t : hof)  delete t;
+
+    if ((int)wr.size() != refCount) {
+        throwISE(env, "winrate size mismatch");
+        return nullptr;
+    }
+
+    jdoubleArray out = env->NewDoubleArray(refCount);
+    env->SetDoubleArrayRegion(out, 0, refCount, wr.data());
+    return out;
+}
+

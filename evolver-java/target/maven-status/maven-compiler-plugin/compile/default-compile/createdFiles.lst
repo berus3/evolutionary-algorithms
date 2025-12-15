@@ -12,4 +12,5 @@ org/evol/GridRunner.class
 org/evol/FlipMutation.class
 org/evol/RPGNativeBridge.class
 org/evol/RPGInstance.class
+org/evol/EvaluationRunner.class
 org/evol/Benchmark.class

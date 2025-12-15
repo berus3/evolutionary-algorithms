@@ -61,7 +61,7 @@ public class MainEA {
         // ------------------------------------------------------------
         final int popSize = cfg.popSize;
         final int generations = 100;
-        final int elitismCount = 4;
+        final int elitismCount = 2;
 
         // mutation decay
         final double p0 = cfg.p0;
@@ -278,7 +278,7 @@ public class MainEA {
         double runtimeSeconds =
                 (endTimeNs - startTimeNs) / 1_000_000_000.0;
 
-        logger.writeTopIndividuals(population, 10);
+        logger.writeTopIndividuals(population, popSize);
         logger.writeHallOfFame(hof);
         logger.writeRuntime(runtimeSeconds);
         logger.close();

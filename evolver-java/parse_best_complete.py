@@ -3,7 +3,7 @@ from pathlib import Path
 from collections import defaultdict
 import statistics
 
-LOG_DIR = Path("calibration_1")   # ajustá si hace falta
+LOG_DIR = Path("calibration_CF")   # ajustá si hace falta
 OUT_FILE = "top10_best_stats_by_config.csv"
 
 def parse_filename(name: str):
