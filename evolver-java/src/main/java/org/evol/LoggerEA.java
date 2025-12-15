@@ -144,32 +144,33 @@ public class LoggerEA {
     // Hall of Fame
     // ===============================
     public void writeHallOfFame(HallOfFame hof) {
-        String out = basePath.replace(".csv", "_HOF_" + timestamp + ".csv");
+    String out = basePath.replace(".csv", "_HOF_" + timestamp + ".csv");
 
-        try (FileWriter fw = new FileWriter(out)) {
-            fw.write("rank,fitness,winrate,genome\n");
+    try (FileWriter fw = new FileWriter(out)) {
+        fw.write("rank,fitness,winrate,genome\n");
 
-            hof.getEntries().stream()
-                    .sorted((a, b) -> Double.compare(b.fitness, a.fitness))
-                    .forEachOrdered(e -> {
-                        try {
-                            double wr = (double) e.sol.attributes()
-                                    .getOrDefault("winrate", Double.NaN);
+        var entries = hof.getEntries().stream()
+                .sorted(Comparator.comparingDouble(e -> e.fitness)) // menor es mejor
+                .toList();
 
-                            fw.write(
-                                    fmt(e.fitness) + "," +
-                                    fmt(wr) + "," +
-                                    "\"" + serializeGenome(e.sol) + "\"\n"
-                            );
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    });
+        int rank = 1;
+        for (var e : entries) {
+            double wr = (double) e.sol.attributes()
+                    .getOrDefault("winrate", Double.NaN);
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            fw.write(
+                    rank + "," +
+                    fmt(e.fitness) + "," +
+                    fmt(wr) + "," +
+                    "\"" + serializeGenome(e.sol) + "\"\n"
+            );
+            rank++;
         }
+
+    } catch (IOException e) {
+        throw new RuntimeException(e);
     }
+}
 
     public void writeRuntime(double seconds) {
         try {
