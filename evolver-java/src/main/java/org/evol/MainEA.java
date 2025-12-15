@@ -295,7 +295,7 @@ public class MainEA {
                 0.02,
                 0.95,
                 0.75,
-                RPGInstance.PIECEWISE
+                RPGInstance.SUPPORT_LIKE_PIECEWISE
         );
         run(cfg);
     }
