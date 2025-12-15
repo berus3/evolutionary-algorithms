@@ -28,7 +28,7 @@ public class RunConfig {
         this.instance = instance;
     }
 
-    /** Identificador único para logs */
+    /** Unique identifier for logging */
     public String tag() {
         return String.format(
                 "seed=%d_pop=%d_p0=%.3f_cross=%.2f_inst=%s",

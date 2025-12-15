@@ -79,9 +79,7 @@ public class EvaluationRunner {
         }
     }
 
-    // =========================================================
     // LOADERS
-    // =========================================================
 
     private static int[] loadReferenceGenomes() throws IOException {
         List<int[]> genomes = new ArrayList<>();
@@ -155,9 +153,7 @@ public class EvaluationRunner {
     }
 }
 
-    // =========================================================
     // HELPERS
-    // =========================================================
 
     private static Path findFile(String dir, String tag, int seed, RPGInstance inst)
             throws IOException {
@@ -186,7 +182,7 @@ public class EvaluationRunner {
             if (line.isEmpty() || line.startsWith("#"))
                 continue;
 
-            // separar SOLO por la última coma
+            // separate ONLY using last comma
             int lastComma = line.lastIndexOf(',');
             if (lastComma < 0)
                 throw new IllegalStateException(

@@ -7,7 +7,7 @@ Player::Player(int id) {
     this->_stat_points = new StatPoints();
     this->_dyn_stats = new DynamicStats();
     _randomize_stats();
-    // _init_player();
+    // init_player();
 }
 
 
@@ -15,7 +15,7 @@ Player::Player() {
     this->_player_id = 0; 
     this->_is_alive = true;
     
-    // _init_player();    
+    // init_player();    
 }
 
 Player::Player(const Player& o) {
@@ -124,7 +124,7 @@ int Player::_apply_crit(int damage) {
 }
 
 int Player::_reduce_ad(Player* target, int damage_output) {
-	int total_armor = getStatArmor(target->getStatPoints()->armor); //armor base
+	int total_armor = getStatArmor(target->getStatPoints()->armor); //base armor
 	
 	if (target->getDynStats()->end_shield > 0)
 		total_armor += target->getDynStats()->shield_resistance;
@@ -132,14 +132,14 @@ int Player::_reduce_ad(Player* target, int damage_output) {
 	if (target->getDynStats()->end_mark > 0)
 		total_armor -= target->getDynStats()->mark_resistance;
 	
-	total_armor = (int)roundf(total_armor * (1.0f - getStatArmorPen(_stat_points->armor_pen))) - getStatLethality(_stat_points->lethality); //aplicar armor-pen y lethality
+	total_armor = (int)roundf(total_armor * (1.0f - getStatArmorPen(_stat_points->armor_pen))) - getStatLethality(_stat_points->lethality); //apply armor-pen & lethality
 		
 	float reduction = 1.0f - (100.0f / (100.0f + total_armor)); //(1-(100/(100+armor)))
 	return (int)roundf(damage_output * reduction);
 }
 
 int Player::_reduce_ap(Player* target, int damage_output) {
-	int total_mr = getStatMr(target->getStatPoints()->mr); //mr base
+	int total_mr = getStatMr(target->getStatPoints()->mr); // base mr
 	
 	if (target->getDynStats()->end_shield > 0)
 		total_mr += target->getDynStats()->shield_resistance;
@@ -147,7 +147,7 @@ int Player::_reduce_ap(Player* target, int damage_output) {
 	if (target->getDynStats()->end_mark > 0)
 		total_mr -= target->getDynStats()->mark_resistance;
 	
-	total_mr = (int)roundf(total_mr * (1 - getStatMrPen(_stat_points->mr_pen))) - getStatEthereal(_stat_points->ethereal); //aplicar mr-pen y ethereal
+	total_mr = (int)roundf(total_mr * (1 - getStatMrPen(_stat_points->mr_pen))) - getStatEthereal(_stat_points->ethereal); //apply mr-pen & ethereal
 		
 	float reduction = 1.0f - (100.0f / (100.0f + total_mr)); //(1-(100/(100+armor)))
 	return (int)roundf(damage_output * reduction);
@@ -411,18 +411,18 @@ Player* Player::_select_attack_target(Team* enemies) {
         }
     }
     if (alive_enemies.empty())
-        return nullptr; // o lo que corresponda
+        return nullptr;
     size_t n = alive_enemies.size();
     std::vector<int> reduced_hp(n);
     int denom = 0;
-    for (size_t i = 0; i < n; i++) { // calcular hp reducida
+    for (size_t i = 0; i < n; i++) { // calculate reduced hp
         int hp = alive_enemies[i]->getDynStats()->hp;
         int red = _reduce_ad(alive_enemies[i], hp);
         reduced_hp[i] = red;
         denom += red;
     }
     if (denom == 0)
-        denom = 1; // evitar división por cero
+        denom = 1;
     std::vector<float> weights(n);
     for (size_t i = 0; i < n; i++) {
         float ratio = reduced_hp[i] / float(denom);
@@ -466,7 +466,7 @@ Player* Player::_select_slow_target(Team* enemies) {
         denom += enemy_utility;
     }
     if (denom == 0)
-        denom = 1; // evitar división entre cero
+        denom = 1;
     std::vector<float> weights(n);
     for (size_t i = 0; i < n; i++) {
         float ratio = utility[i] / float(denom);
@@ -507,7 +507,7 @@ Player* Player::_select_acc_target(Team* allies) {
         denom += ally_utility;
     }
     if (denom == 0)
-        denom = 1; // evitar división entre cero
+        denom = 1;
     std::vector<float> weights(n);
     for (size_t i = 0; i < n; i++) {
         float ratio = utility[i] / float(denom);
@@ -533,18 +533,18 @@ Player* Player::_select_smite_target(Team* enemies) {
         }
     }
     if (alive_enemies.empty())
-        return nullptr; // o lo que corresponda
+        return nullptr;
     size_t n = alive_enemies.size();
     std::vector<int> reduced_hp(n);
     int denom = 0;
-    for (size_t i = 0; i < n; i++) { // calcular hp reducida
+    for (size_t i = 0; i < n; i++) { // calculate reduced hp
         int hp = alive_enemies[i]->getDynStats()->hp;
         int red = _reduce_ap(alive_enemies[i], hp);
         reduced_hp[i] = red;
         denom += red;
     }
     if (denom == 0)
-        denom = 1; // evitar división por cero
+        denom = 1; // avoid division by zero
     std::vector<float> weights(n);
     for (size_t i = 0; i < n; i++) {
         float ratio = reduced_hp[i] / float(denom);
@@ -579,7 +579,7 @@ Player* Player::_select_heal_target(Team* allies) {
 	for (size_t i = 0; i < n; ++i) {
 		float hp    = static_cast<float>(alive_allies[i]->getDynStats()->hp);
 		float maxhp = static_cast<float>(getStatMaxHp(alive_allies[i]->getStatPoints()->max_hp));
-		float ally_frailty = (maxhp > 0.0f) ? (hp / maxhp) : 1.0f; // 1 = full, 0 = muerto
+		float ally_frailty = (maxhp > 0.0f) ? (hp / maxhp) : 1.0f; // 1 = full, 0 = dead
 		frailty[i] = ally_frailty;
 		denom += ally_frailty;
 	}
@@ -627,7 +627,7 @@ Player* Player::_select_stun_target(Team* enemies) {
         denom += enemy_utility;
     }
     if (denom == 0)
-        denom = 1; // evitar división entre cero
+        denom = 1;
     std::vector<float> weights(n);
     for (size_t i = 0; i < n; i++) {
         float ratio = utility[i] / float(denom);
@@ -661,7 +661,7 @@ Player* Player::_select_shield_target(Team* allies) {
 	for (size_t i = 0; i < n; ++i) {
 		float hp    = static_cast<float>(alive_allies[i]->getDynStats()->hp);
 		float maxhp = static_cast<float>(getStatMaxHp(alive_allies[i]->getStatPoints()->max_hp));
-		float ally_frailty = (maxhp > 0.0f) ? (hp / maxhp) : 1.0f; // 1 = full, 0 = muerto
+		float ally_frailty = (maxhp > 0.0f) ? (hp / maxhp) : 1.0f; // 1 = full, 0 = dead
 		frailty[i] = ally_frailty;
 		denom += ally_frailty;
 	}
@@ -701,7 +701,7 @@ Player* Player::_select_mark_target(Team* enemies) {
 	for (size_t i = 0; i < n; ++i) {
 		float hp    = static_cast<float>(alive_enemies[i]->getDynStats()->hp);
 		float maxhp = static_cast<float>(getStatMaxHp(alive_enemies[i]->getStatPoints()->max_hp));
-		float enemy_frailty = (maxhp > 0.0f) ? (hp / maxhp) : 1.0f; // 1 = full, 0 = muerto
+		float enemy_frailty = (maxhp > 0.0f) ? (hp / maxhp) : 1.0f; // 1 = full, 0 = dead
 		frailty[i] = enemy_frailty;
 		denom += enemy_frailty;
 	}
@@ -850,11 +850,10 @@ void Player::print() {
     std::cout << "shield_resistance: " <<_dyn_stats->shield_resistance << "\n";
     std::cout << "mark_resistance: " <<_dyn_stats->mark_resistance << "\n";
     std::cout << "armor: " << getStatArmor(_stat_points->armor) << "\n";
-    std::cout << "armor_pen: " << getStatArmorPen(_stat_points->armor_pen) << "\n";
 }
 
 
-void Player::_init_player() {
+void Player::init_player() {
     this->_is_alive = true;
     this->_dyn_stats->tick = 0;
     
@@ -892,5 +891,4 @@ void Player::_init_player() {
     this->_dyn_stats->track_damage_received = 0;
     this->_dyn_stats->track_hp_raw_healed = 0;
     this->_dyn_stats->track_healed_this_tick = false;
-    //TODO agregar el resto
 }

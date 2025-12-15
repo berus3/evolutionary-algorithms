@@ -11,7 +11,7 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
 
     // epistasis definitions
 
-    // Grupos epistáticos SIMÉTRICOS (building blocks)
+    // simmetric epistatic groups (building blocks)
     private static final int[][] EPISTATIC_GROUPS = {
             {7, 8},              // crit, crit_factor
             {9, 10, 11},         // bleed, bleed_dmg, bleed_ticks
@@ -33,8 +33,8 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
    
     };
 
-    // Dependencias DIRIGIDAS (asimétricas)
-    // Formato: { stat_dependiente, soporte1, soporte2, ... }
+    // Directed dependencies (asymmectric)
+    // Format: { stat_dependiente, soporte1, soporte2, ... }
     private static final int[][] DIRECTED_DEPENDENCIES = {
             {10, 9},      // bleed_dmg -> bleed
             {11, 9},     // bleed_ticks -> bleed
@@ -109,13 +109,13 @@ public class FlipMutation implements MutationOperator<IntegerSolution> {
             int player = gene / RPGProblem.DECISIONS_PER_PLAYER;
             int base = player * RPGProblem.DECISIONS_PER_PLAYER;
 
-            // 1) Epistasis simétrica (building blocks)
+            // symmetric epistasis (building blocks)
             int[] group = findEpistaticGroup(newStat);
             if (group != null) {
                 reinforce(solution, base, group, P_GROUP_REINFORCE);
             }
 
-            // 2) Epistasis dirigida (dependencias)
+            // directed epistasis (dependencies)
             int[] deps = findDirectedDependencies(newStat);
             if (deps != null) {
                 reinforce(solution, base, deps, P_DEP_REINFORCE);

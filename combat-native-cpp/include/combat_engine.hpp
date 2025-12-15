@@ -23,13 +23,11 @@ void print_battlefield(Team* team1, Team* team2);
 
 void chooseInstance(Instance i);
 
-//std::vector<double> winrate(std::vector<Team*> teams);
-//std::vector<double> winrate_random_5(std::vector<Team*> teams, int fights_per_team);
-//std::vector<double> winrate_anchor(const std::vector<Team*>& teams, const std::vector<Team*>& anchors);
 std::vector<double> winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*>& anchors, const std::vector<Team*>& hof, int fights_per_team = 5); // paralellize this
 FightResult bo3(Team* team1, Team* team2);
 FightResult bo3_copy(const Team* team1, const Team* team2);
 std::vector<double>winrate_reference_vs_population_anchor_hof(const std::vector<Team*>& references,const std::vector<Team*>& population,const std::vector<Team*>& anchors,const std::vector<Team*>& hof,int fights_per_ref);
+
 // Returns true if the fight has ended
 bool step(Team* team1, Team* team2);
 

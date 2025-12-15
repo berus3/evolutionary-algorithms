@@ -5,7 +5,7 @@
 #include "team.hpp"
 #include "player.hpp"
 
-// imprimir player (esto está bien dejarlo)
+// print player (esto está bien dejarlo)
 static void printPlayerStats(Player* p) {
     StatPoints* sp = p->getStatPoints();
     int* arr = reinterpret_cast<int*>(sp);

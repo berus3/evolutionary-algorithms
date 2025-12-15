@@ -12,7 +12,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
     private static final boolean DEBUG =
             Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
 
-    // Ventana local para similitud
+    // Local window for similarity
     private static final int SIM_WINDOW = 10;
 
     public double lambdaSimilarity;
@@ -35,9 +35,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
         final int popSize = population.size();
         final int genomeSize = RPGProblem.GENOME_SIZE;
 
-        /* =========================================================
-         * 1) Flatten population
-         * ========================================================= */
+        // flatten population
         int[] flat = new int[popSize * genomeSize];
 
         for (int p = 0; p < popSize; p++) {
@@ -54,9 +52,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
             }
         }
 
-        /* =========================================================
-         * 2) JNI evaluation → winrates
-         * ========================================================= */
+        // JNI evaluation -> winrates
         double[] winrates = RPGNativeBridge.evaluatePopulation(flat, popSize);
         if (winrates == null || winrates.length != popSize) {
             throw new IllegalStateException("JNI returned invalid winrates");
@@ -70,9 +66,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
             System.out.println();
         }
 
-        /* =========================================================
-         * 3) Buckets for cosine similarity
-         * ========================================================= */
+        // buckets for cosine similarity
         int[][] buckets = new int[popSize][RPGProblem.STATS_PER_PLAYER];
 
         for (int i = 0; i < popSize; i++) {
@@ -85,18 +79,14 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
             }
         }
 
-        /* =========================================================
-         * 4) Orden por winrate (solo para vecindad)
-         * ========================================================= */
+        // order by winrate (just for neighbours)
         int[] orderByWR = IntStream.range(0, popSize)
                 .boxed()
                 .sorted(Comparator.comparingDouble(i -> winrates[i]))
                 .mapToInt(i -> i)
                 .toArray();
 
-        /* =========================================================
-         * 5) Similaridad LOCAL PARA TODOS
-         * ========================================================= */
+        // local similarity for EVERYBODY
         double[] similarity = new double[popSize];
 
         for (int pos = 0; pos < popSize; pos++) {
@@ -120,9 +110,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
             similarity[i] = (cnt == 0) ? 0.0 : sum / cnt;
         }
 
-        /* =========================================================
-         * 6) Fitness FINAL = winrate − λ·similarity  (PARA TODOS)
-         * ========================================================= */
+        // final fitness = winrate − λ·similarity  (FOR EVERYBODY)
         double minWR = Double.POSITIVE_INFINITY;
         double maxWR = Double.NEGATIVE_INFINITY;
 
@@ -153,9 +141,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
         return population;
     }
 
-    /* =========================================================
-     * Cosine similarity
-     * ========================================================= */
+    // cosine similarity
     private static double cosineSimilarity(int[] a, int[] b) {
         long dot = 0, na = 0, nb = 0;
 
@@ -171,6 +157,6 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
 
     @Override
     public void shutdown() {
-        // nothing
+        // do nothing
     }
 }

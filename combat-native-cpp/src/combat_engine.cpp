@@ -5,7 +5,10 @@
 #include <omp.h>
 #include <algorithm>
 
+
 extern Instance instance;
+bool DEBUG = false;
+
 std::string hpBar(int hp, int maxHp, int width = 20) {
     float ratio = (maxHp > 0) ? (float)hp / maxHp : 0.0f;
     int filled = (int)(ratio * width);
@@ -42,14 +45,14 @@ std::array<std::pair<std::string, int>, 3> top3Stats(const StatPoints* sp) {
 }
 
 
+// Clear screen
 void print_battlefield(Team* team1, Team* team2) {
-    // Clear screen
     std::cout << "\033[2J\033[H";
 
     const int COL1  = 26;
     const int COL2  = 24; // HP bar
-    const int COLE  = 30; // efectos
-    const int COL3  = 6;  // estado
+    const int COLE  = 30; // effects
+    const int COL3  = 6;  // state
     const int COL4  = 6;  // lastAttacked
     const int COL5  = 18; // top stat 1
     const int COL6  = 18; // top stat 2
@@ -61,7 +64,7 @@ void print_battlefield(Team* team1, Team* team2) {
     const char* RED          = "\033[31m";
     const char* GREEN        = "\033[92m";
     const char* YELLOW       = "\033[93m";
-    const char* LIGHT_GRAY   = "\033[37m";  // o "\033[90m" si querés más oscuro
+    const char* LIGHT_GRAY   = "\033[37m";
     const char* LIGHT_PURPLE = "\033[95m";
     const char* RESET        = "\033[0m";
 
@@ -80,7 +83,7 @@ void print_battlefield(Team* team1, Team* team2) {
             std::string bar   = hpBar(hp, maxHp);
             std::string state = p->isAlive() ? "Alive" : "Dead";
 
-            // Col1: etiqueta jugador + HP
+            // Col1: player + HP
             std::ostringstream col1;
             col1 << "Player " << p->getId() << "  HP " << hp << "/" << maxHp;
 
@@ -101,7 +104,7 @@ void print_battlefield(Team* team1, Team* team2) {
             tr << "Taken=" << ds->track_damage_received;
             th << "Heal="  << ds->track_hp_raw_healed;
 
-            // Columna de efectos (texto)
+            // Effects column
             std::ostringstream effects;
             bool firstEff = true;
             auto addEff = [&](const std::string& s) {
@@ -119,19 +122,19 @@ void print_battlefield(Team* team1, Team* team2) {
             if (ds->end_slow > 0)
                 addEff("SLOW");
 
-            // ¿Fue atacado este tick?
+            // Was attacked in this tick??
             bool wasAttacked = false;
             for (int j = 0; j < 5; j++) {
                 if (team1->getPlayer(j)->lastAttacked == p->getId()) wasAttacked = true;
                 if (team2->getPlayer(j)->lastAttacked == p->getId()) wasAttacked = true;
             }
 
-            // Padding del HP bar
+            // HP bar padding
             std::ostringstream pad;
             pad << std::left << std::setw(COL2) << bar;
             std::string paddedBar = pad.str();
 
-            // Elegir color por prioridad:
+            // Choose color by priority:
             // 1) STUN > 2) HEAL THIS TICK > 3) ACC > 4) SLOW > 5) WAS ATTACKED
             const char* color = nullptr;
             if (ds->end_stun > 0) {
@@ -152,7 +155,7 @@ void print_battlefield(Team* team1, Team* team2) {
             else
                 coloredBar = paddedBar;
 
-            // Output final de la fila
+            // Output EOL
             std::cout
                 << std::left << std::setw(COL1)  << col1.str()
                 << coloredBar
@@ -189,137 +192,12 @@ bool step(Team* team1, Team* team2) {
     team1->getPlayer(4)->act(team1, team2);
     team2->getPlayer(4)->act(team2, team1);
 
-	// print_battlefield(team1, team2);
+    if (DEBUG)
+	    print_battlefield(team1, team2);
 	return((team1->getPlayer(0)->isAlive() || team1->getPlayer(1)->isAlive() || team1->getPlayer(2)->isAlive() || team1->getPlayer(3)->isAlive() || team1->getPlayer(4)->isAlive()) 
 		&& (team2->getPlayer(0)->isAlive() || team2->getPlayer(1)->isAlive() || team2->getPlayer(2)->isAlive() || team2->getPlayer(3)->isAlive() || team2->getPlayer(4)->isAlive()));
 }
-/*
-std::vector<double> winrate(std::vector<Team*> teams) {
-    std::vector<int> win_count = std::vector<int>();
-    for (size_t i = 0; i < teams.size(); i++) {
-        win_count.push_back(0);
-    }
-    size_t vector_size = teams.size();
-    for (size_t i = 0; i < vector_size; i++) {
-        Team* team1 = teams[i];
-        for (size_t j = i + 1; j < vector_size; j++) {
-            Team* team2 = teams[j];
-            FightResult result = bo3(team1, team2);
-            if (result == TEAM1_WIN) {
-                win_count[i]++;
-            } else {
-                win_count[j]++;
-            }
-        }
-    }
-    std::vector<double> win_rate = std::vector<double>();
-    for (size_t i = 0; i < vector_size; i++) {
-        double wr = static_cast<double>(win_count[i]) / static_cast<double>(vector_size - 1);
-        win_rate.push_back(wr);
-    }
-    return win_rate;
-}
 
-
-std::vector<double> winrate_random_5(std::vector<Team*> teams, int fights_per_team = 5) {
-    const size_t n = teams.size();
-    std::vector<int> win_count(n, 0);
-    std::vector<int> games_played(n, 0);
-
-    if (n <= 1) {
-        return std::vector<double>(n, 0.0);
-    }
-
-    const int k = std::min<int>(fights_per_team, static_cast<int>(n - 1));
-
-    for (size_t i = 0; i < n; ++i) {
-        std::unordered_set<size_t> chosen;
-        chosen.reserve(static_cast<size_t>(k) * 2);
-
-        while (static_cast<int>(chosen.size()) < k) {
-            size_t j = static_cast<size_t>(rng::randint(0, static_cast<int>(n - 1)));
-            if (j == i) continue;
-            if (!chosen.insert(j).second) continue; // ya elegido
-
-            Team* team1 = teams[i];
-            Team* team2 = teams[j];
-
-            FightResult result = bo3(team1, team2);
-
-            // TEAM1 == team1 (teams[i])
-            if (result == TEAM1_WIN) {
-                win_count[i]++;
-            } else {
-                win_count[j]++;
-            }
-
-            games_played[i]++;
-            games_played[j]++;
-        }
-    }
-
-    std::vector<double> win_rate;
-    win_rate.reserve(n);
-    for (size_t i = 0; i < n; ++i) {
-        double wr = (games_played[i] == 0)
-            ? 0.0
-            : static_cast<double>(win_count[i]) / static_cast<double>(games_played[i]);
-        win_rate.push_back(wr);
-    }
-    return win_rate;
-}
-
-
-
-
-///
-
-
-// Igual que winrate(...), pero además cada team juega contra TODOS los anchors.
-std::vector<double> winrate_anchor(const std::vector<Team*>& teams,
-                                   const std::vector<Team*>& anchors) {
-    const size_t n = teams.size();
-    const size_t a = anchors.size();
-
-    std::vector<int> win_count(n, 0);
-
-    // 1) Round-robin dentro de la población (igual que tu winrate)
-    for (size_t i = 0; i < n; i++) {
-        Team* team1 = teams[i];
-        for (size_t j = i + 1; j < n; j++) {
-            Team* team2 = teams[j];
-            FightResult result = bo3(team1, team2);
-            if (result == TEAM1_WIN) win_count[i]++;
-            else                     win_count[j]++;
-        }
-    }
-
-    // 2) Cada team vs todos los anchors
-    for (size_t i = 0; i < n; i++) {
-        Team* team = teams[i];
-        for (size_t k = 0; k < a; k++) {
-            FightResult result = bo3(team, anchors[k]); // TEAM1 == team
-            if (result == TEAM1_WIN) win_count[i]++;
-        }
-    }
-
-    // 3) Winrate: total de games jugados por team = (n-1) + a
-    std::vector<double> win_rate;
-    win_rate.reserve(n);
-
-    const double denom = (n == 0) ? 0.0 : (double)((n > 0 ? (n - 1) : 0) + a);
-
-    for (size_t i = 0; i < n; i++) {
-        double wr = (denom == 0.0) ? 0.0 : (double)win_count[i] / denom;
-        win_rate.push_back(wr);
-    }
-
-    return win_rate;
-}
-
-*/
-// Igual que winrate_random_5(...), pero además cada team juega contra TODOS los anchors.
-// TODO: parallelize
 std::vector<double> winrate_anchor_random_k(const std::vector<Team*>& teams, const std::vector<Team*>& anchors, const std::vector<Team*>& hof, int fights_per_team)
 {
     const int n = (int)teams.size();
@@ -346,7 +224,7 @@ std::vector<double> winrate_anchor_random_k(const std::vector<Team*>& teams, con
         auto& win_local   = win_tls[tid];
         auto& games_local = games_tls[tid];
 
-        std::vector<char> used(n); // bitset local reutilizable
+        std::vector<char> used(n); // bitset local reusable
 
         #pragma omp for schedule(static)
         for (int i = 0; i < n; ++i) {
@@ -496,17 +374,17 @@ FightResult fight(Team* team1, Team* team2) {
     bool end = false;
     int it = 0;
     for (int i = 0; i < 5; i++) {
-        team1->getPlayer(i)->_init_player();
-        team2->getPlayer(i)->_init_player();
+        team1->getPlayer(i)->init_player();
+        team2->getPlayer(i)->init_player();
     }
     float fire_circle_dmg = 0.0f;
     do {
         end = !step(team1, team2);
-        if (++it % 20000 == 0) {
+        if (++it % 20000 == 0) { // incresae max HP damage by 5% every 20k iterations
             fire_circle_dmg = fire_circle_dmg + 0.05f;
         }
         if (it % 100 == 0) {
-            fire_circle(team1, team2, fire_circle_dmg); // 5% max HP true damage every 20k iterations
+            fire_circle(team1, team2, fire_circle_dmg); // 5% max HP true damage every 100 iterations
         }
         bool team1_alive = team1->getPlayer(0)->isAlive() || team1->getPlayer(1)->isAlive() || team1->getPlayer(2)->isAlive() || team1->getPlayer(3)->isAlive() || team1->getPlayer(4)->isAlive();
         bool team2_alive = team2->getPlayer(0)->isAlive() || team2->getPlayer(1)->isAlive() || team2->getPlayer(2)->isAlive() || team2->getPlayer(3)->isAlive() || team2->getPlayer(4)->isAlive();
@@ -516,7 +394,8 @@ FightResult fight(Team* team1, Team* team2) {
             else 
 				return TEAM2_WIN;
         }
-		// std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (DEBUG)
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
     } while (!end);
     std::cout << "Fight ended in " << it << " iterations.\n";
     return TEAM1_WIN;
@@ -565,9 +444,7 @@ winrate_reference_vs_population_anchor_hof(
     std::vector<std::vector<int>> win_tls(T, std::vector<int>(R, 0));
     std::vector<std::vector<int>> games_tls(T, std::vector<int>(R, 0));
 
-    // =========================================================
     // references vs k random population
-    // =========================================================
     #pragma omp parallel
     {
         const int tid = omp_get_thread_num();
@@ -608,9 +485,7 @@ winrate_reference_vs_population_anchor_hof(
         }
     }
 
-    // =========================================================
     // references vs anchors
-    // =========================================================
     #pragma omp parallel
     {
         const int tid = omp_get_thread_num();
@@ -627,9 +502,7 @@ winrate_reference_vs_population_anchor_hof(
         }
     }
 
-    // =========================================================
     // references vs Hall of Fame
-    // =========================================================
     #pragma omp parallel
     {
         const int tid = omp_get_thread_num();
@@ -646,9 +519,7 @@ winrate_reference_vs_population_anchor_hof(
         }
     }
 
-    // =========================================================
     // reduction
-    // =========================================================
     for (int t = 0; t < T; ++t) {
         for (int i = 0; i < R; ++i) {
             win_count[i]    += win_tls[t][i];
@@ -656,9 +527,7 @@ winrate_reference_vs_population_anchor_hof(
         }
     }
 
-    // =========================================================
     // winrate final (solo referencias)
-    // =========================================================
     std::vector<double> win_rate(R, 0.0);
     for (int i = 0; i < R; ++i) {
         if (games_played[i] > 0) {

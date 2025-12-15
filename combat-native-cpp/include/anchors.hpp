@@ -1,3 +1,6 @@
+#ifndef ANCHORS_HPP
+#define ANCHORS_HPP
+
 #pragma once
 #include <cstddef>
 
@@ -9,3 +12,5 @@ constexpr int GENOME_SIZE          = DECISIONS_PER_PLAYER * PLAYERS_PER_TEAM; //
 constexpr int ANCHOR_COUNT = 5;
 
 extern const int ANCHOR_GENOMES[ANCHOR_COUNT][GENOME_SIZE];
+
+#endif // ANCHORS_HPP

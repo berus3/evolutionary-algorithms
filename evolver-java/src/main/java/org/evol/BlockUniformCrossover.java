@@ -32,7 +32,7 @@ public class BlockUniformCrossover
 
             for (int player = 0; player < players; player++) {
 
-                // coin flip por jugador
+                // coin flip by jugador
                 if (rng.nextDouble() < 0.5) {
 
                     int start = player * blockSize;

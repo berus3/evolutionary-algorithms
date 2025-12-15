@@ -22,14 +22,10 @@ public class MainEA {
         return String.format(Locale.US, "%.4f", x);
     }
 
-    // ============================================================
     // ENTRY POINT FOR GRID SEARCH
-    // ============================================================
     public static void run(RunConfig cfg) {
 
-        // ------------------------------------------------------------
         // RNG + instance
-        // ------------------------------------------------------------
         JMetalRandom.getInstance().setSeed(cfg.seed);
         RPGNativeBridge.setSeed(cfg.seed);
         RPGNativeBridge.setInstance(cfg.instance.id);
@@ -38,14 +34,11 @@ public class MainEA {
 
         long startTimeNs = System.nanoTime();
 
-        // ------------------------------------------------------------
+        
         // Problem
-        // ------------------------------------------------------------
         RPGProblem problem = new RPGProblem();
 
-        // ------------------------------------------------------------
-        // Operators
-        // ------------------------------------------------------------
+        // Operators       
         CrossoverOperator<IntegerSolution> crossover =
                 new BlockUniformCrossover(cfg.crossoverProb);
 
@@ -56,9 +49,9 @@ public class MainEA {
                         new ObjectiveComparator<>(0)
                 );
 
-        // ------------------------------------------------------------
+        
         // EA parameters
-        // ------------------------------------------------------------
+        
         final int popSize = cfg.popSize;
         final int generations = 100;
         final int elitismCount = 2;
@@ -81,9 +74,7 @@ public class MainEA {
         ArenaEvaluator evaluator = new ArenaEvaluator();
         evaluator.setLambdaSimilarity(lambdaSimilarity);
 
-        // ------------------------------------------------------------
         // Logger (UNIQUE per config)
-        // ------------------------------------------------------------
         LoggerEA logger = new LoggerEA(
                 "logs/fitness_" + cfg.tag() + ".csv",
                 cfg.seed,
@@ -100,23 +91,17 @@ public class MainEA {
                 tournamentK,
                 elitismCount
         );
-
-        // ------------------------------------------------------------
-        // Hall of Fame
-        // ------------------------------------------------------------
+        
+        // Hall of Fame        
         HallOfFame hof = new HallOfFame(5);
 
-        // ------------------------------------------------------------
-        // Init population
-        // ------------------------------------------------------------
+        // Init population        
         List<IntegerSolution> population = new ArrayList<>(popSize);
         for (int i = 0; i < popSize; i++) {
             population.add(problem.createSolution());
         }
 
-        // ------------------------------------------------------------
         // Gen 0
-        // ------------------------------------------------------------
         evaluator.evaluate(population, problem);
         insertBestIntoHoF(population, hof);
 
@@ -128,16 +113,15 @@ public class MainEA {
                 .min()
                 .orElse(Double.POSITIVE_INFINITY);
 
-        // ------------------------------------------------------------
-        // Evolution loop
-        // ------------------------------------------------------------
+        
+        // Evolution loop        
         for (int gen = 1; gen <= generations; gen++) {
 
             int genSeed = cfg.seed + gen;
             JMetalRandom.getInstance().setSeed(genSeed);
             RPGNativeBridge.setSeed(genSeed);
 
-            // REEVALUAR TODA LA POBLACIÓN CADA GENERACIÓN
+            // REEVALUATE THE WHOLE POPULATION EVERY GENERATION!
             evaluator.evaluate(population, problem);
 
             double pGen = Math.max(pMin, p0 * Math.pow(alpha, gen));
@@ -182,24 +166,21 @@ public class MainEA {
                 );
             }
 
-            // ========================================================
-            // Crowding Replacement (μ + λ)  <<< ÚNICO CAMBIO REAL
-            // ========================================================
+            // Crowding Replacement (μ + λ)
+            final int CF = 5; // fixed crowding factor
 
-            final int CF = 5; // crowding factor fijo
-
-            // ordenar padres (igual que antes)
+            // order parents
             population.sort(Comparator.comparingDouble(a -> a.objectives()[0]));
 
-            // 1) élites (COPIA)
+            // elites (COPY)
             List<IntegerSolution> elites =
                     new ArrayList<>(population.subList(0, elitismCount));
 
-            // 2) individuos reemplazables
+            // replaceable individuals
             List<IntegerSolution> replaceable =
                     new ArrayList<>(population.subList(elitismCount, population.size()));
 
-            // 3) crowding replacement hijo por hijo
+            // 3) crowding replacement child for child
             for (IntegerSolution child : offspring) {
 
                 double childWr = (double) child.attributes()
@@ -207,7 +188,7 @@ public class MainEA {
 
                 if (Double.isNaN(childWr) || replaceable.isEmpty()) continue;
 
-                // vecindario por cercanía de winrate
+                // neighbourhood by winrate
                 replaceable.sort(Comparator.comparingDouble(p -> {
                     double wr = (double) p.attributes()
                             .getOrDefault("winrate", Double.NaN);
@@ -238,15 +219,11 @@ public class MainEA {
                 }
             }
 
-            // reconstruir población (rol idéntico al nextGen original)
+            // rebuild population (identical role as original nextGen)
             List<IntegerSolution> nextGen = new ArrayList<>(popSize);
             nextGen.addAll(elites);
             nextGen.addAll(replaceable);
             population = nextGen;
-
-            // --------------------------------------------------------
-            // Lo que sigue ES IDÉNTICO a tu código
-            // --------------------------------------------------------
 
             insertBestIntoHoF(population, hof);
 
@@ -270,10 +247,7 @@ public class MainEA {
                 break;
             }
         }
-
-        // ------------------------------------------------------------
-        // Finish
-        // ------------------------------------------------------------
+        
         long endTimeNs = System.nanoTime();
         double runtimeSeconds =
                 (endTimeNs - startTimeNs) / 1_000_000_000.0;
@@ -284,9 +258,7 @@ public class MainEA {
         logger.close();
     }
 
-    // ============================================================
     // Optional standalone run (debug / single run)
-    // ============================================================
     public static void main(String[] args) {
         RunConfig cfg = new RunConfig(
                 123456,
@@ -300,9 +272,7 @@ public class MainEA {
         run(cfg);
     }
 
-    // ============================================================
-    // Helpers (NUEVO: solo esto)
-    // ============================================================
+    // Helpers
     private static double distanceD(IntegerSolution a, IntegerSolution b) {
         int diff = 0;
         for (int i = 0; i < a.variables().size(); i++) {

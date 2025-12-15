@@ -140,9 +140,7 @@ public class LoggerEA {
         }
     }
 
-    // ===============================
     // Hall of Fame
-    // ===============================
     public void writeHallOfFame(HallOfFame hof) {
     String out = basePath.replace(".csv", "_HOF_" + timestamp + ".csv");
 

@@ -11,7 +11,7 @@
 #include "anchors.hpp"
 #include "genome_decode.hpp"
 #include "instance.hpp"
-#include "rng_context.hpp"   // IMPORTANTE: GLOBAL_SEED
+#include "rng_context.hpp"   // GLOBAL_SEED in here
 
 // helpers JNI
 static void throwIAE(JNIEnv* env, const char* msg) {
@@ -24,7 +24,7 @@ static void throwISE(JNIEnv* env, const char* msg) {
     if (ex) env->ThrowNew(ex, msg);
 }
 
-// RNG seed (STATELESS RNG) Java es la fuente de verdad de la seed
+// RNG seed (STATELESS RNG) seed comes from Java
 extern "C"
 JNIEXPORT void JNICALL
 Java_org_evol_RPGNativeBridge_setSeed(
@@ -62,13 +62,12 @@ static void initAnchorsOnce() {
 
     g_anchors.reserve(ANCHOR_COUNT);
     for (int a = 0; a < ANCHOR_COUNT; a++) {
-        Team* t = buildTeamFromGenome(ANCHOR_GENOMES[a], 10000 + a); //TODO revisar
+        Team* t = buildTeamFromGenome(ANCHOR_GENOMES[a], 10000 + a);
         g_anchors.push_back(t);
     }
 }
 
 // JNI evaluatePopulation
-
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
 Java_org_evol_RPGNativeBridge_evaluatePopulation(
@@ -154,9 +153,7 @@ Java_org_evol_RPGNativeBridge_evaluateReferences(
 
     initAnchorsOnce();
 
-    // -----------------------------
     // Sanity checks
-    // -----------------------------
     if (env->GetArrayLength(flatReferences) != refCount * GENOME_SIZE ||
         env->GetArrayLength(flatPopulation) != popCount * GENOME_SIZE ||
         (hofCount > 0 &&
@@ -176,9 +173,7 @@ Java_org_evol_RPGNativeBridge_evaluateReferences(
         return nullptr;
     }
 
-    // -----------------------------
     // Build teams
-    // -----------------------------
     std::vector<Team*> refs, pop, hof;
     refs.reserve(refCount);
     pop.reserve(popCount);
@@ -196,16 +191,12 @@ Java_org_evol_RPGNativeBridge_evaluateReferences(
         hof.push_back(buildTeamFromGenome(
             hofData + i * GENOME_SIZE, 30000 + i));
 
-    // -----------------------------
     // Core evaluation
-    // -----------------------------
     std::vector<double> wr =
         winrate_reference_vs_population_anchor_hof(
             refs, pop, g_anchors, hof, fightsPerRef);
 
-    // -----------------------------
     // Cleanup
-    // -----------------------------
     env->ReleaseIntArrayElements(flatReferences, refData, 0);
     env->ReleaseIntArrayElements(flatPopulation, popData, 0);
     if (hofData)

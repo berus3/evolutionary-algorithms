@@ -1,13 +1,15 @@
+#ifndef RNG_CONTEXT_HPP
+#define RNG_CONTEXT_HPP
 #pragma once
 #include <cstdint>
 
 // ============================================================
-// Global seed (proviene de Java vía JNI)
+// Global seed (it comes from JNI)
 // ============================================================
 extern uint64_t GLOBAL_SEED;
 
 // ============================================================
-// RNG semantic tags (UNA por tipo de evento)
+// RNG semantic tags (one by event)
 // ============================================================
 enum class rng_tag : uint64_t {
     CRIT = 1,
@@ -27,7 +29,7 @@ enum class rng_tag : uint64_t {
 };
 
 // ============================================================
-// RNG context builder (determinista y paralelo)
+// RNG context builder (deterministic and parallel)
 // ============================================================
 inline uint64_t rng_ctx(
     uint64_t global_seed,
@@ -40,3 +42,5 @@ inline uint64_t rng_ctx(
          ^ (b * 0xBF58476D1CE4E5B9ULL)
          ^ static_cast<uint64_t>(tag);
 }
+
+#endif // RNG_CONTEXT_HPP
