@@ -12,7 +12,7 @@ public class ArenaEvaluator implements SolutionListEvaluator<IntegerSolution> {
     private static final boolean DEBUG =
             Boolean.parseBoolean(System.getProperty("evol.debugEval", "false"));
 
-    // Local window for similarity
+    // local window for similarity
     private static final int SIM_WINDOW = 10;
 
     public double lambdaSimilarity;
