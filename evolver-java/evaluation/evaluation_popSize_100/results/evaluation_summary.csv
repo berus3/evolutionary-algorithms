@@ -1,0 +1,4 @@
+instance,avg_ae_fitness,sd_ae_fitness,avg_ae_winrate,sd_ae_winrate,avg_tier1_winrate,sd_tier1_winrate,avg_tier2_winrate,sd_tier2_winrate,avg_tier3_winrate,sd_tier3_winrate,avg_tier4_winrate,sd_tier4_winrate,avg_tier5_winrate,sd_tier5_winrate
+FULL_DAMAGE_PIECEWISE,-0.7847,0.0284,0.8817,0.1171,0.62,0.1664,0.1617,0.0625,0.07,0.0282,0.0583,0.019,0.06,0.0203
+LINEAR,-0.8715,0.022,0.9617,0.0751,0.2117,0.0252,0.27,0.0407,0.185,0.0993,0.2717,0.0313,0.2883,0.0468
+SUPPORT_LIKE_PIECEWISE,-0.8402,0.0189,0.8933,0.0944,0.725,0.1407,0.325,0.0935,0.5983,0.1303,0.1533,0.0524,0.1233,0.0341
